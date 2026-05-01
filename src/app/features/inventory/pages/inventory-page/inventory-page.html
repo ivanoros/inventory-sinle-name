@@ -15,13 +15,13 @@
 
   <section class="tab-bar">
     <button class="home">⌂</button>
-    @if (inventoryTabOpen()) {
+    @if (store.inventoryTabOpen()) {
       <span class="tab security-tab active">
         <span>Inventory</span>
         <button class="tab-close" type="button" (click)="closeInventoryTab($event)">x</button>
       </span>
     }
-    @for (ticker of securityTabs(); track ticker) {
+    @for (ticker of store.securityTabs(); track ticker) {
       <a class="tab security-tab" [routerLink]="['/single-name', ticker]">
         <span>{{ ticker }} US</span>
         <button class="tab-close" type="button" (click)="closeSecurityTab($event, ticker)">x</button>
@@ -39,12 +39,12 @@
     </label>
 
     <div class="button-group">
-      <button [class.active]="selectedView() === 'sod'" (click)="setView('sod')">SOD</button>
-      <button [class.active]="selectedView() === 'live'" (click)="setView('live')">Live</button>
-      <button [class.active]="selectedView() === 'gc'" (click)="setView('gc')">GC</button>
-      <button [class.active]="selectedView() === 'warm'" (click)="setView('warm')">Warm</button>
-      <button [class.active]="selectedView() === 'htb'" (click)="setView('htb')">HTB</button>
-      <button [class.active]="selectedView() === 'special'" (click)="setView('special')">Special</button>
+      <button [class.active]="store.selectedView() === 'sod'" (click)="setView('sod')">SOD</button>
+      <button [class.active]="store.selectedView() === 'live'" (click)="setView('live')">Live</button>
+      <button [class.active]="store.selectedView() === 'gc'" (click)="setView('gc')">GC</button>
+      <button [class.active]="store.selectedView() === 'warm'" (click)="setView('warm')">Warm</button>
+      <button [class.active]="store.selectedView() === 'htb'" (click)="setView('htb')">HTB</button>
+      <button [class.active]="store.selectedView() === 'special'" (click)="setView('special')">Special</button>
     </div>
 
     <div class="button-group">
@@ -59,12 +59,12 @@
     </div>
 
     <label class="checkbox">
-      <input type="checkbox" [checked]="includeRecalls()" />
+      <input type="checkbox" [checked]="store.includeRecalls()" />
       Include recalls
     </label>
 
     <label class="checkbox">
-      <input type="checkbox" [checked]="rounding()" />
+      <input type="checkbox" [checked]="store.rounding()" />
       Rounding
     </label>
 

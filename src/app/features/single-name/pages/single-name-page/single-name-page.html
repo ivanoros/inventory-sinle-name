@@ -15,14 +15,14 @@
   </header>
 
   <app-single-name-tabs
-    [activeTicker]="ticker()"
-    [inventoryTabOpen]="inventoryTabOpen()"
-    [securityTabs]="securityTabs()"
+    [activeTicker]="store.ticker()"
+    [inventoryTabOpen]="store.inventoryTabOpen()"
+    [securityTabs]="store.securityTabs()"
     (inventoryTabClosed)="closeInventoryTab()"
     (securityTabClosed)="closeSecurityTab($event)">
   </app-single-name-tabs>
 
-  @if (detail(); as singleName) {
+  @if (store.detail(); as singleName) {
     <main class="content">
       <section class="left-panel">
         <app-security-summary [detail]="singleName"></app-security-summary>
@@ -30,18 +30,18 @@
         <app-position-panel
           [position]="singleName.position"
           [agGridModules]="agGridModules"
-          [drilldownRows]="drilldownRows()"
+          [drilldownRows]="store.drilldownRows()"
           [drilldownColumnDefs]="drilldownColumnDefs"
           [gridOptions]="gridOptions"
-          [drilldownVisible]="drilldownVisible()"
-          [showOptions]="showOptions()"
+          [drilldownVisible]="store.drilldownVisible()"
+          [showOptions]="store.showOptions()"
           (drilldownToggled)="toggleDrilldown()"
           (optionsToggled)="toggleOptions()">
         </app-position-panel>
 
         <app-lender-availability
           [agGridModules]="agGridModules"
-          [rows]="lenderRows()"
+          [rows]="store.lenderRows()"
           [lenderTotal]="singleName.lenderTotal"
           [dailyChange]="singleName.dailyChange"
           [gridOptions]="gridOptions">

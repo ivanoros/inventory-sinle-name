@@ -1,20 +1,17 @@
 // src/app/features/inventory/pages/inventory-page/inventory-page.ts
-import { Component, DestroyRef, inject, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Router, RouterLink } from '@angular/router';
-import { interval } from 'rxjs';
+import { Component, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import {
   AllCommunityModule,
   CellClickedEvent,
   ColDef,
-  GridApi,
   GridOptions,
   GridReadyEvent,
 } from 'ag-grid-community';
 import { ServerSideRowModelModule } from 'ag-grid-enterprise';
-import { WorkbenchTabsService } from '../../../../core/services/workbench-tabs.service';
 import { InventoryRow } from '../../models/inventory-row.model';
-import { InventoryDataService } from '../../data-access/inventory-data.service';
+import { InventoryViewFilter } from '../../models/inventory-page.model';
+import { InventoryStore } from '../../state/inventory.store';
 import { AgGridAngular } from 'ag-grid-angular';
 
 @Component({
@@ -23,22 +20,12 @@ import { AgGridAngular } from 'ag-grid-angular';
   imports: [AgGridAngular, RouterLink],
   templateUrl: './inventory-page.html',
   styleUrl: './inventory-page.scss',
+  providers: [InventoryStore],
 })
 export class InventoryPage {
-  private readonly router = inject(Router);
-  private readonly destroyRef = inject(DestroyRef);
-  private readonly inventoryData = inject(InventoryDataService);
-  private readonly tabsService = inject(WorkbenchTabsService);
-  private gridApi?: GridApi<InventoryRow>;
-
-  readonly selectedView = signal<'sod' | 'live' | 'gc' | 'warm' | 'htb' | 'special'>('live');
-  readonly includeRecalls = signal(true);
-  readonly rounding = signal(true);
+  readonly store = inject(InventoryStore);
 
   readonly agGridModules = [AllCommunityModule, ServerSideRowModelModule];
-  readonly inventoryTabOpen = this.tabsService.inventoryTabOpen;
-  readonly securityTabs = this.tabsService.securityTabs;
-  readonly serverSideDatasource = this.inventoryData.createServerSideDatasource();
 
   readonly columnDefs: ColDef<InventoryRow>[] = [
     {
@@ -82,7 +69,7 @@ export class InventoryPage {
   readonly gridOptions: GridOptions<InventoryRow> = {
     theme: 'legacy',
     rowModelType: 'serverSide',
-    serverSideDatasource: this.serverSideDatasource,
+    serverSideDatasource: this.store.serverSideDatasource,
     pagination: true,
     paginationPageSize: 20,
     paginationPageSizeSelector: [10, 20, 50],
@@ -104,46 +91,29 @@ export class InventoryPage {
     },
   };
 
-  constructor() {
-    this.tabsService.openInventory();
-
-    interval(this.inventoryData.refreshIntervalMs)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => this.gridApi?.refreshServerSide({ purge: false }));
-  }
-
   onGridReady(event: GridReadyEvent<InventoryRow>): void {
-    this.gridApi = event.api;
+    this.store.connectGrid(event.api);
   }
 
   onCellClicked(event: CellClickedEvent<InventoryRow>): void {
-    if (event.colDef.field !== 'ticker') return;
-
-    const ticker = event.data?.ticker;
-    if (!ticker) return;
-
-    const openedTicker = this.tabsService.openSecurity(ticker);
-    this.router.navigate(['/single-name', openedTicker]);
+    this.store.openSecurityFromCell(event);
   }
 
   closeSecurityTab(event: MouseEvent, ticker: string): void {
     event.preventDefault();
     event.stopPropagation();
 
-    this.tabsService.closeSecurity(ticker);
+    this.store.closeSecurityTab(ticker);
   }
 
   closeInventoryTab(event: MouseEvent): void {
     event.preventDefault();
     event.stopPropagation();
 
-    const nextTicker = this.tabsService.closeInventory();
-    if (nextTicker) {
-      this.router.navigate(['/single-name', nextTicker]);
-    }
+    this.store.closeInventoryTab();
   }
 
-  setView(view: 'sod' | 'live' | 'gc' | 'warm' | 'htb' | 'special'): void {
-    this.selectedView.set(view);
+  setView(view: InventoryViewFilter): void {
+    this.store.setView(view);
   }
 }

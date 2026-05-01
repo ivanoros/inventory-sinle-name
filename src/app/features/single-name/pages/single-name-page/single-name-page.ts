@@ -1,17 +1,15 @@
 // src/app/features/single-name/pages/single-name-page/single-name-page.ts
-import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { switchMap } from 'rxjs';
+import { Component, DestroyRef, inject } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AllCommunityModule as AllGridCommunityModule, ColDef, GridOptions } from 'ag-grid-community';
 import { AllCommunityModule as AllChartCommunityModule, ModuleRegistry as ChartModuleRegistry } from 'ag-charts-community';
-import { WorkbenchTabsService } from '../../../../core/services/workbench-tabs.service';
-import { SingleNameDataService } from '../../data-access/single-name-data.service';
 import { SingleNameTabsComponent } from '../../components/single-name-tabs/single-name-tabs.component';
 import { SecuritySummaryComponent } from '../../components/security-summary/security-summary.component';
 import { PositionPanelComponent } from '../../components/position-panel/position-panel.component';
 import { LenderAvailabilityComponent } from '../../components/lender-availability/lender-availability.component';
 import { SingleNameSidebarComponent } from '../../components/single-name-sidebar/single-name-sidebar.component';
+import { SingleNameStore } from '../../state/single-name.store';
 
 ChartModuleRegistry.registerModules(AllChartCommunityModule);
 
@@ -27,29 +25,14 @@ ChartModuleRegistry.registerModules(AllChartCommunityModule);
   ],
   templateUrl: './single-name-page.html',
   styleUrl: './single-name-page.scss',
+  providers: [SingleNameStore],
 })
 export class SingleNamePage {
   private readonly route = inject(ActivatedRoute);
-  private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly singleNameData = inject(SingleNameDataService);
-  private readonly tabsService = inject(WorkbenchTabsService);
-
-  readonly ticker = signal(this.route.snapshot.paramMap.get('ticker') ?? 'FULT');
-  readonly inventoryTabOpen = this.tabsService.inventoryTabOpen;
-  readonly securityTabs = this.tabsService.securityTabs;
-  readonly drilldownVisible = signal(false);
-  readonly showOptions = signal(false);
+  readonly store = inject(SingleNameStore);
 
   readonly agGridModules = [AllGridCommunityModule];
-  readonly detail = toSignal(
-    toObservable(this.ticker).pipe(
-      switchMap(ticker => this.singleNameData.getRefreshedSingleName(ticker)),
-    ),
-    { initialValue: null },
-  );
-  readonly lenderRows = computed(() => this.detail()?.lenderAvailability ?? []);
-  readonly drilldownRows = computed(() => this.detail()?.drilldown ?? []);
 
   readonly drilldownColumnDefs: ColDef[] = [
     { field: 'category', headerName: 'Category', width: 150 },
@@ -75,38 +58,26 @@ export class SingleNamePage {
   };
 
   constructor() {
-    this.tabsService.openSecurity(this.ticker());
+    this.store.setTicker(this.route.snapshot.paramMap.get('ticker'));
 
     this.route.paramMap
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(params => {
-        const ticker = this.tabsService.openSecurity(params.get('ticker') ?? 'FULT');
-        this.ticker.set(ticker);
-      });
+      .subscribe(params => this.store.setTicker(params.get('ticker')));
   }
 
   toggleDrilldown(): void {
-    this.drilldownVisible.update(value => !value);
+    this.store.toggleDrilldown();
   }
 
   toggleOptions(): void {
-    this.showOptions.update(value => !value);
+    this.store.toggleOptions();
   }
 
   closeSecurityTab(ticker: string): void {
-    const nextTicker = this.tabsService.closeSecurity(ticker);
-
-    if (ticker !== this.ticker()) return;
-
-    if (nextTicker) {
-      this.router.navigate(['/single-name', nextTicker]);
-      return;
-    }
-
-    this.router.navigate(['/']);
+    this.store.closeSecurityTab(ticker);
   }
 
   closeInventoryTab(): void {
-    this.tabsService.closeInventory();
+    this.store.closeInventoryTab();
   }
 }

@@ -350,7 +350,7 @@ export class MockTradingDataService {
   }
 
   getInventoryPage(request: InventoryPageRequest): InventoryPage {
-    const rows = this.getInventoryRows();
+    const rows = this.getInventoryRows().filter(row => this.matchesInventoryView(row, request.view));
     const pageIndex = Math.max(0, request.pageIndex);
     const pageSize = Math.max(1, request.pageSize);
     const startRow = pageIndex * pageSize;
@@ -361,6 +361,13 @@ export class MockTradingDataService {
       pageIndex,
       pageSize,
     };
+  }
+
+  private matchesInventoryView(row: InventoryRow, view: InventoryPageRequest['view']): boolean {
+    if (!view || view === 'live' || view === 'sod') return true;
+    if (view === 'htb') return row.status === 'Hard to borrow';
+
+    return row.status.toLowerCase() === view;
   }
 
   private getGeneratedInventoryRows(): InventoryRow[] {
