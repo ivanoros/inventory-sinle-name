@@ -2,7 +2,7 @@
 import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { switchMap } from 'rxjs';
+import { interval, startWith, switchMap } from 'rxjs';
 import { AllCommunityModule as AllGridCommunityModule, ColDef, GridOptions } from 'ag-grid-community';
 import { AllCommunityModule as AllChartCommunityModule, ModuleRegistry as ChartModuleRegistry } from 'ag-charts-community';
 import { TradingDataService } from '../../core/services/trading-data.service';
@@ -42,7 +42,12 @@ export class SingleNameComponent {
   readonly agGridModules = [AllGridCommunityModule];
   readonly detail = toSignal(
     toObservable(this.ticker).pipe(
-      switchMap(ticker => this.dataService.getSingleName(ticker)),
+      switchMap(ticker =>
+        interval(this.dataService.refreshIntervalMs).pipe(
+          startWith(0),
+          switchMap(() => this.dataService.getSingleName(ticker)),
+        ),
+      ),
     ),
     { initialValue: null },
   );

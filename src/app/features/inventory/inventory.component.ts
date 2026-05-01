@@ -2,6 +2,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router, RouterLink } from '@angular/router';
+import { interval, startWith, switchMap } from 'rxjs';
 import { AllCommunityModule, CellClickedEvent, ColDef, GridOptions } from 'ag-grid-community';
 import { TradingDataService } from '../../core/services/trading-data.service';
 import { WorkbenchTabsService } from '../../core/services/workbench-tabs.service';
@@ -26,7 +27,13 @@ export class InventoryComponent {
 
   readonly agGridModules = [AllCommunityModule];
   readonly securityTabs = this.tabsService.securityTabs;
-  readonly rows = toSignal(this.dataService.getInventoryRows(), { initialValue: [] });
+  readonly rows = toSignal(
+    interval(this.dataService.refreshIntervalMs).pipe(
+      startWith(0),
+      switchMap(() => this.dataService.getInventoryRows()),
+    ),
+    { initialValue: [] },
+  );
 
   readonly columnDefs: ColDef<InventoryRow>[] = [
     {
