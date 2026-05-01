@@ -10,13 +10,11 @@ import {
   GridApi,
   GridOptions,
   GridReadyEvent,
-  IServerSideDatasource,
-  IServerSideGetRowsParams,
 } from 'ag-grid-community';
 import { ServerSideRowModelModule } from 'ag-grid-enterprise';
-import { TradingDataService } from '../../../../core/services/trading-data.service';
 import { WorkbenchTabsService } from '../../../../core/services/workbench-tabs.service';
 import { InventoryRow } from '../../../../core/models/inventory-row.model';
+import { InventoryDataService } from '../../data-access/inventory-data.service';
 import { AgGridAngular } from 'ag-grid-angular';
 
 @Component({
@@ -29,7 +27,7 @@ import { AgGridAngular } from 'ag-grid-angular';
 export class InventoryPage {
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly dataService = inject(TradingDataService);
+  private readonly inventoryData = inject(InventoryDataService);
   private readonly tabsService = inject(WorkbenchTabsService);
   private gridApi?: GridApi<InventoryRow>;
 
@@ -39,25 +37,7 @@ export class InventoryPage {
 
   readonly agGridModules = [AllCommunityModule, ServerSideRowModelModule];
   readonly securityTabs = this.tabsService.securityTabs;
-
-  readonly serverSideDatasource: IServerSideDatasource<InventoryRow> = {
-    getRows: (params: IServerSideGetRowsParams<InventoryRow>) => {
-      const startRow = params.request.startRow ?? 0;
-      const endRow = params.request.endRow ?? startRow + 20;
-      const pageSize = endRow - startRow;
-      const pageIndex = Math.floor(startRow / pageSize);
-
-      this.dataService.getInventoryPage({ pageIndex, pageSize }).subscribe({
-        next: page => {
-          params.success({
-            rowData: page.rows,
-            rowCount: page.totalCount,
-          });
-        },
-        error: () => params.fail(),
-      });
-    },
-  };
+  readonly serverSideDatasource = this.inventoryData.createServerSideDatasource();
 
   readonly columnDefs: ColDef<InventoryRow>[] = [
     {
@@ -124,7 +104,7 @@ export class InventoryPage {
   };
 
   constructor() {
-    interval(this.dataService.refreshIntervalMs)
+    interval(this.inventoryData.refreshIntervalMs)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.gridApi?.refreshServerSide({ purge: false }));
   }

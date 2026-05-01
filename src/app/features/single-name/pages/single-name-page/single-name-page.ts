@@ -2,11 +2,11 @@
 import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { interval, startWith, switchMap } from 'rxjs';
+import { switchMap } from 'rxjs';
 import { AllCommunityModule as AllGridCommunityModule, ColDef, GridOptions } from 'ag-grid-community';
 import { AllCommunityModule as AllChartCommunityModule, ModuleRegistry as ChartModuleRegistry } from 'ag-charts-community';
-import { TradingDataService } from '../../../../core/services/trading-data.service';
 import { WorkbenchTabsService } from '../../../../core/services/workbench-tabs.service';
+import { SingleNameDataService } from '../../data-access/single-name-data.service';
 import { SingleNameTabsComponent } from '../../components/single-name-tabs/single-name-tabs.component';
 import { SecuritySummaryComponent } from '../../components/security-summary/security-summary.component';
 import { PositionPanelComponent } from '../../components/position-panel/position-panel.component';
@@ -31,7 +31,7 @@ ChartModuleRegistry.registerModules(AllChartCommunityModule);
 export class SingleNamePage {
   private readonly route = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly dataService = inject(TradingDataService);
+  private readonly singleNameData = inject(SingleNameDataService);
   private readonly tabsService = inject(WorkbenchTabsService);
 
   readonly ticker = signal(this.route.snapshot.paramMap.get('ticker') ?? 'FULT');
@@ -42,12 +42,7 @@ export class SingleNamePage {
   readonly agGridModules = [AllGridCommunityModule];
   readonly detail = toSignal(
     toObservable(this.ticker).pipe(
-      switchMap(ticker =>
-        interval(this.dataService.refreshIntervalMs).pipe(
-          startWith(0),
-          switchMap(() => this.dataService.getSingleName(ticker)),
-        ),
-      ),
+      switchMap(ticker => this.singleNameData.getRefreshedSingleName(ticker)),
     ),
     { initialValue: null },
   );
