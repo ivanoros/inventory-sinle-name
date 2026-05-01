@@ -1,6 +1,5 @@
 // src/app/features/inventory/pages/inventory-page/inventory-page.ts
 import { Component, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import {
   AllCommunityModule,
   CellClickedEvent,
@@ -13,11 +12,13 @@ import { InventoryRow } from '../../models/inventory-row.model';
 import { InventoryViewFilter } from '../../models/inventory-page.model';
 import { InventoryStore } from '../../state/inventory.store';
 import { AgGridAngular } from 'ag-grid-angular';
+import { WorkbenchHeaderComponent } from '@shared/ui/workbench-header/workbench-header.component';
+import { WorkbenchTabsComponent } from '@shared/ui/workbench-tabs/workbench-tabs.component';
 
 @Component({
   selector: 'app-inventory',
   standalone: true,
-  imports: [AgGridAngular, RouterLink],
+  imports: [AgGridAngular, WorkbenchHeaderComponent, WorkbenchTabsComponent],
   templateUrl: './inventory-page.html',
   styleUrl: './inventory-page.scss',
   providers: [InventoryStore],
@@ -99,17 +100,11 @@ export class InventoryPage {
     this.store.openSecurityFromCell(event);
   }
 
-  closeSecurityTab(event: MouseEvent, ticker: string): void {
-    event.preventDefault();
-    event.stopPropagation();
-
+  closeSecurityTab(ticker: string): void {
     this.store.closeSecurityTab(ticker);
   }
 
-  closeInventoryTab(event: MouseEvent): void {
-    event.preventDefault();
-    event.stopPropagation();
-
+  closeInventoryTab(): void {
     this.store.closeInventoryTab();
   }
 

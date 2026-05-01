@@ -1,8 +1,8 @@
 import { Injectable, InjectionToken, inject } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { InventoryPage, InventoryPageRequest } from '../../features/inventory/models/inventory-page.model';
-import { InventoryRow } from '../../features/inventory/models/inventory-row.model';
-import { SingleNameDetail } from '../../features/single-name/models/single-name.model';
+import { InventoryPage, InventoryPageRequest } from '@features/inventory/models/inventory-page.model';
+import { InventoryRow } from '@features/inventory/models/inventory-row.model';
+import { SingleNameDetail } from '@features/single-name/models/single-name.model';
 import { MockTradingDataService } from './mock-trading-data.service';
 
 export const TRADING_DATA_REFRESH_INTERVAL_MS = new InjectionToken<number>(

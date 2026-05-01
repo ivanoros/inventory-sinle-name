@@ -8,7 +8,7 @@ import {
   IServerSideDatasource,
   IServerSideGetRowsParams,
 } from 'ag-grid-community';
-import { WorkbenchTabsService } from '../../../core/services/workbench-tabs.service';
+import { WorkbenchTabsService } from '@core/services/workbench-tabs.service';
 import { InventoryDataService } from '../data-access/inventory-data.service';
 import { InventoryViewFilter } from '../models/inventory-page.model';
 import { InventoryRow } from '../models/inventory-row.model';

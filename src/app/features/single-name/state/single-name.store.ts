@@ -2,7 +2,7 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { catchError, of, switchMap, tap } from 'rxjs';
-import { WorkbenchTabsService } from '../../../core/services/workbench-tabs.service';
+import { WorkbenchTabsService } from '@core/services/workbench-tabs.service';
 import { SingleNameDataService } from '../data-access/single-name-data.service';
 
 @Injectable()

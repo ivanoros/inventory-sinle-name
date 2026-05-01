@@ -1,34 +1,13 @@
 <div class="workbench-page">
-  <header class="top-bar">
-    <div class="brand">
-      <span class="logo">BNP PARIBAS</span>
-      <span class="tagline">The bank for a changing world</span>
-    </div>
+  <app-workbench-header></app-workbench-header>
 
-    <div class="right-title">
-      <span>e70165</span>
-      <span>AMER</span>
-      <strong>WORKBENCH</strong>
-      <span class="gear">⚙</span>
-    </div>
-  </header>
-
-  <section class="tab-bar">
-    <button class="home">⌂</button>
-    @if (store.inventoryTabOpen()) {
-      <span class="tab security-tab active">
-        <span>Inventory</span>
-        <button class="tab-close" type="button" (click)="closeInventoryTab($event)">x</button>
-      </span>
-    }
-    @for (ticker of store.securityTabs(); track ticker) {
-      <a class="tab security-tab" [routerLink]="['/single-name', ticker]">
-        <span>{{ ticker }} US</span>
-        <button class="tab-close" type="button" (click)="closeSecurityTab($event, ticker)">x</button>
-      </a>
-    }
-    <button class="tab">+</button>
-  </section>
+  <app-workbench-tabs
+    activeTab="inventory"
+    [inventoryTabOpen]="store.inventoryTabOpen()"
+    [securityTabs]="store.securityTabs()"
+    (inventoryTabClosed)="closeInventoryTab()"
+    (securityTabClosed)="closeSecurityTab($event)">
+  </app-workbench-tabs>
 
   <section class="toolbar">
     <label>

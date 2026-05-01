@@ -1,7 +1,3 @@
-:host {
-  display: contents;
-}
-
 .tab-bar {
   height: 34px;
   display: flex;
@@ -16,13 +12,14 @@
 .home {
   border: 1px solid #b9c4c4;
   background: #f8fafafa;
+  color: #263238;
   padding: 5px 14px;
   text-decoration: none;
-  color: #263238;
 }
 
 .tab.active {
   background: white;
+  border-bottom-color: white;
 }
 
 .security-tab {

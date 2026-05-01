@@ -1,0 +1,25 @@
+<section class="tab-bar">
+  <a routerLink="/" class="home">⌂</a>
+
+  @if (inventoryTabOpen()) {
+    <a
+      routerLink="/"
+      class="tab security-tab"
+      [class.active]="activeTab() === 'inventory'">
+      <span>Inventory</span>
+      <button class="tab-close" type="button" (click)="closeInventoryTab($event)">x</button>
+    </a>
+  }
+
+  @for (ticker of securityTabs(); track ticker) {
+    <a
+      class="tab security-tab"
+      [class.active]="activeTab() === ticker"
+      [routerLink]="['/single-name', ticker]">
+      <span>{{ ticker }} US</span>
+      <button class="tab-close" type="button" (click)="closeSecurityTab($event, ticker)">x</button>
+    </a>
+  }
+
+  <button class="tab">+</button>
+</section>

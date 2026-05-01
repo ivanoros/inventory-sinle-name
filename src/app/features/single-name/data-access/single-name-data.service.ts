@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable, interval, map, startWith, switchMap } from 'rxjs';
 import { SingleNameDetail } from '../models/single-name.model';
-import { TradingDataService } from '../../../core/services/trading-data.service';
+import { TradingDataService } from '@core/services/trading-data.service';
 import { SingleNameDetailDto } from '../models/single-name.dto';
 import { mapSingleNameDetailDto, mapSingleNameDetailToDto } from './single-name.mapper';
 

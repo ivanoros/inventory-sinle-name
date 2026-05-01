@@ -1,0 +1,30 @@
+.top-bar {
+  height: 42px;
+  background: #26323c;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+}
+
+.logo {
+  font-weight: 700;
+  margin-right: 16px;
+}
+
+.tagline {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.right-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.right-title strong {
+  font-size: 22px;
+  letter-spacing: 1px;
+}

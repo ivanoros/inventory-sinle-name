@@ -1,26 +1,14 @@
 <!-- src/app/features/single-name/pages/single-name-page/single-name-page.html -->
 <div class="workbench-page">
-  <header class="top-bar">
-    <div class="brand">
-      <span class="logo">BNP PARIBAS</span>
-      <span class="tagline">The bank for a changing world</span>
-    </div>
+  <app-workbench-header></app-workbench-header>
 
-    <div class="right-title">
-      <span>e70165</span>
-      <span>AMER</span>
-      <strong>WORKBENCH</strong>
-      <span>⚙</span>
-    </div>
-  </header>
-
-  <app-single-name-tabs
-    [activeTicker]="store.ticker()"
+  <app-workbench-tabs
+    [activeTab]="store.ticker()"
     [inventoryTabOpen]="store.inventoryTabOpen()"
     [securityTabs]="store.securityTabs()"
     (inventoryTabClosed)="closeInventoryTab()"
     (securityTabClosed)="closeSecurityTab($event)">
-  </app-single-name-tabs>
+  </app-workbench-tabs>
 
   @if (store.error(); as errorMessage) {
     <main class="content loading-state">

@@ -2,16 +2,17 @@ import { Component, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
-  selector: 'app-single-name-tabs',
+  selector: 'app-workbench-tabs',
   standalone: true,
   imports: [RouterLink],
-  templateUrl: './single-name-tabs.component.html',
-  styleUrl: './single-name-tabs.component.scss',
+  templateUrl: './workbench-tabs.component.html',
+  styleUrl: './workbench-tabs.component.css',
 })
-export class SingleNameTabsComponent {
-  readonly activeTicker = input.required<string>();
+export class WorkbenchTabsComponent {
+  readonly activeTab = input.required<'inventory' | string>();
   readonly inventoryTabOpen = input.required<boolean>();
   readonly securityTabs = input.required<string[]>();
+
   readonly inventoryTabClosed = output<void>();
   readonly securityTabClosed = output<string>();
 

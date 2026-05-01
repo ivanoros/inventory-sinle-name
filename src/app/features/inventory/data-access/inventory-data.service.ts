@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { InventoryPage, InventoryPageRequest } from '../models/inventory-page.model';
-import { TradingDataService } from '../../../core/services/trading-data.service';
+import { TradingDataService } from '@core/services/trading-data.service';
 import { InventoryPageDto } from '../models/inventory.dto';
 import { mapInventoryPageDto, mapInventoryPageToDto } from './inventory.mapper';
 

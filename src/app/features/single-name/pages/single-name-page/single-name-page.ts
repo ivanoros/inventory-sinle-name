@@ -4,14 +4,15 @@ import { ActivatedRoute } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AllCommunityModule as AllGridCommunityModule, ColDef, GridOptions } from 'ag-grid-community';
 import { AllCommunityModule as AllChartCommunityModule, ModuleRegistry as ChartModuleRegistry } from 'ag-charts-community';
-import { SingleNameTabsComponent } from '../../components/single-name-tabs/single-name-tabs.component';
 import { SecuritySummaryComponent } from '../../components/security-summary/security-summary.component';
 import { PositionPanelComponent } from '../../components/position-panel/position-panel.component';
 import { LenderAvailabilityComponent } from '../../components/lender-availability/lender-availability.component';
 import { SingleNameSidebarComponent } from '../../components/single-name-sidebar/single-name-sidebar.component';
 import { SingleNameStore } from '../../state/single-name.store';
-import { ErrorAlertComponent } from '../../../../shared/ui/error-alert/error-alert.component';
-import { LoadingSpinnerComponent } from '../../../../shared/ui/loading-spinner/loading-spinner.component';
+import { ErrorAlertComponent } from '@shared/ui/error-alert/error-alert.component';
+import { LoadingSpinnerComponent } from '@shared/ui/loading-spinner/loading-spinner.component';
+import { WorkbenchHeaderComponent } from '@shared/ui/workbench-header/workbench-header.component';
+import { WorkbenchTabsComponent } from '@shared/ui/workbench-tabs/workbench-tabs.component';
 
 ChartModuleRegistry.registerModules(AllChartCommunityModule);
 
@@ -19,7 +20,8 @@ ChartModuleRegistry.registerModules(AllChartCommunityModule);
   selector: 'app-single-name',
   standalone: true,
   imports: [
-    SingleNameTabsComponent,
+    WorkbenchHeaderComponent,
+    WorkbenchTabsComponent,
     SecuritySummaryComponent,
     PositionPanelComponent,
     LenderAvailabilityComponent,
