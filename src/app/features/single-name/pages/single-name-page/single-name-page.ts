@@ -10,8 +10,8 @@ import { PositionPanelComponent } from '../../components/position-panel/position
 import { LenderAvailabilityComponent } from '../../components/lender-availability/lender-availability.component';
 import { SingleNameSidebarComponent } from '../../components/single-name-sidebar/single-name-sidebar.component';
 import { SingleNameStore } from '../../state/single-name.store';
-import { ErrorAlertComponent } from '../../../shared/ui/error-alert/error-alert.component';
-import { LoadingSpinnerComponent } from '../../../shared/ui/loading-spinner/loading-spinner.component';
+import { ErrorAlertComponent } from '../../../../shared/ui/error-alert/error-alert.component';
+import { LoadingSpinnerComponent } from '../../../../shared/ui/loading-spinner/loading-spinner.component';
 
 ChartModuleRegistry.registerModules(AllChartCommunityModule);
 

@@ -1,0 +1,32 @@
+.shell {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  min-height: 100vh;
+}
+
+.sidebar {
+  padding: 20px;
+  background: #111827;
+  color: white;
+}
+
+.nav {
+  margin-top: 20px;
+}
+
+.nav a {
+  display: block;
+  color: #cbd5e1;
+  text-decoration: none;
+  margin-bottom: 12px;
+}
+
+.nav a.active {
+  color: white;
+  font-weight: 700;
+}
+
+.content {
+  padding: 24px;
+  background: #f5f6f8;
+}
