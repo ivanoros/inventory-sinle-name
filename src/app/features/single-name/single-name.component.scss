@@ -53,3 +53,10 @@
   flex-direction: column;
   gap: 12px;
 }
+
+.loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #607078;
+}

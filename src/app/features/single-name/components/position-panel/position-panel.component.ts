@@ -1,7 +1,7 @@
 import { Component, input, output } from '@angular/core';
 import { AgGridAngular } from 'ag-grid-angular';
 import { ColDef, GridOptions, Module as AgGridModule } from 'ag-grid-community';
-import { DrilldownRow } from '../../../../core/models/single-name.model';
+import { DrilldownRow, PositionPanelData } from '../../../../core/models/single-name.model';
 
 @Component({
   selector: 'app-position-panel',
@@ -11,6 +11,7 @@ import { DrilldownRow } from '../../../../core/models/single-name.model';
   styleUrl: './position-panel.component.scss',
 })
 export class PositionPanelComponent {
+  readonly position = input.required<PositionPanelData>();
   readonly agGridModules = input.required<AgGridModule[]>();
   readonly drilldownRows = input.required<DrilldownRow[]>();
   readonly drilldownColumnDefs = input.required<ColDef[]>();
@@ -20,4 +21,11 @@ export class PositionPanelComponent {
 
   readonly drilldownToggled = output<void>();
   readonly optionsToggled = output<void>();
+
+  formatValue(value: number | null): string {
+    if (value === null) return '';
+
+    const formattedValue = Math.abs(value).toLocaleString('en-US');
+    return value < 0 ? `(${formattedValue})` : formattedValue;
+  }
 }

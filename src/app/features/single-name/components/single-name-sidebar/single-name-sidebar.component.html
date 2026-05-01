@@ -4,34 +4,27 @@
     <ag-charts [options]="chartOptions()"></ag-charts>
 
     <div class="fee-table">
-      <div>AV Brur RT:</div><strong>3.6771</strong>
-      <div>AV Firm RT:</div><strong>3.7078</strong>
-      <div>AVG LN RT:</div><strong>3.6300</strong>
-      <div>OBFR RT:</div><strong>3.6300</strong>
-      <div>COF:</div><strong>3.8190</strong>
+      @for (item of sidebar().feeStats; track item.label) {
+        <div>{{ item.label }}</div><strong>{{ item.value }}</strong>
+      }
     </div>
   </section>
 
   <section class="card">
     <h3>Stats</h3>
     <div class="stats-table">
-      <div>Total borrows:</div><strong>305,500</strong>
-      <div>BRK Borrow:</div><strong>186,300</strong>
-      <div>BNK Borrow:</div><strong>119,200</strong>
-      <div>Total loans:</div><strong>0</strong>
-      <div>Utilization:</div><strong>0</strong>
-      <div>Borrow CA $:</div><strong>1,000,000</strong>
-      <div>Settle DC Qty:</div><strong>-11,724</strong>
+      @for (item of sidebar().stats; track item.label) {
+        <div>{{ item.label }}</div><strong>{{ item.value }}</strong>
+      }
     </div>
   </section>
 
   <section class="card">
     <h3>Overborrows</h3>
     <div class="stats-table">
-      <div>SOD OB:</div><strong>-5,000</strong>
-      <div>RT OB:</div><strong>-2,000</strong>
-      <div>Excess Qty:</div><strong>1,000</strong>
-      <div>Excess notional:</div><strong>$19,670</strong>
+      @for (item of sidebar().overborrows; track item.label) {
+        <div>{{ item.label }}</div><strong>{{ item.value }}</strong>
+      }
     </div>
   </section>
 </aside>

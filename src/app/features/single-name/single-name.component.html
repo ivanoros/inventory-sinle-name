@@ -19,30 +19,38 @@
     [securityTabs]="securityTabs()">
   </app-single-name-tabs>
 
-  <main class="content">
-    <section class="left-panel">
-      <app-security-summary [detail]="detail()"></app-security-summary>
+  @if (detail(); as singleName) {
+    <main class="content">
+      <section class="left-panel">
+        <app-security-summary [detail]="singleName"></app-security-summary>
 
-      <app-position-panel
-        [agGridModules]="agGridModules"
-        [drilldownRows]="drilldownRows()"
-        [drilldownColumnDefs]="drilldownColumnDefs"
-        [gridOptions]="gridOptions"
-        [drilldownVisible]="drilldownVisible()"
-        [showOptions]="showOptions()"
-        (drilldownToggled)="toggleDrilldown()"
-        (optionsToggled)="toggleOptions()">
-      </app-position-panel>
+        <app-position-panel
+          [position]="singleName.position"
+          [agGridModules]="agGridModules"
+          [drilldownRows]="drilldownRows()"
+          [drilldownColumnDefs]="drilldownColumnDefs"
+          [gridOptions]="gridOptions"
+          [drilldownVisible]="drilldownVisible()"
+          [showOptions]="showOptions()"
+          (drilldownToggled)="toggleDrilldown()"
+          (optionsToggled)="toggleOptions()">
+        </app-position-panel>
 
-      <app-lender-availability
-        [agGridModules]="agGridModules"
-        [rows]="lenderRows()"
-        [lenderTotal]="detail().lenderTotal"
-        [dailyChange]="detail().dailyChange"
-        [gridOptions]="gridOptions">
-      </app-lender-availability>
-    </section>
+        <app-lender-availability
+          [agGridModules]="agGridModules"
+          [rows]="lenderRows()"
+          [lenderTotal]="singleName.lenderTotal"
+          [dailyChange]="singleName.dailyChange"
+          [gridOptions]="gridOptions">
+        </app-lender-availability>
+      </section>
 
-    <app-single-name-sidebar [fees]="detail().fees"></app-single-name-sidebar>
-  </main>
+      <app-single-name-sidebar
+        [fees]="singleName.fees"
+        [sidebar]="singleName.sidebar">
+      </app-single-name-sidebar>
+    </main>
+  } @else {
+    <main class="content loading-state">Loading security...</main>
+  }
 </div>

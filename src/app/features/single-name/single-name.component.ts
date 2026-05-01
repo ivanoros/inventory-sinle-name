@@ -1,10 +1,11 @@
 // src/app/features/single-name/single-name.component.ts
 import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { switchMap } from 'rxjs';
 import { AllCommunityModule as AllGridCommunityModule, ColDef, GridOptions } from 'ag-grid-community';
 import { AllCommunityModule as AllChartCommunityModule, ModuleRegistry as ChartModuleRegistry } from 'ag-charts-community';
-import { MockTradingDataService } from '../../core/services/mock-trading-data.service';
+import { TradingDataService } from '../../core/services/trading-data.service';
 import { WorkbenchTabsService } from '../../core/services/workbench-tabs.service';
 import { SingleNameTabsComponent } from './components/single-name-tabs/single-name-tabs.component';
 import { SecuritySummaryComponent } from './components/security-summary/security-summary.component';
@@ -30,7 +31,7 @@ ChartModuleRegistry.registerModules(AllChartCommunityModule);
 export class SingleNameComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly dataService = inject(MockTradingDataService);
+  private readonly dataService = inject(TradingDataService);
   private readonly tabsService = inject(WorkbenchTabsService);
 
   readonly ticker = signal(this.route.snapshot.paramMap.get('ticker') ?? 'FULT');
@@ -39,9 +40,14 @@ export class SingleNameComponent {
   readonly showOptions = signal(false);
 
   readonly agGridModules = [AllGridCommunityModule];
-  readonly detail = computed(() => this.dataService.getSingleName(this.ticker()));
-  readonly lenderRows = computed(() => this.detail().lenderAvailability);
-  readonly drilldownRows = computed(() => this.detail().drilldown);
+  readonly detail = toSignal(
+    toObservable(this.ticker).pipe(
+      switchMap(ticker => this.dataService.getSingleName(ticker)),
+    ),
+    { initialValue: null },
+  );
+  readonly lenderRows = computed(() => this.detail()?.lenderAvailability ?? []);
+  readonly drilldownRows = computed(() => this.detail()?.drilldown ?? []);
 
   readonly drilldownColumnDefs: ColDef[] = [
     { field: 'category', headerName: 'Category', width: 150 },

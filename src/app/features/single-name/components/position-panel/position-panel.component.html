@@ -2,19 +2,17 @@
   <strong>Position</strong>
 
   <div class="button-group">
-    <button>Contractual</button>
-    <button class="active">Pessimistic</button>
+    @for (mode of position().valuationModes; track mode) {
+      <button [class.active]="mode === position().activeValuationMode">{{ mode }}</button>
+    }
   </div>
 
-  <label>
-    <input type="checkbox" checked />
-    Include recalls in Ex/Def
-  </label>
-
-  <label>
-    <input type="checkbox" checked />
-    Rounding
-  </label>
+  @for (option of position().toolbarOptions; track option.label) {
+    <label>
+      <input type="checkbox" [checked]="option.checked" />
+      {{ option.label }}
+    </label>
+  }
 </section>
 
 <section class="position-grid">
@@ -22,62 +20,20 @@
     <thead>
       <tr>
         <th></th>
-        <th>Ex/Def</th>
-        <th>CNS</th>
-        <th>DVP</th>
-        <th>RVP</th>
-        <th>Pledge</th>
-        <th>Borrow Recall</th>
-        <th>Loan Recall</th>
-        <th>New Borrows</th>
-        <th>New Loans</th>
-        <th>Borrow Returns</th>
-        <th>Loan Returns</th>
+        @for (column of position().columns; track column) {
+          <th>{{ column }}</th>
+        }
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <td>Projected</td>
-        <td class="negative">(8,525)</td>
-        <td class="negative">(11,896)</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>8,000</td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td>Pending</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>8,000</td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td>Settled</td>
-        <td>75</td>
-        <td class="negative">(11,896)</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>8,000</td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
+      @for (row of position().rows; track row.label) {
+        <tr>
+          <td>{{ row.label }}</td>
+          @for (value of row.values; track $index) {
+            <td [class.negative]="value !== null && value < 0">{{ formatValue(value) }}</td>
+          }
+        </tr>
+      }
     </tbody>
   </table>
 
@@ -85,10 +41,9 @@
 
   @if (showOptions()) {
     <div class="options-popover">
-      <label><input type="checkbox" checked /> Include recalls in Ex/Def</label>
-      <label><input type="checkbox" checked /> Rounding</label>
-      <label><input type="checkbox" checked /> Show Notional</label>
-      <label><input type="checkbox" checked /> Include cash</label>
+      @for (option of position().optionMenuItems; track option.label) {
+        <label><input type="checkbox" [checked]="option.checked" /> {{ option.label }}</label>
+      }
     </div>
   }
 </section>
@@ -98,15 +53,12 @@
     {{ drilldownVisible() ? '▾' : '▸' }} Full drilldown
   </button>
 
-  <label>
-    <input type="checkbox" />
-    Show empty rows
-  </label>
-
-  <label>
-    <input type="checkbox" />
-    Include non-entitlement
-  </label>
+  @for (filter of position().drilldownFilters; track filter.label) {
+    <label>
+      <input type="checkbox" [checked]="filter.checked" />
+      {{ filter.label }}
+    </label>
+  }
 </section>
 
 @if (drilldownVisible()) {

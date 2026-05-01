@@ -1,7 +1,7 @@
 import { Component, computed, input } from '@angular/core';
 import { AgCharts } from 'ag-charts-angular';
 import { AgCartesianChartOptions } from 'ag-charts-community';
-import { FeePoint } from '../../../../core/models/single-name.model';
+import { FeePoint, SingleNameSidebarData } from '../../../../core/models/single-name.model';
 
 @Component({
   selector: 'app-single-name-sidebar',
@@ -12,6 +12,7 @@ import { FeePoint } from '../../../../core/models/single-name.model';
 })
 export class SingleNameSidebarComponent {
   readonly fees = input.required<FeePoint[]>();
+  readonly sidebar = input.required<SingleNameSidebarData>();
 
   readonly chartOptions = computed<AgCartesianChartOptions>(() => ({
     data: this.fees(),

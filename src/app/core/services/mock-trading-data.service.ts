@@ -363,6 +363,75 @@ export class MockTradingDataService {
       watchList: 'Biagio BONANNO',
       lenderTotal: '210,019,588',
       dailyChange: '(205,901,556)',
+      position: {
+        valuationModes: ['Contractual', 'Pessimistic'],
+        activeValuationMode: 'Pessimistic',
+        toolbarOptions: [
+          { label: 'Include recalls in Ex/Def', checked: true },
+          { label: 'Rounding', checked: true },
+        ],
+        columns: [
+          'Ex/Def',
+          'CNS',
+          'DVP',
+          'RVP',
+          'Pledge',
+          'Borrow Recall',
+          'Loan Recall',
+          'New Borrows',
+          'New Loans',
+          'Borrow Returns',
+          'Loan Returns',
+        ],
+        rows: [
+          {
+            label: 'Projected',
+            values: [-8525, -11896, null, null, null, null, null, 8000, null, null, null],
+          },
+          {
+            label: 'Pending',
+            values: [null, null, null, null, null, null, null, 8000, null, null, null],
+          },
+          {
+            label: 'Settled',
+            values: [75, -11896, null, null, null, null, null, 8000, null, null, null],
+          },
+        ],
+        optionMenuItems: [
+          { label: 'Include recalls in Ex/Def', checked: true },
+          { label: 'Rounding', checked: true },
+          { label: 'Show Notional', checked: true },
+          { label: 'Include cash', checked: true },
+        ],
+        drilldownFilters: [
+          { label: 'Show empty rows', checked: false },
+          { label: 'Include non-entitlement', checked: false },
+        ],
+      },
+      sidebar: {
+        feeStats: [
+          { label: 'AV Brur RT:', value: '3.6771' },
+          { label: 'AV Firm RT:', value: '3.7078' },
+          { label: 'AVG LN RT:', value: '3.6300' },
+          { label: 'OBFR RT:', value: '3.6300' },
+          { label: 'COF:', value: '3.8190' },
+        ],
+        stats: [
+          { label: 'Total borrows:', value: '305,500' },
+          { label: 'BRK Borrow:', value: '186,300' },
+          { label: 'BNK Borrow:', value: '119,200' },
+          { label: 'Total loans:', value: '0' },
+          { label: 'Utilization:', value: '0' },
+          { label: 'Borrow CA $:', value: '1,000,000' },
+          { label: 'Settle DC Qty:', value: '-11,724' },
+        ],
+        overborrows: [
+          { label: 'SOD OB:', value: '-5,000' },
+          { label: 'RT OB:', value: '-2,000' },
+          { label: 'Excess Qty:', value: '1,000' },
+          { label: 'Excess notional:', value: '$19,670' },
+        ],
+      },
       fees: [
         { period: 'Live', value: 3.4673 },
         { period: '1D', value: 3.4673 },

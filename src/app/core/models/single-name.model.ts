@@ -14,6 +14,8 @@ export interface SingleNameDetail {
   watchList: string;
   lenderTotal: string;
   dailyChange: string;
+  position: PositionPanelData;
+  sidebar: SingleNameSidebarData;
   fees: FeePoint[];
   lenderAvailability: LenderAvailabilityRow[];
   drilldown: DrilldownRow[];
@@ -46,4 +48,35 @@ export interface DrilldownRow {
   projected2864?: number;
   settled2864?: number;
   pending2864?: number;
+}
+
+export interface PositionPanelData {
+  valuationModes: string[];
+  activeValuationMode: string;
+  toolbarOptions: ToggleOption[];
+  columns: string[];
+  rows: PositionSummaryRow[];
+  optionMenuItems: ToggleOption[];
+  drilldownFilters: ToggleOption[];
+}
+
+export interface ToggleOption {
+  label: string;
+  checked: boolean;
+}
+
+export interface PositionSummaryRow {
+  label: string;
+  values: Array<number | null>;
+}
+
+export interface SingleNameSidebarData {
+  feeStats: MetricItem[];
+  stats: MetricItem[];
+  overborrows: MetricItem[];
+}
+
+export interface MetricItem {
+  label: string;
+  value: string;
 }

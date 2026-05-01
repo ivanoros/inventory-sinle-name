@@ -1,8 +1,9 @@
 // src/app/features/inventory/inventory.component.ts
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { Router, RouterLink } from '@angular/router';
 import { AllCommunityModule, CellClickedEvent, ColDef, GridOptions } from 'ag-grid-community';
-import { MockTradingDataService } from '../../core/services/mock-trading-data.service';
+import { TradingDataService } from '../../core/services/trading-data.service';
 import { WorkbenchTabsService } from '../../core/services/workbench-tabs.service';
 import { InventoryRow } from '../../core/models/inventory-row.model';
 import { AgGridAngular } from 'ag-grid-angular';
@@ -16,7 +17,7 @@ import { AgGridAngular } from 'ag-grid-angular';
 })
 export class InventoryComponent {
   private readonly router = inject(Router);
-  private readonly dataService = inject(MockTradingDataService);
+  private readonly dataService = inject(TradingDataService);
   private readonly tabsService = inject(WorkbenchTabsService);
 
   readonly selectedView = signal<'sod' | 'live' | 'gc' | 'warm' | 'htb' | 'special'>('live');
@@ -25,7 +26,7 @@ export class InventoryComponent {
 
   readonly agGridModules = [AllCommunityModule];
   readonly securityTabs = this.tabsService.securityTabs;
-  readonly rows = computed(() => this.dataService.getInventoryRows());
+  readonly rows = toSignal(this.dataService.getInventoryRows(), { initialValue: [] });
 
   readonly columnDefs: ColDef<InventoryRow>[] = [
     {
