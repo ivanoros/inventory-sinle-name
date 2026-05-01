@@ -2,12 +2,13 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AgGridAngular } from 'ag-grid-angular';
-import { AllCommunityModule, ColDef, GridOptions, ICellRendererParams } from 'ag-grid-community';
-import { AgCartesianChartOptions } from 'ag-charts-community';
+import { AllCommunityModule as AllGridCommunityModule, ColDef, GridOptions, ICellRendererParams } from 'ag-grid-community';
+import { AgCartesianChartOptions, AllCommunityModule as AllChartCommunityModule, ModuleRegistry as ChartModuleRegistry } from 'ag-charts-community';
 import { AgCharts } from 'ag-charts-angular';
 import { MockTradingDataService } from '../../core/services/mock-trading-data.service';
 import { LenderAvailabilityRow } from '../../core/models/single-name.model';
 
+ChartModuleRegistry.registerModules(AllChartCommunityModule);
 
 @Component({
   selector: 'app-single-name',
@@ -24,7 +25,7 @@ export class SingleNameComponent {
   readonly drilldownVisible = signal(false);
   readonly showOptions = signal(false);
 
-  readonly agGridModules = [AllCommunityModule];
+  readonly agGridModules = [AllGridCommunityModule];
   readonly detail = computed(() => this.dataService.getSingleName(this.ticker()));
   readonly lenderRows = computed(() => this.detail().lenderAvailability);
   readonly drilldownRows = computed(() => this.detail().drilldown);
