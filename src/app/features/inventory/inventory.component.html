@@ -1,0 +1,77 @@
+<div class="workbench-page">
+  <header class="top-bar">
+    <div class="brand">
+      <span class="logo">BNP PARIBAS</span>
+      <span class="tagline">The bank for a changing world</span>
+    </div>
+
+    <div class="right-title">
+      <span>e70165</span>
+      <span>AMER</span>
+      <strong>WORKBENCH</strong>
+      <span class="gear">⚙</span>
+    </div>
+  </header>
+
+  <section class="tab-bar">
+    <button class="home">⌂</button>
+    <button class="tab active">Inventory</button>
+    <button class="tab">+</button>
+  </section>
+
+  <section class="toolbar">
+    <label>
+      Trader List
+      <select>
+        <option>Show All</option>
+      </select>
+    </label>
+
+    <div class="button-group">
+      <button [class.active]="selectedView() === 'sod'" (click)="setView('sod')">SOD</button>
+      <button [class.active]="selectedView() === 'live'" (click)="setView('live')">Live</button>
+      <button [class.active]="selectedView() === 'gc'" (click)="setView('gc')">GC</button>
+      <button [class.active]="selectedView() === 'warm'" (click)="setView('warm')">Warm</button>
+      <button [class.active]="selectedView() === 'htb'" (click)="setView('htb')">HTB</button>
+      <button [class.active]="selectedView() === 'special'" (click)="setView('special')">Special</button>
+    </div>
+
+    <div class="button-group">
+      <button>Borrow need</button>
+      <button class="active">Excess return</button>
+      <button>Pending Settlement</button>
+    </div>
+
+    <div class="button-group">
+      <button>Contractual</button>
+      <button class="active">Pessimistic</button>
+    </div>
+
+    <label class="checkbox">
+      <input type="checkbox" [checked]="includeRecalls()" />
+      Include recalls
+    </label>
+
+    <label class="checkbox">
+      <input type="checkbox" [checked]="rounding()" />
+      Rounding
+    </label>
+
+    <button class="export">Export</button>
+  </section>
+
+  <section class="grid-shell">
+    <ag-grid-angular
+      class="ag-theme-quartz inventory-grid"
+      [rowData]="rows()"
+      [columnDefs]="columnDefs"
+      [gridOptions]="gridOptions"
+      (rowClicked)="onRowClicked($event)">
+    </ag-grid-angular>
+  </section>
+
+  <footer class="status-bar">
+    <span></span>
+    <span class="connectivity">● Connectivity</span>
+  </footer>
+</div>
