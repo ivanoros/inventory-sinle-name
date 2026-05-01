@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -10,5 +10,20 @@ import { RouterLink } from '@angular/router';
 })
 export class SingleNameTabsComponent {
   readonly activeTicker = input.required<string>();
+  readonly inventoryTabOpen = input.required<boolean>();
   readonly securityTabs = input.required<string[]>();
+  readonly inventoryTabClosed = output<void>();
+  readonly securityTabClosed = output<string>();
+
+  closeInventoryTab(event: MouseEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.inventoryTabClosed.emit();
+  }
+
+  closeSecurityTab(event: MouseEvent, ticker: string): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.securityTabClosed.emit(ticker);
+  }
 }

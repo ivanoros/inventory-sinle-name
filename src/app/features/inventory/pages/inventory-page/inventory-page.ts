@@ -36,6 +36,7 @@ export class InventoryPage {
   readonly rounding = signal(true);
 
   readonly agGridModules = [AllCommunityModule, ServerSideRowModelModule];
+  readonly inventoryTabOpen = this.tabsService.inventoryTabOpen;
   readonly securityTabs = this.tabsService.securityTabs;
   readonly serverSideDatasource = this.inventoryData.createServerSideDatasource();
 
@@ -104,6 +105,8 @@ export class InventoryPage {
   };
 
   constructor() {
+    this.tabsService.openInventory();
+
     interval(this.inventoryData.refreshIntervalMs)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.gridApi?.refreshServerSide({ purge: false }));
@@ -121,6 +124,23 @@ export class InventoryPage {
 
     const openedTicker = this.tabsService.openSecurity(ticker);
     this.router.navigate(['/single-name', openedTicker]);
+  }
+
+  closeSecurityTab(event: MouseEvent, ticker: string): void {
+    event.preventDefault();
+    event.stopPropagation();
+
+    this.tabsService.closeSecurity(ticker);
+  }
+
+  closeInventoryTab(event: MouseEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const nextTicker = this.tabsService.closeInventory();
+    if (nextTicker) {
+      this.router.navigate(['/single-name', nextTicker]);
+    }
   }
 
   setView(view: 'sod' | 'live' | 'gc' | 'warm' | 'htb' | 'special'): void {

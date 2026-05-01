@@ -16,7 +16,10 @@
 
   <app-single-name-tabs
     [activeTicker]="ticker()"
-    [securityTabs]="securityTabs()">
+    [inventoryTabOpen]="inventoryTabOpen()"
+    [securityTabs]="securityTabs()"
+    (inventoryTabClosed)="closeInventoryTab()"
+    (securityTabClosed)="closeSecurityTab($event)">
   </app-single-name-tabs>
 
   @if (detail(); as singleName) {

@@ -1,6 +1,6 @@
 // src/app/features/single-name/pages/single-name-page/single-name-page.ts
 import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { switchMap } from 'rxjs';
 import { AllCommunityModule as AllGridCommunityModule, ColDef, GridOptions } from 'ag-grid-community';
@@ -30,11 +30,13 @@ ChartModuleRegistry.registerModules(AllChartCommunityModule);
 })
 export class SingleNamePage {
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly singleNameData = inject(SingleNameDataService);
   private readonly tabsService = inject(WorkbenchTabsService);
 
   readonly ticker = signal(this.route.snapshot.paramMap.get('ticker') ?? 'FULT');
+  readonly inventoryTabOpen = this.tabsService.inventoryTabOpen;
   readonly securityTabs = this.tabsService.securityTabs;
   readonly drilldownVisible = signal(false);
   readonly showOptions = signal(false);
@@ -89,5 +91,22 @@ export class SingleNamePage {
 
   toggleOptions(): void {
     this.showOptions.update(value => !value);
+  }
+
+  closeSecurityTab(ticker: string): void {
+    const nextTicker = this.tabsService.closeSecurity(ticker);
+
+    if (ticker !== this.ticker()) return;
+
+    if (nextTicker) {
+      this.router.navigate(['/single-name', nextTicker]);
+      return;
+    }
+
+    this.router.navigate(['/']);
+  }
+
+  closeInventoryTab(): void {
+    this.tabsService.closeInventory();
   }
 }

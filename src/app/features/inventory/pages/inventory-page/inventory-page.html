@@ -15,9 +15,17 @@
 
   <section class="tab-bar">
     <button class="home">⌂</button>
-    <button class="tab active">Inventory</button>
+    @if (inventoryTabOpen()) {
+      <span class="tab security-tab active">
+        <span>Inventory</span>
+        <button class="tab-close" type="button" (click)="closeInventoryTab($event)">x</button>
+      </span>
+    }
     @for (ticker of securityTabs(); track ticker) {
-      <a class="tab" [routerLink]="['/single-name', ticker]">{{ ticker }} US</a>
+      <a class="tab security-tab" [routerLink]="['/single-name', ticker]">
+        <span>{{ ticker }} US</span>
+        <button class="tab-close" type="button" (click)="closeSecurityTab($event, ticker)">x</button>
+      </a>
     }
     <button class="tab">+</button>
   </section>
