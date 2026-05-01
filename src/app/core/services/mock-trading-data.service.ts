@@ -1,5 +1,6 @@
 // src/app/core/services/mock-trading-data.service.ts
 import { Injectable } from '@angular/core';
+import { InventoryPage, InventoryPageRequest } from '../models/inventory-page.model';
 import { InventoryRow } from '../models/inventory-row.model';
 import { SingleNameDetail } from '../models/single-name.model';
 
@@ -344,7 +345,69 @@ export class MockTradingDataService {
         pendingUsPm: 3400,
         pendingOther: 0,
       },
+      ...this.getGeneratedInventoryRows(),
     ];
+  }
+
+  getInventoryPage(request: InventoryPageRequest): InventoryPage {
+    const rows = this.getInventoryRows();
+    const pageIndex = Math.max(0, request.pageIndex);
+    const pageSize = Math.max(1, request.pageSize);
+    const startRow = pageIndex * pageSize;
+
+    return {
+      rows: rows.slice(startRow, startRow + pageSize),
+      totalCount: rows.length,
+      pageIndex,
+      pageSize,
+    };
+  }
+
+  private getGeneratedInventoryRows(): InventoryRow[] {
+    const tickers = [
+      'BMY', 'BAC', 'C', 'DIS', 'INTC', 'JPM', 'KO', 'META', 'NFLX', 'ORCL',
+      'PYPL', 'QCOM', 'ROKU', 'SHOP', 'SNAP', 'SQ', 'UBER', 'V', 'WFC', 'XOM',
+      'ABNB', 'BA', 'CAT', 'DAL', 'ETSY', 'F', 'GE', 'HON', 'IBM', 'LYFT',
+      'MRNA', 'NKE', 'PFE', 'RBLX', 'SBUX', 'T', 'UAL', 'WMT', 'ZM', 'ZS',
+      'DDOG', 'NET', 'PANW', 'MDB', 'TEAM', 'OKTA', 'SNOW', 'U', 'PATH', 'HOOD',
+      'RIVN', 'LCID', 'SOFI', 'AFRM', 'UPST', 'DKNG', 'MARA', 'RIOT', 'MSTR', 'PLTR',
+    ];
+    const statuses = ['Borrow need', 'Need covered', 'Settlement pending', 'GC', 'Warm', 'Hard to borrow', 'Special'];
+
+    return tickers.map((ticker, index) => {
+      const status = statuses[index % statuses.length];
+      const direction = status === 'Borrow need' || status === 'Hard to borrow' || status === 'Special' ? -1 : 1;
+      const baseQuantity = (index + 3) * 725;
+      const excessDeficit = direction * baseQuantity;
+      const liveExcessDeficit = excessDeficit + ((index % 5) - 2) * 125;
+
+      return {
+        status,
+        ticker,
+        cusip: `${(120000000 + index * 1937).toString().padStart(9, '0')}`,
+        description: `${ticker} HOLDINGS INC`,
+        type: 'EQTY',
+        price: Number((18 + index * 7.83).toFixed(2)),
+        openingCA: index % 6 === 0 ? 1000 + index * 50 : 0,
+        recordDate: `05/${String((index % 24) + 1).padStart(2, '0')}/2026`,
+        excessDeficit,
+        liveExcessDeficit,
+        sodBorrowNeed: excessDeficit < 0 ? Math.abs(excessDeficit) : 0,
+        sodExcessReturn: excessDeficit > 0 ? excessDeficit : 0,
+        sod214Proj: Math.round(excessDeficit * 0.52),
+        sodAfrProj: Math.round(excessDeficit * 0.24),
+        sodUsPmProj: Math.round(excessDeficit * 0.18),
+        sodOtherProj: Math.round(excessDeficit * 0.06),
+        settled214: Math.round(liveExcessDeficit * 0.49),
+        settledAfr: Math.round(liveExcessDeficit * 0.26),
+        settledUsPm: Math.round(liveExcessDeficit * 0.19),
+        otherSettled: Math.round(liveExcessDeficit * 0.06),
+        pending214: Math.round((excessDeficit - liveExcessDeficit) * 0.55),
+        pendingAfr: Math.round((excessDeficit - liveExcessDeficit) * 0.25),
+        pendingUsPm: Math.round((excessDeficit - liveExcessDeficit) * 0.15),
+        pendingOther: Math.round((excessDeficit - liveExcessDeficit) * 0.05),
+      };
+    });
   }
 
   getSingleName(ticker: string): SingleNameDetail {

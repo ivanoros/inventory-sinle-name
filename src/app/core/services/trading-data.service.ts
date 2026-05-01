@@ -1,5 +1,6 @@
 import { Injectable, InjectionToken, inject } from '@angular/core';
 import { Observable, of } from 'rxjs';
+import { InventoryPage, InventoryPageRequest } from '../models/inventory-page.model';
 import { InventoryRow } from '../models/inventory-row.model';
 import { SingleNameDetail } from '../models/single-name.model';
 import { MockTradingDataService } from './mock-trading-data.service';
@@ -21,6 +22,10 @@ export class TradingDataService {
 
   getInventoryRows(): Observable<InventoryRow[]> {
     return of(this.mockData.getInventoryRows());
+  }
+
+  getInventoryPage(request: InventoryPageRequest): Observable<InventoryPage> {
+    return of(this.mockData.getInventoryPage(request));
   }
 
   getSingleName(ticker: string): Observable<SingleNameDetail> {

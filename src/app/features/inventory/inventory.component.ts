@@ -1,9 +1,19 @@
 // src/app/features/inventory/inventory.component.ts
-import { Component, inject, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router, RouterLink } from '@angular/router';
-import { interval, startWith, switchMap } from 'rxjs';
-import { AllCommunityModule, CellClickedEvent, ColDef, GridOptions } from 'ag-grid-community';
+import { interval } from 'rxjs';
+import {
+  AllCommunityModule,
+  CellClickedEvent,
+  ColDef,
+  GridApi,
+  GridOptions,
+  GridReadyEvent,
+  IServerSideDatasource,
+  IServerSideGetRowsParams,
+} from 'ag-grid-community';
+import { ServerSideRowModelModule } from 'ag-grid-enterprise';
 import { TradingDataService } from '../../core/services/trading-data.service';
 import { WorkbenchTabsService } from '../../core/services/workbench-tabs.service';
 import { InventoryRow } from '../../core/models/inventory-row.model';
@@ -18,22 +28,36 @@ import { AgGridAngular } from 'ag-grid-angular';
 })
 export class InventoryComponent {
   private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly dataService = inject(TradingDataService);
   private readonly tabsService = inject(WorkbenchTabsService);
+  private gridApi?: GridApi<InventoryRow>;
 
   readonly selectedView = signal<'sod' | 'live' | 'gc' | 'warm' | 'htb' | 'special'>('live');
   readonly includeRecalls = signal(true);
   readonly rounding = signal(true);
 
-  readonly agGridModules = [AllCommunityModule];
+  readonly agGridModules = [AllCommunityModule, ServerSideRowModelModule];
   readonly securityTabs = this.tabsService.securityTabs;
-  readonly rows = toSignal(
-    interval(this.dataService.refreshIntervalMs).pipe(
-      startWith(0),
-      switchMap(() => this.dataService.getInventoryRows()),
-    ),
-    { initialValue: [] },
-  );
+
+  readonly serverSideDatasource: IServerSideDatasource<InventoryRow> = {
+    getRows: (params: IServerSideGetRowsParams<InventoryRow>) => {
+      const startRow = params.request.startRow ?? 0;
+      const endRow = params.request.endRow ?? startRow + 20;
+      const pageSize = endRow - startRow;
+      const pageIndex = Math.floor(startRow / pageSize);
+
+      this.dataService.getInventoryPage({ pageIndex, pageSize }).subscribe({
+        next: page => {
+          params.success({
+            rowData: page.rows,
+            rowCount: page.totalCount,
+          });
+        },
+        error: () => params.fail(),
+      });
+    },
+  };
 
   readonly columnDefs: ColDef<InventoryRow>[] = [
     {
@@ -76,6 +100,13 @@ export class InventoryComponent {
 
   readonly gridOptions: GridOptions<InventoryRow> = {
     theme: 'legacy',
+    rowModelType: 'serverSide',
+    serverSideDatasource: this.serverSideDatasource,
+    pagination: true,
+    paginationPageSize: 20,
+    paginationPageSizeSelector: [10, 20, 50],
+    cacheBlockSize: 20,
+    maxBlocksInCache: 3,
     rowHeight: 31,
     headerHeight: 34,
     animateRows: true,
@@ -91,6 +122,16 @@ export class InventoryComponent {
       return '';
     },
   };
+
+  constructor() {
+    interval(this.dataService.refreshIntervalMs)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.gridApi?.refreshServerSide({ purge: false }));
+  }
+
+  onGridReady(event: GridReadyEvent<InventoryRow>): void {
+    this.gridApi = event.api;
+  }
 
   onCellClicked(event: CellClickedEvent<InventoryRow>): void {
     if (event.colDef.field !== 'ticker') return;

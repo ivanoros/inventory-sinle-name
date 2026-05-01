@@ -67,9 +67,9 @@
     <ag-grid-angular
       class="ag-theme-quartz inventory-grid"
       [modules]="agGridModules"
-      [rowData]="rows()"
       [columnDefs]="columnDefs"
       [gridOptions]="gridOptions"
+      (gridReady)="onGridReady($event)"
       (cellClicked)="onCellClicked($event)">
     </ag-grid-angular>
   </section>
