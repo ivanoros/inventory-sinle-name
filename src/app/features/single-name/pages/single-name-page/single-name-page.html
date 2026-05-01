@@ -30,8 +30,12 @@
           [gridOptions]="gridOptions"
           [drilldownVisible]="store.drilldownVisible()"
           [showOptions]="store.showOptions()"
+          [showEmptyRows]="store.showEmptyDrilldownRows()"
+          [includeNonEntitlement]="store.includeNonEntitlement()"
           (drilldownToggled)="toggleDrilldown()"
-          (optionsToggled)="toggleOptions()">
+          (optionsToggled)="toggleOptions()"
+          (showEmptyRowsChanged)="store.setShowEmptyDrilldownRows($event)"
+          (includeNonEntitlementChanged)="store.setIncludeNonEntitlement($event)">
         </app-position-panel>
 
         <app-lender-availability

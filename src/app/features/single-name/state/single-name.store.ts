@@ -16,6 +16,8 @@ export class SingleNameStore {
   readonly securityTabs = this.tabsService.securityTabs;
   readonly drilldownVisible = signal(false);
   readonly showOptions = signal(false);
+  readonly showEmptyDrilldownRows = signal(false);
+  readonly includeNonEntitlement = signal(false);
   readonly loading = signal(true);
   readonly error = signal<string | null>(null);
   readonly sidebarWidth = signal(320);
@@ -43,7 +45,16 @@ export class SingleNameStore {
     { initialValue: null },
   );
   readonly lenderRows = computed(() => this.detail()?.lenderAvailability ?? []);
-  readonly drilldownRows = computed(() => this.detail()?.drilldown ?? []);
+  readonly drilldownRows = computed(() => {
+    const rows = this.detail()?.drilldown ?? [];
+
+    return rows.filter(row => {
+      if (!this.showEmptyDrilldownRows() && row.isEmpty) return false;
+      if (!this.includeNonEntitlement() && row.isNonEntitlement) return false;
+
+      return true;
+    });
+  });
 
   setTicker(ticker: string | null): void {
     const openedTicker = this.tabsService.openSecurity(ticker ?? 'FULT');
@@ -56,6 +67,14 @@ export class SingleNameStore {
 
   toggleOptions(): void {
     this.showOptions.update(value => !value);
+  }
+
+  setShowEmptyDrilldownRows(checked: boolean): void {
+    this.showEmptyDrilldownRows.set(checked);
+  }
+
+  setIncludeNonEntitlement(checked: boolean): void {
+    this.includeNonEntitlement.set(checked);
   }
 
   startSidebarResize(pointerX: number): void {

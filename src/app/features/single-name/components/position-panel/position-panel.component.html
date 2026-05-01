@@ -48,20 +48,34 @@
   }
 </section>
 
-<section class="drilldown-toggle">
+<section class="drilldown-toggle" [class.open]="drilldownVisible()">
   <button (click)="drilldownToggled.emit()">
     {{ drilldownVisible() ? '▾' : '▸' }} Full drilldown
   </button>
 
-  @for (filter of position().drilldownFilters; track filter.label) {
-    <label>
-      <input type="checkbox" [checked]="filter.checked" />
-      {{ filter.label }}
-    </label>
-  }
+  <label>
+    <input
+      type="checkbox"
+      [checked]="showEmptyRows()"
+      (change)="updateShowEmptyRows($event)" />
+    Show empty rows
+  </label>
+
+  <label>
+    <input
+      type="checkbox"
+      [checked]="includeNonEntitlement()"
+      (change)="updateIncludeNonEntitlement($event)" />
+    Include non-entitlement
+  </label>
 </section>
 
 @if (drilldownVisible()) {
+  <section class="drilldown-header">
+    <strong>Full drilldown</strong>
+    <span>{{ drilldownRows().length }} rows</span>
+  </section>
+
   <section class="drilldown-grid">
     @if (drilldownRows().length > 0) {
       <ag-grid-angular

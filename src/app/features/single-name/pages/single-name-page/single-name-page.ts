@@ -41,14 +41,20 @@ export class SingleNamePage {
   readonly agGridModules = [AllGridCommunityModule];
 
   readonly drilldownColumnDefs: ColDef[] = [
-    { field: 'category', headerName: 'Category', width: 150 },
-    { field: 'activityType', headerName: 'Activity type', width: 160 },
-    { field: 'projected214', headerName: '214 Projected', width: 140 },
-    { field: 'settled214', headerName: '214 Settled', width: 140 },
-    { field: 'pending214', headerName: '214 Pending', width: 140 },
+    { field: 'category', headerName: 'Category', pinned: 'left', width: 150 },
+    { field: 'activityType', headerName: 'Activity type', pinned: 'left', width: 170 },
+    { field: 'market', headerName: 'Market', width: 95 },
+    { field: 'account', headerName: 'Account', width: 105 },
+    { field: 'description', headerName: 'Description', width: 230 },
+    { field: 'projectedTotal', headerName: 'Projected Total', width: 145 },
+    { field: 'settledTotal', headerName: 'Settled Total', width: 135 },
+    { field: 'pendingTotal', headerName: 'Pending Total', width: 135 },
+    { field: 'projected214', headerName: '214 Projected', width: 135 },
+    { field: 'settled214', headerName: '214 Settled', width: 125 },
+    { field: 'pending214', headerName: '214 Pending', width: 125 },
     { field: 'projected2864', headerName: '2864 Projected', width: 140 },
-    { field: 'settled2864', headerName: '2864 Settled', width: 140 },
-    { field: 'pending2864', headerName: '2864 Pending', width: 140 },
+    { field: 'settled2864', headerName: '2864 Settled', width: 130 },
+    { field: 'pending2864', headerName: '2864 Pending', width: 130 },
   ];
 
   readonly gridOptions: GridOptions = {

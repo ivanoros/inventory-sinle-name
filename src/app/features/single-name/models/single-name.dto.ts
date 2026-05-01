@@ -41,12 +41,20 @@ export interface LenderAvailabilityRowDto {
 export interface DrilldownRowDto {
   category: string;
   activity_type: string;
+  market?: string;
+  account?: string;
+  description?: string;
+  is_empty?: boolean;
+  is_non_entitlement?: boolean;
   projected_214?: number;
   settled_214?: number;
   pending_214?: number;
   projected_2864?: number;
   settled_2864?: number;
   pending_2864?: number;
+  projected_total?: number;
+  settled_total?: number;
+  pending_total?: number;
 }
 
 export interface PositionPanelDto {

@@ -42,12 +42,20 @@ export interface LenderAvailabilityRow {
 export interface DrilldownRow {
   category: string;
   activityType: string;
+  market?: string;
+  account?: string;
+  description?: string;
+  isEmpty?: boolean;
+  isNonEntitlement?: boolean;
   projected214?: number;
   settled214?: number;
   pending214?: number;
   projected2864?: number;
   settled2864?: number;
   pending2864?: number;
+  projectedTotal?: number;
+  settledTotal?: number;
+  pendingTotal?: number;
 }
 
 export interface PositionPanelData {

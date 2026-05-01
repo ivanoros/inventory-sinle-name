@@ -19,14 +19,26 @@ export class PositionPanelComponent {
   readonly gridOptions = input.required<GridOptions>();
   readonly drilldownVisible = input.required<boolean>();
   readonly showOptions = input.required<boolean>();
+  readonly showEmptyRows = input.required<boolean>();
+  readonly includeNonEntitlement = input.required<boolean>();
 
   readonly drilldownToggled = output<void>();
   readonly optionsToggled = output<void>();
+  readonly showEmptyRowsChanged = output<boolean>();
+  readonly includeNonEntitlementChanged = output<boolean>();
 
   formatValue(value: number | null): string {
     if (value === null) return '';
 
     const formattedValue = Math.abs(value).toLocaleString('en-US');
     return value < 0 ? `(${formattedValue})` : formattedValue;
+  }
+
+  updateShowEmptyRows(event: Event): void {
+    this.showEmptyRowsChanged.emit((event.target as HTMLInputElement).checked);
+  }
+
+  updateIncludeNonEntitlement(event: Event): void {
+    this.includeNonEntitlementChanged.emit((event.target as HTMLInputElement).checked);
   }
 }

@@ -117,12 +117,20 @@ function mapDrilldownRowDto(dto: DrilldownRowDto): DrilldownRow {
   return {
     category: dto.category,
     activityType: dto.activity_type,
+    market: dto.market,
+    account: dto.account,
+    description: dto.description,
+    isEmpty: dto.is_empty,
+    isNonEntitlement: dto.is_non_entitlement,
     projected214: dto.projected_214,
     settled214: dto.settled_214,
     pending214: dto.pending_214,
     projected2864: dto.projected_2864,
     settled2864: dto.settled_2864,
     pending2864: dto.pending_2864,
+    projectedTotal: dto.projected_total,
+    settledTotal: dto.settled_total,
+    pendingTotal: dto.pending_total,
   };
 }
 
@@ -130,12 +138,20 @@ function mapDrilldownRowToDto(row: DrilldownRow): DrilldownRowDto {
   return {
     category: row.category,
     activity_type: row.activityType,
+    market: row.market,
+    account: row.account,
+    description: row.description,
+    is_empty: row.isEmpty,
+    is_non_entitlement: row.isNonEntitlement,
     projected_214: row.projected214,
     settled_214: row.settled214,
     pending_214: row.pending214,
     projected_2864: row.projected2864,
     settled_2864: row.settled2864,
     pending_2864: row.pending2864,
+    projected_total: row.projectedTotal,
+    settled_total: row.settledTotal,
+    pending_total: row.pendingTotal,
   };
 }
 

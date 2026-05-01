@@ -85,6 +85,16 @@
   display: flex;
   gap: 16px;
   align-items: center;
+  background: #eef3f3;
+  border: 1px solid #c7d0d0;
+  border-radius: 4px;
+  padding: 8px 10px;
+}
+
+.drilldown-toggle.open {
+  border-bottom-color: #d8dfdf;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
 }
 
 .drilldown-toggle button {
@@ -94,8 +104,25 @@
   cursor: pointer;
 }
 
+.drilldown-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f7f9f9;
+  border: 1px solid #c7d0d0;
+  border-top: none;
+  padding: 7px 10px;
+  font-size: 12px;
+}
+
+.drilldown-header span {
+  color: #5e6f72;
+}
+
 .drilldown-grid {
-  height: 230px;
+  height: 360px;
+  border: 1px solid #c7d0d0;
+  border-top: none;
 }
 
 .drilldown-grid ag-grid-angular {
