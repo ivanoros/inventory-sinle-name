@@ -73,6 +73,20 @@ export class SingleNamePage {
     this.store.toggleOptions();
   }
 
+  startSidebarResize(event: PointerEvent): void {
+    (event.currentTarget as HTMLElement).setPointerCapture(event.pointerId);
+    this.store.startSidebarResize(event.clientX);
+  }
+
+  resizeSidebar(event: PointerEvent): void {
+    this.store.resizeSidebar(event.clientX);
+  }
+
+  stopSidebarResize(event: PointerEvent): void {
+    (event.currentTarget as HTMLElement).releasePointerCapture(event.pointerId);
+    this.store.stopSidebarResize();
+  }
+
   closeSecurityTab(ticker: string): void {
     this.store.closeSecurityTab(ticker);
   }

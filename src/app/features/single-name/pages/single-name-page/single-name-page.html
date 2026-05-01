@@ -23,7 +23,10 @@
   </app-single-name-tabs>
 
   @if (store.detail(); as singleName) {
-    <main class="content">
+    <main
+      class="content"
+      [class.resizing]="store.resizingSidebar()"
+      [style.--sidebar-width.px]="store.sidebarWidth()">
       <section class="left-panel">
         <app-security-summary [detail]="singleName"></app-security-summary>
 
@@ -47,6 +50,18 @@
           [gridOptions]="gridOptions">
         </app-lender-availability>
       </section>
+
+      <div
+        class="splitter"
+        role="separator"
+        aria-orientation="vertical"
+        tabindex="0"
+        (pointerdown)="startSidebarResize($event)"
+        (pointermove)="resizeSidebar($event)"
+        (pointerup)="stopSidebarResize($event)"
+        (pointercancel)="stopSidebarResize($event)">
+        <span></span>
+      </div>
 
       <app-single-name-sidebar
         [fees]="singleName.fees"

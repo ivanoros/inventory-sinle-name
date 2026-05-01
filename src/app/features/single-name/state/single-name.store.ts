@@ -16,6 +16,10 @@ export class SingleNameStore {
   readonly securityTabs = this.tabsService.securityTabs;
   readonly drilldownVisible = signal(false);
   readonly showOptions = signal(false);
+  readonly sidebarWidth = signal(320);
+  readonly resizingSidebar = signal(false);
+  private resizeStartX = 0;
+  private resizeStartWidth = 320;
 
   readonly detail = toSignal(
     toObservable(this.ticker).pipe(
@@ -37,6 +41,23 @@ export class SingleNameStore {
 
   toggleOptions(): void {
     this.showOptions.update(value => !value);
+  }
+
+  startSidebarResize(pointerX: number): void {
+    this.resizeStartX = pointerX;
+    this.resizeStartWidth = this.sidebarWidth();
+    this.resizingSidebar.set(true);
+  }
+
+  resizeSidebar(pointerX: number): void {
+    if (!this.resizingSidebar()) return;
+
+    const nextWidth = this.resizeStartWidth + this.resizeStartX - pointerX;
+    this.sidebarWidth.set(Math.min(560, Math.max(260, nextWidth)));
+  }
+
+  stopSidebarResize(): void {
+    this.resizingSidebar.set(false);
   }
 
   closeSecurityTab(ticker: string): void {
