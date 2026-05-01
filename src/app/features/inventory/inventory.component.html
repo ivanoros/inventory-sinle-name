@@ -63,6 +63,7 @@
   <section class="grid-shell">
     <ag-grid-angular
       class="ag-theme-quartz inventory-grid"
+      [modules]="agGridModules"
       [rowData]="rows()"
       [columnDefs]="columnDefs"
       [gridOptions]="gridOptions"

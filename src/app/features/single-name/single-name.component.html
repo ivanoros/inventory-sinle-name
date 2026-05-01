@@ -159,6 +159,7 @@
         <section class="drilldown-grid">
           <ag-grid-angular
             class="ag-theme-quartz"
+            [modules]="agGridModules"
             [rowData]="drilldownRows()"
             [columnDefs]="drilldownColumnDefs"
             [gridOptions]="gridOptions">
@@ -175,6 +176,7 @@
       <section class="lender-grid">
         <ag-grid-angular
           class="ag-theme-quartz"
+          [modules]="agGridModules"
           [rowData]="lenderRows()"
           [columnDefs]="lenderColumnDefs"
           [gridOptions]="gridOptions">

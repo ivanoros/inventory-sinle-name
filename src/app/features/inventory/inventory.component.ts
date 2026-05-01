@@ -1,7 +1,7 @@
 // src/app/features/inventory/inventory.component.ts
 import { Component, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { ColDef, GridOptions, RowClickedEvent } from 'ag-grid-community';
+import { AllCommunityModule, ColDef, GridOptions, RowClickedEvent } from 'ag-grid-community';
 import { MockTradingDataService } from '../../core/services/mock-trading-data.service';
 import { InventoryRow } from '../../core/models/inventory-row.model';
 import { AgGridAngular } from 'ag-grid-angular';
@@ -21,6 +21,7 @@ export class InventoryComponent {
   readonly includeRecalls = signal(true);
   readonly rounding = signal(true);
 
+  readonly agGridModules = [AllCommunityModule];
   readonly rows = computed(() => this.dataService.getInventoryRows());
 
   readonly columnDefs: ColDef<InventoryRow>[] = [
@@ -57,6 +58,7 @@ export class InventoryComponent {
   ];
 
   readonly gridOptions: GridOptions<InventoryRow> = {
+    theme: 'legacy',
     rowHeight: 31,
     headerHeight: 34,
     animateRows: true,
