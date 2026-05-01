@@ -16,6 +16,9 @@
   <section class="tab-bar">
     <button class="home">⌂</button>
     <button class="tab active">Inventory</button>
+    @for (ticker of securityTabs(); track ticker) {
+      <a class="tab" [routerLink]="['/single-name', ticker]">{{ ticker }} US</a>
+    }
     <button class="tab">+</button>
   </section>
 

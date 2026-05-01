@@ -1,27 +1,30 @@
 // src/app/features/inventory/inventory.component.ts
 import { Component, computed, inject, signal } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AllCommunityModule, CellClickedEvent, ColDef, GridOptions } from 'ag-grid-community';
 import { MockTradingDataService } from '../../core/services/mock-trading-data.service';
+import { WorkbenchTabsService } from '../../core/services/workbench-tabs.service';
 import { InventoryRow } from '../../core/models/inventory-row.model';
 import { AgGridAngular } from 'ag-grid-angular';
 
 @Component({
   selector: 'app-inventory',
   standalone: true,
-  imports: [AgGridAngular],
+  imports: [AgGridAngular, RouterLink],
   templateUrl: './inventory.component.html',
   styleUrl: './inventory.component.scss',
 })
 export class InventoryComponent {
   private readonly router = inject(Router);
   private readonly dataService = inject(MockTradingDataService);
+  private readonly tabsService = inject(WorkbenchTabsService);
 
   readonly selectedView = signal<'sod' | 'live' | 'gc' | 'warm' | 'htb' | 'special'>('live');
   readonly includeRecalls = signal(true);
   readonly rounding = signal(true);
 
   readonly agGridModules = [AllCommunityModule];
+  readonly securityTabs = this.tabsService.securityTabs;
   readonly rows = computed(() => this.dataService.getInventoryRows());
 
   readonly columnDefs: ColDef<InventoryRow>[] = [
@@ -87,7 +90,8 @@ export class InventoryComponent {
     const ticker = event.data?.ticker;
     if (!ticker) return;
 
-    this.router.navigate(['/single-name', ticker]);
+    const openedTicker = this.tabsService.openSecurity(ticker);
+    this.router.navigate(['/single-name', openedTicker]);
   }
 
   setView(view: 'sod' | 'live' | 'gc' | 'warm' | 'htb' | 'special'): void {

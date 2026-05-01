@@ -1,11 +1,13 @@
 // src/app/features/single-name/single-name.component.ts
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AgGridAngular } from 'ag-grid-angular';
 import { AllCommunityModule as AllGridCommunityModule, ColDef, GridOptions, ICellRendererParams } from 'ag-grid-community';
 import { AgCartesianChartOptions, AllCommunityModule as AllChartCommunityModule, ModuleRegistry as ChartModuleRegistry } from 'ag-charts-community';
 import { AgCharts } from 'ag-charts-angular';
 import { MockTradingDataService } from '../../core/services/mock-trading-data.service';
+import { WorkbenchTabsService } from '../../core/services/workbench-tabs.service';
 import { LenderAvailabilityRow } from '../../core/models/single-name.model';
 
 ChartModuleRegistry.registerModules(AllChartCommunityModule);
@@ -19,9 +21,12 @@ ChartModuleRegistry.registerModules(AllChartCommunityModule);
 })
 export class SingleNameComponent {
   private readonly route = inject(ActivatedRoute);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly dataService = inject(MockTradingDataService);
+  private readonly tabsService = inject(WorkbenchTabsService);
 
   readonly ticker = signal(this.route.snapshot.paramMap.get('ticker') ?? 'FULT');
+  readonly securityTabs = this.tabsService.securityTabs;
   readonly drilldownVisible = signal(false);
   readonly showOptions = signal(false);
 
@@ -106,6 +111,17 @@ export class SingleNameComponent {
       },
     },
   }));
+
+  constructor() {
+    this.tabsService.openSecurity(this.ticker());
+
+    this.route.paramMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(params => {
+        const ticker = this.tabsService.openSecurity(params.get('ticker') ?? 'FULT');
+        this.ticker.set(ticker);
+      });
+  }
 
   toggleDrilldown(): void {
     this.drilldownVisible.update(value => !value);

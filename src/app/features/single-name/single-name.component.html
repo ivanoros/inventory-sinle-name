@@ -17,7 +17,14 @@
   <section class="tab-bar">
     <a routerLink="/" class="home">⌂</a>
     <a routerLink="/" class="tab">Inventory</a>
-    <button class="tab active">{{ ticker() }} US</button>
+    @for (securityTicker of securityTabs(); track securityTicker) {
+      <a
+        class="tab"
+        [class.active]="securityTicker === ticker()"
+        [routerLink]="['/single-name', securityTicker]">
+        {{ securityTicker }} US
+      </a>
+    }
     <button class="tab">+</button>
   </section>
 
