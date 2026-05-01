@@ -14,219 +14,35 @@
     </div>
   </header>
 
-  <section class="tab-bar">
-    <a routerLink="/" class="home">⌂</a>
-    <a routerLink="/" class="tab">Inventory</a>
-    @for (securityTicker of securityTabs(); track securityTicker) {
-      <a
-        class="tab"
-        [class.active]="securityTicker === ticker()"
-        [routerLink]="['/single-name', securityTicker]">
-        {{ securityTicker }} US
-      </a>
-    }
-    <button class="tab">+</button>
-  </section>
+  <app-single-name-tabs
+    [activeTicker]="ticker()"
+    [securityTabs]="securityTabs()">
+  </app-single-name-tabs>
 
   <main class="content">
     <section class="left-panel">
-      <section class="security-header">
-        <div>
-          <h1>{{ detail().ticker }} US</h1>
-          <div class="security-meta">
-            <span>{{ detail().securityId }}</span>
-            <span>{{ detail().name }}</span>
-            <span>{{ detail().country }}</span>
-            <span>{{ detail().cusip }}</span>
-            <span>{{ detail().sector }}</span>
-            <span>{{ detail().type }}</span>
-            <span>Price: {{ detail().price }}</span>
-            <span>Corporate action: {{ detail().corporateAction }}</span>
-            <span>Net PNL: {{ detail().netPnl }}</span>
-            <span>PNL Opp: {{ detail().pnlOpp }}</span>
-            <span>Watch list: {{ detail().watchList }}</span>
-          </div>
-        </div>
+      <app-security-summary [detail]="detail()"></app-security-summary>
 
-        <span class="badge">Need covered</span>
-      </section>
+      <app-position-panel
+        [agGridModules]="agGridModules"
+        [drilldownRows]="drilldownRows()"
+        [drilldownColumnDefs]="drilldownColumnDefs"
+        [gridOptions]="gridOptions"
+        [drilldownVisible]="drilldownVisible()"
+        [showOptions]="showOptions()"
+        (drilldownToggled)="toggleDrilldown()"
+        (optionsToggled)="toggleOptions()">
+      </app-position-panel>
 
-      <section class="position-toolbar">
-        <strong>Position</strong>
-
-        <div class="button-group">
-          <button>Contractual</button>
-          <button class="active">Pessimistic</button>
-        </div>
-
-        <label>
-          <input type="checkbox" checked />
-          Include recalls in Ex/Def
-        </label>
-
-        <label>
-          <input type="checkbox" checked />
-          Rounding
-        </label>
-      </section>
-
-      <section class="position-grid">
-        <table>
-          <thead>
-            <tr>
-              <th></th>
-              <th>Ex/Def</th>
-              <th>CNS</th>
-              <th>DVP</th>
-              <th>RVP</th>
-              <th>Pledge</th>
-              <th>Borrow Recall</th>
-              <th>Loan Recall</th>
-              <th>New Borrows</th>
-              <th>New Loans</th>
-              <th>Borrow Returns</th>
-              <th>Loan Returns</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Projected</td>
-              <td class="negative">(8,525)</td>
-              <td class="negative">(11,896)</td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td>8,000</td>
-              <td></td>
-              <td></td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>Pending</td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td>8,000</td>
-              <td></td>
-              <td></td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>Settled</td>
-              <td>75</td>
-              <td class="negative">(11,896)</td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td>8,000</td>
-              <td></td>
-              <td></td>
-              <td></td>
-            </tr>
-          </tbody>
-        </table>
-
-        <button class="options-button" (click)="toggleOptions()">Options</button>
-
-        @if (showOptions()) {
-          <div class="options-popover">
-            <label><input type="checkbox" checked /> Include recalls in Ex/Def</label>
-            <label><input type="checkbox" checked /> Rounding</label>
-            <label><input type="checkbox" checked /> Show Notional</label>
-            <label><input type="checkbox" checked /> Include cash</label>
-          </div>
-        }
-      </section>
-
-      <section class="drilldown-toggle">
-        <button (click)="toggleDrilldown()">
-          {{ drilldownVisible() ? '▾' : '▸' }} Full drilldown
-        </button>
-
-        <label>
-          <input type="checkbox" />
-          Show empty rows
-        </label>
-
-        <label>
-          <input type="checkbox" />
-          Include non-entitlement
-        </label>
-      </section>
-
-      @if (drilldownVisible()) {
-        <section class="drilldown-grid">
-          <ag-grid-angular
-            class="ag-theme-quartz"
-            [modules]="agGridModules"
-            [rowData]="drilldownRows()"
-            [columnDefs]="drilldownColumnDefs"
-            [gridOptions]="gridOptions">
-          </ag-grid-angular>
-        </section>
-      }
-
-      <section class="lender-header">
-        <strong>Lender availability</strong>
-        <span>Total: {{ detail().lenderTotal }}</span>
-        <span>Daily change: <b class="positive">+2% {{ detail().dailyChange }}</b></span>
-      </section>
-
-      <section class="lender-grid">
-        <ag-grid-angular
-          class="ag-theme-quartz"
-          [modules]="agGridModules"
-          [rowData]="lenderRows()"
-          [columnDefs]="lenderColumnDefs"
-          [gridOptions]="gridOptions">
-        </ag-grid-angular>
-      </section>
+      <app-lender-availability
+        [agGridModules]="agGridModules"
+        [rows]="lenderRows()"
+        [lenderTotal]="detail().lenderTotal"
+        [dailyChange]="detail().dailyChange"
+        [gridOptions]="gridOptions">
+      </app-lender-availability>
     </section>
 
-    <aside class="right-panel">
-      <section class="card">
-        <h3>Fees</h3>
-        <ag-charts [options]="chartOptions()"></ag-charts>
-
-        <div class="fee-table">
-          <div>AV Brur RT:</div><strong>3.6771</strong>
-          <div>AV Firm RT:</div><strong>3.7078</strong>
-          <div>AVG LN RT:</div><strong>3.6300</strong>
-          <div>OBFR RT:</div><strong>3.6300</strong>
-          <div>COF:</div><strong>3.8190</strong>
-        </div>
-      </section>
-
-      <section class="card">
-        <h3>Stats</h3>
-        <div class="stats-table">
-          <div>Total borrows:</div><strong>305,500</strong>
-          <div>BRK Borrow:</div><strong>186,300</strong>
-          <div>BNK Borrow:</div><strong>119,200</strong>
-          <div>Total loans:</div><strong>0</strong>
-          <div>Utilization:</div><strong>0</strong>
-          <div>Borrow CA $:</div><strong>1,000,000</strong>
-          <div>Settle DC Qty:</div><strong>-11,724</strong>
-        </div>
-      </section>
-
-      <section class="card">
-        <h3>Overborrows</h3>
-        <div class="stats-table">
-          <div>SOD OB:</div><strong>-5,000</strong>
-          <div>RT OB:</div><strong>-2,000</strong>
-          <div>Excess Qty:</div><strong>1,000</strong>
-          <div>Excess notional:</div><strong>$19,670</strong>
-        </div>
-      </section>
-    </aside>
+    <app-single-name-sidebar [fees]="detail().fees"></app-single-name-sidebar>
   </main>
 </div>

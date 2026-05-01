@@ -1,0 +1,20 @@
+<section class="security-header">
+  <div>
+    <h1>{{ detail().ticker }} US</h1>
+    <div class="security-meta">
+      <span>{{ detail().securityId }}</span>
+      <span>{{ detail().name }}</span>
+      <span>{{ detail().country }}</span>
+      <span>{{ detail().cusip }}</span>
+      <span>{{ detail().sector }}</span>
+      <span>{{ detail().type }}</span>
+      <span>Price: {{ detail().price }}</span>
+      <span>Corporate action: {{ detail().corporateAction }}</span>
+      <span>Net PNL: {{ detail().netPnl }}</span>
+      <span>PNL Opp: {{ detail().pnlOpp }}</span>
+      <span>Watch list: {{ detail().watchList }}</span>
+    </div>
+  </div>
+
+  <span class="badge">Need covered</span>
+</section>

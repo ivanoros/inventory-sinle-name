@@ -1,0 +1,28 @@
+:host {
+  display: contents;
+}
+
+.right-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-width: 0;
+}
+
+.card {
+  background: white;
+  border-left: 1px solid #d3dada;
+  padding: 12px;
+}
+
+.card h3 {
+  margin: 0 0 8px;
+}
+
+.fee-table,
+.stats-table {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 7px 16px;
+  font-size: 12px;
+}

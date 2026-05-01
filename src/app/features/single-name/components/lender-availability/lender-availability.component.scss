@@ -1,0 +1,46 @@
+:host {
+  display: contents;
+}
+
+.lender-header {
+  display: flex;
+  gap: 32px;
+  align-items: center;
+  padding-top: 8px;
+}
+
+.positive {
+  color: #168c5a;
+}
+
+.lender-grid {
+  flex: 1;
+  min-height: 260px;
+}
+
+.lender-grid ag-grid-angular {
+  height: 100%;
+  width: 100%;
+}
+
+:host ::ng-deep {
+  .bar-cell {
+    position: relative;
+    height: 100%;
+    display: flex;
+    align-items: center;
+  }
+
+  .bar-fill {
+    position: absolute;
+    left: 0;
+    height: 100%;
+    background: rgba(0, 150, 160, 0.35);
+  }
+
+  .bar-cell span {
+    position: relative;
+    z-index: 1;
+    margin-left: 8px;
+  }
+}

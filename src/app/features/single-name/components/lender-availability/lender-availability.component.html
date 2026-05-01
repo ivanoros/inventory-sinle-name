@@ -1,0 +1,15 @@
+<section class="lender-header">
+  <strong>Lender availability</strong>
+  <span>Total: {{ lenderTotal() }}</span>
+  <span>Daily change: <b class="positive">+2% {{ dailyChange() }}</b></span>
+</section>
+
+<section class="lender-grid">
+  <ag-grid-angular
+    class="ag-theme-quartz"
+    [modules]="agGridModules()"
+    [rowData]="rows()"
+    [columnDefs]="columnDefs"
+    [gridOptions]="gridOptions()">
+  </ag-grid-angular>
+</section>

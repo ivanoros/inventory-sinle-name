@@ -1,0 +1,29 @@
+:host {
+  display: contents;
+}
+
+.security-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.security-header h1 {
+  margin: 0 0 10px;
+  font-size: 26px;
+}
+
+.security-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  font-size: 12px;
+}
+
+.badge {
+  background: #75b987;
+  color: white;
+  padding: 7px 18px;
+  border-radius: 2px;
+  font-weight: 700;
+}

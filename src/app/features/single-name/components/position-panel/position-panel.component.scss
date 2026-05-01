@@ -1,0 +1,104 @@
+:host {
+  display: contents;
+}
+
+.position-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.button-group {
+  display: flex;
+  border: 1px solid #b8c5c5;
+}
+
+.button-group button {
+  border: none;
+  border-right: 1px solid #b8c5c5;
+  padding: 7px 18px;
+  background: white;
+}
+
+.button-group .active {
+  background: #008a9a;
+  color: white;
+}
+
+.position-grid {
+  position: relative;
+}
+
+.position-grid table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  font-size: 12px;
+}
+
+.position-grid th {
+  background: #bcc4c4;
+  font-weight: 600;
+}
+
+.position-grid th,
+.position-grid td {
+  border: 1px solid #d3dada;
+  padding: 8px;
+  text-align: right;
+}
+
+.position-grid td:first-child,
+.position-grid th:first-child {
+  text-align: left;
+}
+
+.negative {
+  color: #a54242;
+}
+
+.options-button {
+  position: absolute;
+  right: 8px;
+  top: -28px;
+  border: none;
+  background: transparent;
+  color: #006978;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.options-popover {
+  position: absolute;
+  right: 0;
+  top: 0;
+  background: white;
+  border: 1px solid #aeb9b9;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+  padding: 14px;
+  display: grid;
+  gap: 10px;
+  z-index: 3;
+}
+
+.drilldown-toggle {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.drilldown-toggle button {
+  border: none;
+  background: transparent;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.drilldown-grid {
+  height: 230px;
+}
+
+.drilldown-grid ag-grid-angular {
+  height: 100%;
+  width: 100%;
+}

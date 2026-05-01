@@ -1,0 +1,122 @@
+<section class="position-toolbar">
+  <strong>Position</strong>
+
+  <div class="button-group">
+    <button>Contractual</button>
+    <button class="active">Pessimistic</button>
+  </div>
+
+  <label>
+    <input type="checkbox" checked />
+    Include recalls in Ex/Def
+  </label>
+
+  <label>
+    <input type="checkbox" checked />
+    Rounding
+  </label>
+</section>
+
+<section class="position-grid">
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+        <th>Ex/Def</th>
+        <th>CNS</th>
+        <th>DVP</th>
+        <th>RVP</th>
+        <th>Pledge</th>
+        <th>Borrow Recall</th>
+        <th>Loan Recall</th>
+        <th>New Borrows</th>
+        <th>New Loans</th>
+        <th>Borrow Returns</th>
+        <th>Loan Returns</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Projected</td>
+        <td class="negative">(8,525)</td>
+        <td class="negative">(11,896)</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>8,000</td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>Pending</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>8,000</td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>Settled</td>
+        <td>75</td>
+        <td class="negative">(11,896)</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>8,000</td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <button class="options-button" (click)="optionsToggled.emit()">Options</button>
+
+  @if (showOptions()) {
+    <div class="options-popover">
+      <label><input type="checkbox" checked /> Include recalls in Ex/Def</label>
+      <label><input type="checkbox" checked /> Rounding</label>
+      <label><input type="checkbox" checked /> Show Notional</label>
+      <label><input type="checkbox" checked /> Include cash</label>
+    </div>
+  }
+</section>
+
+<section class="drilldown-toggle">
+  <button (click)="drilldownToggled.emit()">
+    {{ drilldownVisible() ? '▾' : '▸' }} Full drilldown
+  </button>
+
+  <label>
+    <input type="checkbox" />
+    Show empty rows
+  </label>
+
+  <label>
+    <input type="checkbox" />
+    Include non-entitlement
+  </label>
+</section>
+
+@if (drilldownVisible()) {
+  <section class="drilldown-grid">
+    <ag-grid-angular
+      class="ag-theme-quartz"
+      [modules]="agGridModules()"
+      [rowData]="drilldownRows()"
+      [columnDefs]="drilldownColumnDefs()"
+      [gridOptions]="gridOptions()">
+    </ag-grid-angular>
+  </section>
+}

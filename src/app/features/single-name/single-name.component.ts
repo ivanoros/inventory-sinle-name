@@ -1,21 +1,29 @@
 // src/app/features/single-name/single-name.component.ts
 import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { AgGridAngular } from 'ag-grid-angular';
-import { AllCommunityModule as AllGridCommunityModule, ColDef, GridOptions, ICellRendererParams } from 'ag-grid-community';
-import { AgCartesianChartOptions, AllCommunityModule as AllChartCommunityModule, ModuleRegistry as ChartModuleRegistry } from 'ag-charts-community';
-import { AgCharts } from 'ag-charts-angular';
+import { AllCommunityModule as AllGridCommunityModule, ColDef, GridOptions } from 'ag-grid-community';
+import { AllCommunityModule as AllChartCommunityModule, ModuleRegistry as ChartModuleRegistry } from 'ag-charts-community';
 import { MockTradingDataService } from '../../core/services/mock-trading-data.service';
 import { WorkbenchTabsService } from '../../core/services/workbench-tabs.service';
-import { LenderAvailabilityRow } from '../../core/models/single-name.model';
+import { SingleNameTabsComponent } from './components/single-name-tabs/single-name-tabs.component';
+import { SecuritySummaryComponent } from './components/security-summary/security-summary.component';
+import { PositionPanelComponent } from './components/position-panel/position-panel.component';
+import { LenderAvailabilityComponent } from './components/lender-availability/lender-availability.component';
+import { SingleNameSidebarComponent } from './components/single-name-sidebar/single-name-sidebar.component';
 
 ChartModuleRegistry.registerModules(AllChartCommunityModule);
 
 @Component({
   selector: 'app-single-name',
   standalone: true,
-  imports: [AgGridAngular, AgCharts, RouterLink],
+  imports: [
+    SingleNameTabsComponent,
+    SecuritySummaryComponent,
+    PositionPanelComponent,
+    LenderAvailabilityComponent,
+    SingleNameSidebarComponent,
+  ],
   templateUrl: './single-name.component.html',
   styleUrl: './single-name.component.scss',
 })
@@ -34,32 +42,6 @@ export class SingleNameComponent {
   readonly detail = computed(() => this.dataService.getSingleName(this.ticker()));
   readonly lenderRows = computed(() => this.detail().lenderAvailability);
   readonly drilldownRows = computed(() => this.detail().drilldown);
-
-  readonly lenderColumnDefs: ColDef<LenderAvailabilityRow>[] = [
-    { field: 'cpty', headerName: 'CPTY', width: 90 },
-    { field: 'cptyName', headerName: 'CPTY_NAME', width: 230 },
-    {
-      field: 'percentTotalAvail',
-      headerName: '% TOTAL AVAIL',
-      width: 160,
-      cellRenderer: (params: ICellRendererParams<LenderAvailabilityRow, number>) => {
-        const value = Number(params.value ?? 0);
-        return `
-          <div class="bar-cell">
-            <div class="bar-fill" style="width:${value}%"></div>
-            <span>${value}%</span>
-          </div>
-        `;
-      },
-    },
-    { field: 'quantity', headerName: 'QUANTITY', width: 130 },
-    { field: 'quantityHc', headerName: 'QUANTITY_HC', width: 130 },
-    { field: 'quantityPrevday', headerName: 'QUANTITY_PREVDAY', width: 160 },
-    { field: 'quantityHcPrevday', headerName: 'QUANTITY_HC_PREVDAY', width: 180 },
-    { field: 'quantityDiffToPrevday', headerName: 'QUANTITY_DIFF_TO_PREVDAY', width: 220 },
-    { field: 'quantityHcDiffToPrevday', headerName: 'QUANTITY_HC_DIFF_TO_PREVDAY', width: 230 },
-    { field: 'diffPercent', headerName: 'Diff %', width: 100 },
-  ];
 
   readonly drilldownColumnDefs: ColDef[] = [
     { field: 'category', headerName: 'Category', width: 150 },
@@ -83,34 +65,6 @@ export class SingleNameComponent {
       resizable: true,
     },
   };
-
-  readonly chartOptions = computed<AgCartesianChartOptions>(() => ({
-    data: this.detail().fees,
-    height: 210,
-    title: {
-      text: 'Lending Pit',
-    },
-    series: [
-      {
-        type: 'line',
-        xKey: 'period',
-        yKey: 'value',
-        marker: {
-          enabled: true,
-        },
-      },
-    ],
-    axes: {
-      x: {
-        type: 'category',
-        position: 'bottom',
-      },
-      y: {
-        type: 'number',
-        position: 'left',
-      },
-    },
-  }));
 
   constructor() {
     this.tabsService.openSecurity(this.ticker());

@@ -1,0 +1,26 @@
+:host {
+  display: contents;
+}
+
+.tab-bar {
+  height: 34px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding-left: 12px;
+  background: #e7ecec;
+  border-bottom: 1px solid #c7d0d0;
+}
+
+.tab,
+.home {
+  border: 1px solid #b9c4c4;
+  background: #f8fafafa;
+  padding: 5px 14px;
+  text-decoration: none;
+  color: #263238;
+}
+
+.tab.active {
+  background: white;
+}
