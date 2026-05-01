@@ -1,17 +1,17 @@
-// src/app/features/single-name/single-name.component.ts
+// src/app/features/single-name/pages/single-name-page/single-name-page.ts
 import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { interval, startWith, switchMap } from 'rxjs';
 import { AllCommunityModule as AllGridCommunityModule, ColDef, GridOptions } from 'ag-grid-community';
 import { AllCommunityModule as AllChartCommunityModule, ModuleRegistry as ChartModuleRegistry } from 'ag-charts-community';
-import { TradingDataService } from '../../core/services/trading-data.service';
-import { WorkbenchTabsService } from '../../core/services/workbench-tabs.service';
-import { SingleNameTabsComponent } from './components/single-name-tabs/single-name-tabs.component';
-import { SecuritySummaryComponent } from './components/security-summary/security-summary.component';
-import { PositionPanelComponent } from './components/position-panel/position-panel.component';
-import { LenderAvailabilityComponent } from './components/lender-availability/lender-availability.component';
-import { SingleNameSidebarComponent } from './components/single-name-sidebar/single-name-sidebar.component';
+import { TradingDataService } from '../../../../core/services/trading-data.service';
+import { WorkbenchTabsService } from '../../../../core/services/workbench-tabs.service';
+import { SingleNameTabsComponent } from '../../components/single-name-tabs/single-name-tabs.component';
+import { SecuritySummaryComponent } from '../../components/security-summary/security-summary.component';
+import { PositionPanelComponent } from '../../components/position-panel/position-panel.component';
+import { LenderAvailabilityComponent } from '../../components/lender-availability/lender-availability.component';
+import { SingleNameSidebarComponent } from '../../components/single-name-sidebar/single-name-sidebar.component';
 
 ChartModuleRegistry.registerModules(AllChartCommunityModule);
 
@@ -25,10 +25,10 @@ ChartModuleRegistry.registerModules(AllChartCommunityModule);
     LenderAvailabilityComponent,
     SingleNameSidebarComponent,
   ],
-  templateUrl: './single-name.component.html',
-  styleUrl: './single-name.component.scss',
+  templateUrl: './single-name-page.html',
+  styleUrl: './single-name-page.scss',
 })
-export class SingleNameComponent {
+export class SingleNamePage {
   private readonly route = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
   private readonly dataService = inject(TradingDataService);

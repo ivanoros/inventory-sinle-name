@@ -1,10 +1,10 @@
 // src/app/features/inventory/inventory.routes.ts
 import { Routes } from '@angular/router';
-import { InventoryComponent } from './inventory.component';
+import { InventoryPage } from './pages/inventory-page/inventory-page';
 
 export const INVENTORY_ROUTES: Routes = [
   {
     path: '',
-    component: InventoryComponent,
+    component: InventoryPage,
   },
 ];

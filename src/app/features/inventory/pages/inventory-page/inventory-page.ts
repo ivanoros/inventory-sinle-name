@@ -1,4 +1,4 @@
-// src/app/features/inventory/inventory.component.ts
+// src/app/features/inventory/pages/inventory-page/inventory-page.ts
 import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router, RouterLink } from '@angular/router';
@@ -14,19 +14,19 @@ import {
   IServerSideGetRowsParams,
 } from 'ag-grid-community';
 import { ServerSideRowModelModule } from 'ag-grid-enterprise';
-import { TradingDataService } from '../../core/services/trading-data.service';
-import { WorkbenchTabsService } from '../../core/services/workbench-tabs.service';
-import { InventoryRow } from '../../core/models/inventory-row.model';
+import { TradingDataService } from '../../../../core/services/trading-data.service';
+import { WorkbenchTabsService } from '../../../../core/services/workbench-tabs.service';
+import { InventoryRow } from '../../../../core/models/inventory-row.model';
 import { AgGridAngular } from 'ag-grid-angular';
 
 @Component({
   selector: 'app-inventory',
   standalone: true,
   imports: [AgGridAngular, RouterLink],
-  templateUrl: './inventory.component.html',
-  styleUrl: './inventory.component.scss',
+  templateUrl: './inventory-page.html',
+  styleUrl: './inventory-page.scss',
 })
-export class InventoryComponent {
+export class InventoryPage {
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly dataService = inject(TradingDataService);
