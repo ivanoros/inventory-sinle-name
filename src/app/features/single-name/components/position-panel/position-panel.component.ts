@@ -2,11 +2,12 @@ import { Component, input, output } from '@angular/core';
 import { AgGridAngular } from 'ag-grid-angular';
 import { ColDef, GridOptions, Module as AgGridModule } from 'ag-grid-community';
 import { DrilldownRow, PositionPanelData } from '../../models/single-name.model';
+import { EmptyStateComponent } from '../../../shared/ui/empty-state/empty-state.component';
 
 @Component({
   selector: 'app-position-panel',
   standalone: true,
-  imports: [AgGridAngular],
+  imports: [AgGridAngular, EmptyStateComponent],
   templateUrl: './position-panel.component.html',
   styleUrl: './position-panel.component.scss',
 })

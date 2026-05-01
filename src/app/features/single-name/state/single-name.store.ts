@@ -1,7 +1,7 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
-import { switchMap } from 'rxjs';
+import { catchError, of, switchMap, tap } from 'rxjs';
 import { WorkbenchTabsService } from '../../../core/services/workbench-tabs.service';
 import { SingleNameDataService } from '../data-access/single-name-data.service';
 
@@ -16,6 +16,8 @@ export class SingleNameStore {
   readonly securityTabs = this.tabsService.securityTabs;
   readonly drilldownVisible = signal(false);
   readonly showOptions = signal(false);
+  readonly loading = signal(true);
+  readonly error = signal<string | null>(null);
   readonly sidebarWidth = signal(320);
   readonly resizingSidebar = signal(false);
   private resizeStartX = 0;
@@ -23,7 +25,20 @@ export class SingleNameStore {
 
   readonly detail = toSignal(
     toObservable(this.ticker).pipe(
-      switchMap(ticker => this.singleNameData.getRefreshedSingleName(ticker)),
+      tap(() => {
+        this.loading.set(true);
+        this.error.set(null);
+      }),
+      switchMap(ticker =>
+        this.singleNameData.getRefreshedSingleName(ticker).pipe(
+          tap(() => this.loading.set(false)),
+          catchError(() => {
+            this.loading.set(false);
+            this.error.set('Unable to load single name data.');
+            return of(null);
+          }),
+        ),
+      ),
     ),
     { initialValue: null },
   );

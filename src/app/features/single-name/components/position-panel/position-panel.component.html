@@ -63,12 +63,16 @@
 
 @if (drilldownVisible()) {
   <section class="drilldown-grid">
-    <ag-grid-angular
-      class="ag-theme-quartz"
-      [modules]="agGridModules()"
-      [rowData]="drilldownRows()"
-      [columnDefs]="drilldownColumnDefs()"
-      [gridOptions]="gridOptions()">
-    </ag-grid-angular>
+    @if (drilldownRows().length > 0) {
+      <ag-grid-angular
+        class="ag-theme-quartz"
+        [modules]="agGridModules()"
+        [rowData]="drilldownRows()"
+        [columnDefs]="drilldownColumnDefs()"
+        [gridOptions]="gridOptions()">
+      </ag-grid-angular>
+    } @else {
+      <app-empty-state message="No drilldown rows found."></app-empty-state>
+    }
   </section>
 }

@@ -22,7 +22,11 @@
     (securityTabClosed)="closeSecurityTab($event)">
   </app-single-name-tabs>
 
-  @if (store.detail(); as singleName) {
+  @if (store.error(); as errorMessage) {
+    <main class="content loading-state">
+      <app-error-alert [message]="errorMessage"></app-error-alert>
+    </main>
+  } @else if (store.detail(); as singleName) {
     <main
       class="content"
       [class.resizing]="store.resizingSidebar()"
@@ -68,7 +72,9 @@
         [sidebar]="singleName.sidebar">
       </app-single-name-sidebar>
     </main>
-  } @else {
-    <main class="content loading-state">Loading security...</main>
+  } @else if (store.loading()) {
+    <main class="content loading-state">
+      <app-loading-spinner></app-loading-spinner>
+    </main>
   }
 </div>
