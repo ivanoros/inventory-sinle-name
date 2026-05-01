@@ -1,7 +1,7 @@
 import { Component, input } from '@angular/core';
 import { AgGridAngular } from 'ag-grid-angular';
 import { ColDef, GridOptions, ICellRendererParams, Module as AgGridModule } from 'ag-grid-community';
-import { LenderAvailabilityRow } from '../../../../core/models/single-name.model';
+import { LenderAvailabilityRow } from '../../models/single-name.model';
 
 @Component({
   selector: 'app-lender-availability',

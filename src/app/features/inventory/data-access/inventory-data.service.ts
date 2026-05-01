@@ -1,7 +1,11 @@
 import { Injectable, inject } from '@angular/core';
 import { IServerSideDatasource, IServerSideGetRowsParams } from 'ag-grid-community';
-import { InventoryRow } from '../../../core/models/inventory-row.model';
+import { Observable, map } from 'rxjs';
+import { InventoryPage, InventoryPageRequest } from '../models/inventory-page.model';
+import { InventoryRow } from '../models/inventory-row.model';
 import { TradingDataService } from '../../../core/services/trading-data.service';
+import { InventoryPageDto } from '../models/inventory.dto';
+import { mapInventoryPageDto, mapInventoryPageToDto } from './inventory.mapper';
 
 @Injectable({
   providedIn: 'root',
@@ -19,7 +23,7 @@ export class InventoryDataService {
         const pageSize = endRow - startRow;
         const pageIndex = Math.floor(startRow / pageSize);
 
-        this.tradingData.getInventoryPage({ pageIndex, pageSize }).subscribe({
+        this.getInventoryPage({ pageIndex, pageSize }).subscribe({
           next: page => {
             params.success({
               rowData: page.rows,
@@ -30,5 +34,17 @@ export class InventoryDataService {
         });
       },
     };
+  }
+
+  getInventoryPage(request: InventoryPageRequest): Observable<InventoryPage> {
+    return this.loadInventoryPageDto(request).pipe(
+      map(mapInventoryPageDto),
+    );
+  }
+
+  private loadInventoryPageDto(request: InventoryPageRequest): Observable<InventoryPageDto> {
+    return this.tradingData.getInventoryPage(request).pipe(
+      map(mapInventoryPageToDto),
+    );
   }
 }

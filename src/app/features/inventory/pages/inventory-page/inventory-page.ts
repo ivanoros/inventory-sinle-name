@@ -13,7 +13,7 @@ import {
 } from 'ag-grid-community';
 import { ServerSideRowModelModule } from 'ag-grid-enterprise';
 import { WorkbenchTabsService } from '../../../../core/services/workbench-tabs.service';
-import { InventoryRow } from '../../../../core/models/inventory-row.model';
+import { InventoryRow } from '../../models/inventory-row.model';
 import { InventoryDataService } from '../../data-access/inventory-data.service';
 import { AgGridAngular } from 'ag-grid-angular';
 

@@ -1,7 +1,7 @@
 import { Component, input, output } from '@angular/core';
 import { AgGridAngular } from 'ag-grid-angular';
 import { ColDef, GridOptions, Module as AgGridModule } from 'ag-grid-community';
-import { DrilldownRow, PositionPanelData } from '../../../../core/models/single-name.model';
+import { DrilldownRow, PositionPanelData } from '../../models/single-name.model';
 
 @Component({
   selector: 'app-position-panel',

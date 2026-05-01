@@ -1,7 +1,7 @@
 import { Component, computed, input } from '@angular/core';
 import { AgCharts } from 'ag-charts-angular';
 import { AgCartesianChartOptions } from 'ag-charts-community';
-import { FeePoint, SingleNameSidebarData } from '../../../../core/models/single-name.model';
+import { FeePoint, SingleNameSidebarData } from '../../models/single-name.model';
 
 @Component({
   selector: 'app-single-name-sidebar',

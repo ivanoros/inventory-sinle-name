@@ -1,5 +1,5 @@
 import { Component, input } from '@angular/core';
-import { SingleNameDetail } from '../../../../core/models/single-name.model';
+import { SingleNameDetail } from '../../models/single-name.model';
 
 @Component({
   selector: 'app-security-summary',
