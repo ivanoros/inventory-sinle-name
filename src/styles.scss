@@ -3,6 +3,7 @@
 
 :root {
   --slabdashboard-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --slabdashboard-checkbox-color: #2b9b5f;
 }
 
 body {
@@ -12,6 +13,10 @@ body {
 
 .ag-theme-quartz {
   --ag-font-family: var(--slabdashboard-font-family);
+}
+
+input[type="checkbox"] {
+  accent-color: var(--slabdashboard-checkbox-color);
 }
 
 body.slabdashboard-dark {
