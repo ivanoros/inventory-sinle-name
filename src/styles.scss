@@ -2,23 +2,23 @@
 @import "ag-grid-community/styles/ag-theme-quartz.css";/* You can add global styles to this file, and also import other style files */
 
 :root {
-  --workbench-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --slabdashboard-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
 body {
   margin: 0;
-  font-family: var(--workbench-font-family);
+  font-family: var(--slabdashboard-font-family);
 }
 
 .ag-theme-quartz {
-  --ag-font-family: var(--workbench-font-family);
+  --ag-font-family: var(--slabdashboard-font-family);
 }
 
-body.workbench-dark {
+body.slabdashboard-dark {
   background: #0f1720;
 }
 
-body.workbench-dark .ag-theme-quartz {
+body.slabdashboard-dark .ag-theme-quartz {
   --ag-background-color: #111827;
   --ag-foreground-color: #d9e2ea;
   --ag-header-background-color: #1e2936;

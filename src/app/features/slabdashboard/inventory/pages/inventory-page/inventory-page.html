@@ -1,13 +1,13 @@
-<div class="workbench-page">
-  <app-workbench-header></app-workbench-header>
+<div class="slabdashboard-page">
+  <app-slabdashboard-header></app-slabdashboard-header>
 
-  <app-workbench-tabs
+  <app-slabdashboard-tabs
     activeTab="inventory"
     [inventoryTabOpen]="store.inventoryTabOpen()"
     [securityTabs]="store.securityTabs()"
     (inventoryTabClosed)="closeInventoryTab()"
     (securityTabClosed)="closeSecurityTab($event)">
-  </app-workbench-tabs>
+  </app-slabdashboard-tabs>
 
   <section class="toolbar">
     <label>

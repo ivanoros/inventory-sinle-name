@@ -42,23 +42,23 @@
   color: #a54242;
 }
 
-:host-context(.workbench-dark) .tab-bar {
+:host-context(.slabdashboard-dark) .tab-bar {
   background: #172233;
   border-bottom-color: #2d3948;
 }
 
-:host-context(.workbench-dark) .tab,
-:host-context(.workbench-dark) .home {
+:host-context(.slabdashboard-dark) .tab,
+:host-context(.slabdashboard-dark) .home {
   background: #111827;
   border-color: #334155;
   color: #d9e2ea;
 }
 
-:host-context(.workbench-dark) .tab.active {
+:host-context(.slabdashboard-dark) .tab.active {
   background: #1e2936;
   border-bottom-color: #1e2936;
 }
 
-:host-context(.workbench-dark) .tab-close {
+:host-context(.slabdashboard-dark) .tab-close {
   color: #d9e2ea;
 }

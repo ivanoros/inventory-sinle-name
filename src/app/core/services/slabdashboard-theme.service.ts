@@ -1,15 +1,15 @@
 import { DOCUMENT } from '@angular/common';
 import { Injectable, computed, inject, signal } from '@angular/core';
 
-type WorkbenchTheme = 'light' | 'dark';
+type SlabdashboardTheme = 'light' | 'dark';
 
 @Injectable({
   providedIn: 'root',
 })
-export class WorkbenchThemeService {
+export class SlabdashboardThemeService {
   private readonly document = inject(DOCUMENT);
-  private readonly storageKey = 'workbench-theme';
-  private readonly theme = signal<WorkbenchTheme>(this.getInitialTheme());
+  private readonly storageKey = 'slabdashboard-theme';
+  private readonly theme = signal<SlabdashboardTheme>(this.getInitialTheme());
 
   readonly isDark = computed(() => this.theme() === 'dark');
   readonly toggleLabel = computed(() => this.isDark() ? 'Switch to light theme' : 'Switch to dark theme');
@@ -20,14 +20,14 @@ export class WorkbenchThemeService {
   }
 
   toggleTheme(): void {
-    const nextTheme: WorkbenchTheme = this.isDark() ? 'light' : 'dark';
+    const nextTheme: SlabdashboardTheme = this.isDark() ? 'light' : 'dark';
 
     this.theme.set(nextTheme);
     localStorage.setItem(this.storageKey, nextTheme);
     this.applyTheme(nextTheme);
   }
 
-  private getInitialTheme(): WorkbenchTheme {
+  private getInitialTheme(): SlabdashboardTheme {
     const savedTheme = localStorage.getItem(this.storageKey);
 
     if (savedTheme === 'light' || savedTheme === 'dark') {
@@ -39,7 +39,7 @@ export class WorkbenchThemeService {
       : 'light';
   }
 
-  private applyTheme(theme: WorkbenchTheme): void {
-    this.document.body.classList.toggle('workbench-dark', theme === 'dark');
+  private applyTheme(theme: SlabdashboardTheme): void {
+    this.document.body.classList.toggle('slabdashboard-dark', theme === 'dark');
   }
 }

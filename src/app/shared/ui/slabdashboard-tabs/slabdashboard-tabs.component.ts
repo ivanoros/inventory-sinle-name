@@ -2,13 +2,13 @@ import { Component, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
-  selector: 'app-workbench-tabs',
+  selector: 'app-slabdashboard-tabs',
   standalone: true,
   imports: [RouterLink],
-  templateUrl: './workbench-tabs.component.html',
-  styleUrl: './workbench-tabs.component.css',
+  templateUrl: './slabdashboard-tabs.component.html',
+  styleUrl: './slabdashboard-tabs.component.css',
 })
-export class WorkbenchTabsComponent {
+export class SlabdashboardTabsComponent {
   readonly activeTab = input.required<'inventory' | string>();
   readonly inventoryTabOpen = input.required<boolean>();
   readonly securityTabs = input.required<string[]>();

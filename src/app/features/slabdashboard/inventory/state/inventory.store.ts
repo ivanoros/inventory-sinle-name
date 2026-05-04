@@ -8,7 +8,7 @@ import {
   IServerSideDatasource,
   IServerSideGetRowsParams,
 } from 'ag-grid-community';
-import { WorkbenchTabsService } from '@core/services/workbench-tabs.service';
+import { SlabdashboardTabsService } from '@core/services/slabdashboard-tabs.service';
 import { InventoryDataService } from '../data-access/inventory-data.service';
 import { InventorySort, InventoryViewFilter } from '../models/inventory-page.model';
 import { InventoryRow } from '../models/inventory-row.model';
@@ -18,7 +18,7 @@ export class InventoryStore {
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly inventoryData = inject(InventoryDataService);
-  private readonly tabsService = inject(WorkbenchTabsService);
+  private readonly tabsService = inject(SlabdashboardTabsService);
   private gridApi?: GridApi<InventoryRow>;
 
   readonly selectedView = signal<InventoryViewFilter>('live');

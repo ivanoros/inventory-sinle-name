@@ -12,8 +12,8 @@ import { SingleNameSidebarComponent } from '../../components/single-name-sidebar
 import { SingleNameStore } from '../../state/single-name.store';
 import { ErrorAlertComponent } from '@shared/ui/error-alert/error-alert.component';
 import { LoadingSpinnerComponent } from '@shared/ui/loading-spinner/loading-spinner.component';
-import { WorkbenchHeaderComponent } from '@shared/ui/workbench-header/workbench-header.component';
-import { WorkbenchTabsComponent } from '@shared/ui/workbench-tabs/workbench-tabs.component';
+import { SlabdashboardHeaderComponent } from '@shared/ui/slabdashboard-header/slabdashboard-header.component';
+import { SlabdashboardTabsComponent } from '@shared/ui/slabdashboard-tabs/slabdashboard-tabs.component';
 
 ChartModuleRegistry.registerModules(AllChartCommunityModule);
 
@@ -21,8 +21,8 @@ ChartModuleRegistry.registerModules(AllChartCommunityModule);
   selector: 'app-single-name',
   standalone: true,
   imports: [
-    WorkbenchHeaderComponent,
-    WorkbenchTabsComponent,
+    SlabdashboardHeaderComponent,
+    SlabdashboardTabsComponent,
     RouterLink,
     SecuritySummaryComponent,
     PositionPanelComponent,

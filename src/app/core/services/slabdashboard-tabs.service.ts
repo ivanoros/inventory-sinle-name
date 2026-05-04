@@ -3,7 +3,7 @@ import { Injectable, signal } from '@angular/core';
 @Injectable({
   providedIn: 'root',
 })
-export class WorkbenchTabsService {
+export class SlabdashboardTabsService {
   private readonly inventoryTabOpenSignal = signal(true);
   private readonly securityTabsSignal = signal<string[]>([]);
 

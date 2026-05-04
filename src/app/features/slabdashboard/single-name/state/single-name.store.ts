@@ -2,14 +2,14 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { catchError, of, switchMap, tap } from 'rxjs';
-import { WorkbenchTabsService } from '@core/services/workbench-tabs.service';
+import { SlabdashboardTabsService } from '@core/services/slabdashboard-tabs.service';
 import { SingleNameDataService } from '../data-access/single-name-data.service';
 
 @Injectable()
 export class SingleNameStore {
   private readonly router = inject(Router);
   private readonly singleNameData = inject(SingleNameDataService);
-  private readonly tabsService = inject(WorkbenchTabsService);
+  private readonly tabsService = inject(SlabdashboardTabsService);
 
   readonly ticker = signal('FULT');
   readonly inventoryTabOpen = this.tabsService.inventoryTabOpen;

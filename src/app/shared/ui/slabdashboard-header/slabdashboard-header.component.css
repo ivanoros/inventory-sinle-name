@@ -45,7 +45,7 @@
   background: rgba(255, 255, 255, 0.12);
 }
 
-:host-context(.workbench-dark) .top-bar {
+:host-context(.slabdashboard-dark) .top-bar {
   background: #111827;
   border-bottom: 1px solid #263241;
 }

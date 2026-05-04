@@ -14,8 +14,8 @@ import { InventoryRow } from '../../models/inventory-row.model';
 import { InventoryViewFilter } from '../../models/inventory-page.model';
 import { InventoryStore } from '../../state/inventory.store';
 import { AgGridAngular } from 'ag-grid-angular';
-import { WorkbenchHeaderComponent } from '@shared/ui/workbench-header/workbench-header.component';
-import { WorkbenchTabsComponent } from '@shared/ui/workbench-tabs/workbench-tabs.component';
+import { SlabdashboardHeaderComponent } from '@shared/ui/slabdashboard-header/slabdashboard-header.component';
+import { SlabdashboardTabsComponent } from '@shared/ui/slabdashboard-tabs/slabdashboard-tabs.component';
 
 type NumericInventoryField = {
   [Field in keyof InventoryRow]: InventoryRow[Field] extends number | undefined ? Field : never;
@@ -24,7 +24,7 @@ type NumericInventoryField = {
 @Component({
   selector: 'app-inventory',
   standalone: true,
-  imports: [AgGridAngular, WorkbenchHeaderComponent, WorkbenchTabsComponent],
+  imports: [AgGridAngular, SlabdashboardHeaderComponent, SlabdashboardTabsComponent],
   templateUrl: './inventory-page.html',
   styleUrl: './inventory-page.scss',
   providers: [InventoryStore],

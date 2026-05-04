@@ -1,14 +1,14 @@
 /* src/app/features/slabdashboard/inventory/pages/inventory-page/inventory-page.scss */
-.workbench-page {
+.slabdashboard-page {
   height: 100vh;
   background: #f3f5f5;
-  font-family: var(--workbench-font-family);
+  font-family: var(--slabdashboard-font-family);
   color: #263238;
   display: flex;
   flex-direction: column;
 }
 
-:host-context(.workbench-dark) .workbench-page {
+:host-context(.slabdashboard-dark) .slabdashboard-page {
   background: #0f1720;
   color: #d9e2ea;
 }
@@ -156,17 +156,17 @@
   padding: 0 18px;
 }
 
-:host-context(.workbench-dark) .status-bar {
+:host-context(.slabdashboard-dark) .status-bar {
   background: #172233;
   border-top: 1px solid #2d3948;
 }
 
-:host-context(.workbench-dark) .button-group {
+:host-context(.slabdashboard-dark) .button-group {
   border-color: #3d4b5c;
 }
 
-:host-context(.workbench-dark) .button-group button,
-:host-context(.workbench-dark) .toolbar select {
+:host-context(.slabdashboard-dark) .button-group button,
+:host-context(.slabdashboard-dark) .toolbar select {
   background: #111827;
   border-color: #3d4b5c;
   color: #d9e2ea;
@@ -256,7 +256,7 @@
     white-space: nowrap;
   }
 
-  :host-context(.workbench-dark) .ticker-description {
+  :host-context(.slabdashboard-dark) .ticker-description {
     color: #d9e2ea;
   }
 }

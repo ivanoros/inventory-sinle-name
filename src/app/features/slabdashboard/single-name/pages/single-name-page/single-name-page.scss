@@ -1,14 +1,14 @@
 /* src/app/features/slabdashboard/single-name/pages/single-name-page/single-name-page.scss */
-.workbench-page {
+.slabdashboard-page {
   height: 100vh;
   background: #f3f5f5;
-  font-family: var(--workbench-font-family);
+  font-family: var(--slabdashboard-font-family);
   color: #263238;
   display: flex;
   flex-direction: column;
 }
 
-:host-context(.workbench-dark) .workbench-page {
+:host-context(.slabdashboard-dark) .slabdashboard-page {
   background: #0f1720;
   color: #d9e2ea;
 }
@@ -64,12 +64,12 @@
   text-underline-offset: 2px;
 }
 
-:host-context(.workbench-dark) .inventory-return {
+:host-context(.slabdashboard-dark) .inventory-return {
   background: #172233;
   border-bottom-color: #2d3948;
 }
 
-:host-context(.workbench-dark) .inventory-return a {
+:host-context(.slabdashboard-dark) .inventory-return a {
   color: #36b6c6;
 }
 
@@ -103,7 +103,7 @@
   background: #c3cece;
 }
 
-:host-context(.workbench-dark) .splitter span {
+:host-context(.slabdashboard-dark) .splitter span {
   background: #334155;
 }
 
@@ -124,7 +124,7 @@
   color: #607078;
 }
 
-:host-context(.workbench-dark) .loading-state {
+:host-context(.slabdashboard-dark) .loading-state {
   color: #9fb0bf;
 }
 

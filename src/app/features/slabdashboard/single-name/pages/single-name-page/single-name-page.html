@@ -1,19 +1,19 @@
 <!-- src/app/features/slabdashboard/single-name/pages/single-name-page/single-name-page.html -->
-<div class="workbench-page">
-  <app-workbench-header></app-workbench-header>
+<div class="slabdashboard-page">
+  <app-slabdashboard-header></app-slabdashboard-header>
 
   @if (replacesInventory()) {
     <nav class="inventory-return">
       <a routerLink="/">Back to Inventory list</a>
     </nav>
   } @else {
-    <app-workbench-tabs
+    <app-slabdashboard-tabs
       [activeTab]="store.ticker()"
       [inventoryTabOpen]="store.inventoryTabOpen()"
       [securityTabs]="store.securityTabs()"
       (inventoryTabClosed)="closeInventoryTab()"
       (securityTabClosed)="closeSecurityTab($event)">
-    </app-workbench-tabs>
+    </app-slabdashboard-tabs>
   }
 
   @if (store.error(); as errorMessage) {
