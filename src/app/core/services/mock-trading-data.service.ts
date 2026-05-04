@@ -8,7 +8,19 @@ import { SingleNameDetail } from '@features/slabdashboard/single-name/models/sin
   providedIn: 'root',
 })
 export class MockTradingDataService {
+  private inventoryRows?: InventoryRow[];
+
   getInventoryRows(): InventoryRow[] {
+    if (!this.inventoryRows) {
+      this.inventoryRows = this.createInventoryRows();
+    } else {
+      this.applyInventoryMarketTick();
+    }
+
+    return this.inventoryRows.map(row => ({ ...row }));
+  }
+
+  private createInventoryRows(): InventoryRow[] {
     return [
       {
         status: 'Borrow need',
@@ -347,6 +359,38 @@ export class MockTradingDataService {
       },
       ...this.getGeneratedInventoryRows(),
     ];
+  }
+
+  private applyInventoryMarketTick(): void {
+    this.inventoryRows = this.inventoryRows?.map(row => {
+      if (Math.random() >= 0.35) {
+        return row;
+      }
+
+      const priceChange = this.randomBetween(-0.025, 0.025);
+      const excessMove = this.randomQuantityMove(row.excessDeficit);
+      const liveMove = this.randomQuantityMove(row.liveExcessDeficit);
+
+      return {
+        ...row,
+        price: Number(Math.max(0.01, row.price * (1 + priceChange)).toFixed(2)),
+        excessDeficit: this.applyQuantityMove(row.excessDeficit, excessMove),
+        liveExcessDeficit: this.applyQuantityMove(row.liveExcessDeficit, liveMove),
+      };
+    });
+  }
+
+  private randomBetween(min: number, max: number): number {
+    return min + Math.random() * (max - min);
+  }
+
+  private randomQuantityMove(value: number | undefined): number {
+    const magnitude = Math.max(25, Math.round(Math.abs(value ?? 0) * this.randomBetween(0.01, 0.04)));
+    return Math.round(magnitude / 25) * 25 * (Math.random() > 0.5 ? 1 : -1);
+  }
+
+  private applyQuantityMove(value: number | undefined, move: number): number | undefined {
+    return value === undefined ? undefined : value + move;
   }
 
   getInventoryPage(request: InventoryPageRequest): InventoryPage {

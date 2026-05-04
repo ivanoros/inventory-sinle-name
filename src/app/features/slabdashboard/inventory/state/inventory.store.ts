@@ -1,7 +1,7 @@
 import { DestroyRef, Injectable, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
-import { interval } from 'rxjs';
+import { timer } from 'rxjs';
 import {
   CellClickedEvent,
   GridApi,
@@ -37,14 +37,13 @@ export class InventoryStore {
 
   constructor() {
     this.tabsService.openInventory();
-
-    interval(this.inventoryData.refreshIntervalMs)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => this.refreshRows());
   }
 
   connectGrid(api: GridApi<InventoryRow>): void {
     this.gridApi = api;
+    timer(2000, this.inventoryData.refreshIntervalMs)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.refreshRows());
   }
 
   openSecurityFromCell(event: CellClickedEvent<InventoryRow>): void {

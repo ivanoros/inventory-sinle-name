@@ -9,7 +9,7 @@ import {
   ICellRendererParams,
   ValueFormatterParams,
 } from 'ag-grid-community';
-import { ServerSideRowModelModule } from 'ag-grid-enterprise';
+import { ServerSideRowModelApiModule, ServerSideRowModelModule } from 'ag-grid-enterprise';
 import { InventoryRow } from '../../models/inventory-row.model';
 import { InventoryViewFilter } from '../../models/inventory-page.model';
 import { InventoryStore } from '../../state/inventory.store';
@@ -32,7 +32,7 @@ type NumericInventoryField = {
 export class InventoryPage {
   readonly store = inject(InventoryStore);
 
-  readonly agGridModules = [AllCommunityModule, ServerSideRowModelModule];
+  readonly agGridModules = [AllCommunityModule, ServerSideRowModelModule, ServerSideRowModelApiModule];
   private readonly numericColumnClass = 'numeric-cell';
 
   readonly columnDefs: ColDef<InventoryRow>[] = [
@@ -59,11 +59,11 @@ export class InventoryPage {
       cellClass: 'cusip-link-cell',
     },
     { field: 'type', headerName: 'Type', pinned: 'left', width: 80 },
-    this.numberColumn('price', 'Price', 90, true),
+    this.numberColumn('price', 'Price', 90, true, true),
     { field: 'upcomingCA', headerName: 'Upcoming CA', pinned: 'left', width: 120 },
     { field: 'recordDate', headerName: 'Record Date', pinned: 'left', width: 120 },
-    this.numberColumn('excessDeficit', 'Excess Deficit', 140),
-    this.numberColumn('liveExcessDeficit', 'Live Excess Deficit', 160),
+    this.numberColumn('excessDeficit', 'Excess Deficit', 140, false, true),
+    this.numberColumn('liveExcessDeficit', 'Live Excess Deficit', 160, false, true),
     this.numberColumn('sodBorrowNeed', 'SOD Borrow Need', 150),
     this.numberColumn('sodExcessReturn', 'SOD Excess Return', 160),
     this.numberColumn('sod214Proj', 'SOD 214 Proj', 140),
@@ -93,6 +93,7 @@ export class InventoryPage {
     headerHeight: 31,
     animateRows: true,
     suppressCellFocus: true,
+    getRowId: params => params.data.ticker,
     defaultColDef: {
       sortable: true,
       filter: true,
@@ -130,12 +131,15 @@ export class InventoryPage {
     headerName: string,
     width: number,
     pinned = false,
+    animateChange = false,
   ): ColDef<InventoryRow> {
     return {
       field,
       headerName,
       width,
       pinned: pinned ? 'left' : undefined,
+      cellRenderer: animateChange ? 'agAnimateShowChangeCellRenderer' : undefined,
+      enableCellChangeFlash: animateChange,
       cellClass: params => {
         const classes = [this.numericColumnClass];
         if (Number(params.value) < 0) {

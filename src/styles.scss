@@ -21,6 +21,12 @@ body {
   --ag-grid-size: 6px;
 }
 
+.inventory-grid {
+  --ag-value-change-value-highlight-background-color: #44ad4961;
+  --ag-value-change-delta-down-color: rgb(255, 0, 92);
+  --ag-value-change-delta-up-color: rgb(53, 182, 90);
+}
+
 input[type="checkbox"] {
   accent-color: var(--slabdashboard-checkbox-color);
 }
