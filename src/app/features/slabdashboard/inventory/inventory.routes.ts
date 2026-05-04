@@ -1,4 +1,4 @@
-// src/app/features/inventory/inventory.routes.ts
+// src/app/features/slabdashboard/inventory/inventory.routes.ts
 import { Routes } from '@angular/router';
 import { InventoryPage } from './pages/inventory-page/inventory-page';
 

@@ -1,4 +1,4 @@
-// src/app/features/inventory/models/inventory-row.model.ts
+// src/app/features/slabdashboard/inventory/models/inventory-row.model.ts
 export interface InventoryRow {
   status: string;
   ticker: string;

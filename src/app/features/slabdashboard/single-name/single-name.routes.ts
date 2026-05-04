@@ -1,4 +1,4 @@
-// src/app/features/single-name/single-name.routes.ts
+// src/app/features/slabdashboard/single-name/single-name.routes.ts
 import { Routes } from '@angular/router';
 import { SingleNamePage } from './pages/single-name-page/single-name-page';
 

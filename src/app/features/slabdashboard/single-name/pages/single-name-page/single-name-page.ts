@@ -1,4 +1,4 @@
-// src/app/features/single-name/pages/single-name-page/single-name-page.ts
+// src/app/features/slabdashboard/single-name/pages/single-name-page/single-name-page.ts
 import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';

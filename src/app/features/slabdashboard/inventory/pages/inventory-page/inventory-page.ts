@@ -1,4 +1,4 @@
-// src/app/features/inventory/pages/inventory-page/inventory-page.ts
+// src/app/features/slabdashboard/inventory/pages/inventory-page/inventory-page.ts
 import { Component, inject } from '@angular/core';
 import {
   AllCommunityModule,

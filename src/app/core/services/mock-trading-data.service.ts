@@ -1,8 +1,8 @@
 // src/app/core/services/mock-trading-data.service.ts
 import { Injectable } from '@angular/core';
-import { InventoryPage, InventoryPageRequest } from '@features/inventory/models/inventory-page.model';
-import { InventoryRow } from '@features/inventory/models/inventory-row.model';
-import { SingleNameDetail } from '@features/single-name/models/single-name.model';
+import { InventoryPage, InventoryPageRequest } from '@features/slabdashboard/inventory/models/inventory-page.model';
+import { InventoryRow } from '@features/slabdashboard/inventory/models/inventory-row.model';
+import { SingleNameDetail } from '@features/slabdashboard/single-name/models/single-name.model';
 
 @Injectable({
   providedIn: 'root',

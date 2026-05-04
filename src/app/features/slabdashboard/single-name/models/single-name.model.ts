@@ -1,4 +1,4 @@
-// src/app/features/single-name/models/single-name.model.ts
+// src/app/features/slabdashboard/single-name/models/single-name.model.ts
 export interface SingleNameDetail {
   ticker: string;
   securityId: string;
