@@ -142,6 +142,9 @@
 .inventory-grid {
   width: 100%;
   height: 100%;
+  --inventory-fixed-split-color: #2f3437;
+  --inventory-fixed-split-width: 2px;
+  --inventory-column-border-color: #d4d9d9;
 }
 
 .status-bar {
@@ -174,17 +177,45 @@
 }
 
 :host ::ng-deep {
+  .inventory-grid .ag-header-cell,
+  .inventory-grid .ag-cell {
+    border-right: 1px solid var(--inventory-column-border-color);
+  }
+
+  .inventory-grid .ag-cell {
+    text-align: left;
+  }
+
+  .inventory-grid .numeric-cell {
+    text-align: right;
+  }
+
+  .inventory-grid .numeric-header .ag-header-cell-label {
+    justify-content: flex-end;
+  }
+
+  .inventory-grid .ag-header-cell:last-child,
+  .inventory-grid .ag-cell:last-child {
+    border-right: none;
+  }
+
+  .inventory-grid .ag-pinned-left-header,
+  .inventory-grid .ag-pinned-left-cols-container {
+    border-right: var(--inventory-fixed-split-width) solid var(--inventory-fixed-split-color);
+  }
+
+  .inventory-grid .ag-cell.ag-cell-last-left-pinned:not(.ag-cell-range-right):not(.ag-cell-range-single-cell) {
+    border-right: none !important;
+  }
+
+  .inventory-grid .ag-pinned-left-header,
+  .inventory-grid .ag-pinned-left-cols-container {
+    box-shadow: none !important;
+  }
+
   .negative-cell,
   .ag-cell-value:has(span.negative) {
     color: #a54242;
-  }
-
-  .borrow-row {
-    border-left: 4px solid #d05b4f;
-  }
-
-  .covered-row {
-    border-left: 4px solid #2b9b83;
   }
 
   .status-borrow {

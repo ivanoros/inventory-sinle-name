@@ -6,6 +6,7 @@ import {
   ColDef,
   GridOptions,
   GridReadyEvent,
+  ValueFormatterParams,
 } from 'ag-grid-community';
 import { ServerSideRowModelModule } from 'ag-grid-enterprise';
 import { InventoryRow } from '../../models/inventory-row.model';
@@ -14,6 +15,10 @@ import { InventoryStore } from '../../state/inventory.store';
 import { AgGridAngular } from 'ag-grid-angular';
 import { WorkbenchHeaderComponent } from '@shared/ui/workbench-header/workbench-header.component';
 import { WorkbenchTabsComponent } from '@shared/ui/workbench-tabs/workbench-tabs.component';
+
+type NumericInventoryField = {
+  [Field in keyof InventoryRow]: InventoryRow[Field] extends number | undefined ? Field : never;
+}[keyof InventoryRow];
 
 @Component({
   selector: 'app-inventory',
@@ -27,6 +32,7 @@ export class InventoryPage {
   readonly store = inject(InventoryStore);
 
   readonly agGridModules = [AllCommunityModule, ServerSideRowModelModule];
+  private readonly numericColumnClass = 'numeric-cell';
 
   readonly columnDefs: ColDef<InventoryRow>[] = [
     {
@@ -52,25 +58,25 @@ export class InventoryPage {
     },
     { field: 'description', headerName: 'Description', pinned: 'left', width: 220 },
     { field: 'type', headerName: 'Type', pinned: 'left', width: 80 },
-    { field: 'price', headerName: 'Price', pinned: 'left', width: 90 },
-    { field: 'openingCA', headerName: 'Opening CA', pinned: 'left', width: 120 },
+    this.numberColumn('price', 'Price', 90, true),
+    this.numberColumn('openingCA', 'Opening CA', 120, true),
     { field: 'recordDate', headerName: 'Record Date', pinned: 'left', width: 120 },
-    { field: 'excessDeficit', headerName: 'Excess Deficit', width: 140 },
-    { field: 'liveExcessDeficit', headerName: 'Live Excess Deficit', width: 160 },
-    { field: 'sodBorrowNeed', headerName: 'SOD Borrow Need', width: 150 },
-    { field: 'sodExcessReturn', headerName: 'SOD Excess Return', width: 160 },
-    { field: 'sod214Proj', headerName: 'SOD 214 Proj', width: 140 },
-    { field: 'sodAfrProj', headerName: 'SOD AFR Proj', width: 140 },
-    { field: 'sodUsPmProj', headerName: 'SOD USPM Proj', width: 150 },
-    { field: 'sodOtherProj', headerName: 'SOD OTHER Proj', width: 150 },
-    { field: 'settled214', headerName: '214 Settled', width: 130 },
-    { field: 'settledAfr', headerName: 'AFR Settled', width: 130 },
-    { field: 'settledUsPm', headerName: 'USPM Settled', width: 140 },
-    { field: 'otherSettled', headerName: 'OTHER Settled', width: 140 },
-    { field: 'pending214', headerName: '214 Pending', width: 130 },
-    { field: 'pendingAfr', headerName: 'AFR Pending', width: 130 },
-    { field: 'pendingUsPm', headerName: 'USPM Pending', width: 140 },
-    { field: 'pendingOther', headerName: 'OTHER Pending', width: 140 },
+    this.numberColumn('excessDeficit', 'Excess Deficit', 140),
+    this.numberColumn('liveExcessDeficit', 'Live Excess Deficit', 160),
+    this.numberColumn('sodBorrowNeed', 'SOD Borrow Need', 150),
+    this.numberColumn('sodExcessReturn', 'SOD Excess Return', 160),
+    this.numberColumn('sod214Proj', 'SOD 214 Proj', 140),
+    this.numberColumn('sodAfrProj', 'SOD AFR Proj', 140),
+    this.numberColumn('sodUsPmProj', 'SOD USPM Proj', 150),
+    this.numberColumn('sodOtherProj', 'SOD OTHER Proj', 150),
+    this.numberColumn('settled214', '214 Settled', 130),
+    this.numberColumn('settledAfr', 'AFR Settled', 130),
+    this.numberColumn('settledUsPm', 'USPM Settled', 140),
+    this.numberColumn('otherSettled', 'OTHER Settled', 140),
+    this.numberColumn('pending214', '214 Pending', 130),
+    this.numberColumn('pendingAfr', 'AFR Pending', 130),
+    this.numberColumn('pendingUsPm', 'USPM Pending', 140),
+    this.numberColumn('pendingOther', 'OTHER Pending', 140),
   ];
 
   readonly gridOptions: GridOptions<InventoryRow> = {
@@ -116,5 +122,36 @@ export class InventoryPage {
 
   setView(view: InventoryViewFilter): void {
     this.store.setView(view);
+  }
+
+  private numberColumn(
+    field: NumericInventoryField,
+    headerName: string,
+    width: number,
+    pinned = false,
+  ): ColDef<InventoryRow> {
+    return {
+      field,
+      headerName,
+      width,
+      pinned: pinned ? 'left' : undefined,
+      cellClass: params => {
+        const classes = [this.numericColumnClass];
+        if (Number(params.value) < 0) {
+          classes.push('negative-cell');
+        }
+
+        return classes;
+      },
+      headerClass: 'numeric-header',
+      valueFormatter: params => this.formatNumericValue(params),
+    };
+  }
+
+  private formatNumericValue(params: ValueFormatterParams<InventoryRow, number | undefined>): string {
+    if (params.value === null || params.value === undefined) return '';
+
+    const formattedValue = Math.abs(params.value).toLocaleString('en-US');
+    return params.value < 0 ? `(${formattedValue})` : formattedValue;
   }
 }
