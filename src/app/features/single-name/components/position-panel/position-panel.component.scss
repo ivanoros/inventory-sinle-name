@@ -20,6 +20,16 @@
   background: white;
 }
 
+:host-context(.workbench-dark) .button-group {
+  border-color: #3d4b5c;
+}
+
+:host-context(.workbench-dark) .button-group button {
+  background: #111827;
+  border-color: #3d4b5c;
+  color: #d9e2ea;
+}
+
 .button-group .active {
   background: #008a9a;
   color: white;
@@ -36,9 +46,18 @@
   font-size: 12px;
 }
 
+:host-context(.workbench-dark) .position-grid table {
+  background: #111827;
+  color: #d9e2ea;
+}
+
 .position-grid th {
   background: #bcc4c4;
   font-weight: 600;
+}
+
+:host-context(.workbench-dark) .position-grid th {
+  background: #263241;
 }
 
 .position-grid th,
@@ -46,6 +65,11 @@
   border: 1px solid #d3dada;
   padding: 8px;
   text-align: right;
+}
+
+:host-context(.workbench-dark) .position-grid th,
+:host-context(.workbench-dark) .position-grid td {
+  border-color: #334155;
 }
 
 .position-grid td:first-child,
@@ -81,6 +105,12 @@
   z-index: 3;
 }
 
+:host-context(.workbench-dark) .options-popover {
+  background: #111827;
+  border-color: #3d4b5c;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.35);
+}
+
 .drilldown-toggle {
   display: flex;
   gap: 16px;
@@ -89,6 +119,15 @@
   border: 1px solid #c7d0d0;
   border-radius: 4px;
   padding: 8px 10px;
+}
+
+:host-context(.workbench-dark) .drilldown-toggle {
+  background: #172233;
+  border-color: #334155;
+}
+
+:host-context(.workbench-dark) .drilldown-toggle button {
+  color: #d9e2ea;
 }
 
 .drilldown-toggle.open {
@@ -115,6 +154,11 @@
   font-size: 12px;
 }
 
+:host-context(.workbench-dark) .drilldown-header {
+  background: #111827;
+  border-color: #334155;
+}
+
 .drilldown-header span {
   color: #5e6f72;
 }
@@ -123,6 +167,10 @@
   height: 360px;
   border: 1px solid #c7d0d0;
   border-top: none;
+}
+
+:host-context(.workbench-dark) .drilldown-grid {
+  border-color: #334155;
 }
 
 .drilldown-grid ag-grid-angular {

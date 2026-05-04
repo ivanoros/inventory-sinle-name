@@ -15,6 +15,11 @@
   padding: 12px;
 }
 
+:host-context(.workbench-dark) .card {
+  background: #111827;
+  border-left-color: #334155;
+}
+
 .card h3 {
   margin: 0 0 8px;
 }

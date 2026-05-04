@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { WorkbenchThemeService } from '@core/services/workbench-theme.service';
 
 @Component({
   selector: 'app-workbench-header',
@@ -6,4 +7,6 @@ import { Component } from '@angular/core';
   templateUrl: './workbench-header.component.html',
   styleUrl: './workbench-header.component.css',
 })
-export class WorkbenchHeaderComponent {}
+export class WorkbenchHeaderComponent {
+  readonly theme = inject(WorkbenchThemeService);
+}

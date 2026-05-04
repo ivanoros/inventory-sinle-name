@@ -8,6 +8,11 @@
   flex-direction: column;
 }
 
+:host-context(.workbench-dark) .workbench-page {
+  background: #0f1720;
+  color: #d9e2ea;
+}
+
 .top-bar {
   height: 42px;
   background: #26323c;
@@ -146,6 +151,22 @@
   justify-content: space-between;
   align-items: center;
   padding: 0 18px;
+}
+
+:host-context(.workbench-dark) .status-bar {
+  background: #172233;
+  border-top: 1px solid #2d3948;
+}
+
+:host-context(.workbench-dark) .button-group {
+  border-color: #3d4b5c;
+}
+
+:host-context(.workbench-dark) .button-group button,
+:host-context(.workbench-dark) .toolbar select {
+  background: #111827;
+  border-color: #3d4b5c;
+  color: #d9e2ea;
 }
 
 .connectivity {

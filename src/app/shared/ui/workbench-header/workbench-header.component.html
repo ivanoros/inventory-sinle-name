@@ -8,6 +8,14 @@
     <span>e70165</span>
     <span>AMER</span>
     <strong>WORKBENCH</strong>
+    <button
+      class="theme-toggle"
+      type="button"
+      [attr.aria-label]="theme.toggleLabel()"
+      [title]="theme.toggleLabel()"
+      (click)="theme.toggleTheme()">
+      {{ theme.toggleIcon() }}
+    </button>
     <span class="gear">⚙</span>
   </div>
 </header>

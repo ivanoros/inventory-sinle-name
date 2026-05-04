@@ -1,2 +1,25 @@
 @import "ag-grid-community/styles/ag-grid.css";
 @import "ag-grid-community/styles/ag-theme-quartz.css";/* You can add global styles to this file, and also import other style files */
+
+body {
+  margin: 0;
+}
+
+body.workbench-dark {
+  background: #0f1720;
+}
+
+body.workbench-dark .ag-theme-quartz {
+  --ag-background-color: #111827;
+  --ag-foreground-color: #d9e2ea;
+  --ag-header-background-color: #1e2936;
+  --ag-header-foreground-color: #eef3f7;
+  --ag-odd-row-background-color: #141e2a;
+  --ag-row-hover-color: #223246;
+  --ag-border-color: #334155;
+  --ag-secondary-border-color: #263241;
+  --ag-control-panel-background-color: #111827;
+  --ag-subheader-background-color: #172233;
+  --ag-input-background-color: #0f1720;
+  --ag-input-border-color: #3d4b5c;
+}

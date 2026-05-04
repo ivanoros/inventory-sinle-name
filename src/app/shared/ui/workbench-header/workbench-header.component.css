@@ -28,3 +28,24 @@
   font-size: 22px;
   letter-spacing: 1px;
 }
+
+.theme-toggle {
+  width: 26px;
+  height: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 50%;
+  background: transparent;
+  color: white;
+  cursor: pointer;
+  font-size: 15px;
+  line-height: 1;
+}
+
+.theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+:host-context(.workbench-dark) .top-bar {
+  background: #111827;
+  border-bottom: 1px solid #263241;
+}

@@ -8,6 +8,11 @@
   flex-direction: column;
 }
 
+:host-context(.workbench-dark) .workbench-page {
+  background: #0f1720;
+  color: #d9e2ea;
+}
+
 .top-bar {
   height: 42px;
   background: #26323c;
@@ -68,6 +73,10 @@
   background: #c3cece;
 }
 
+:host-context(.workbench-dark) .splitter span {
+  background: #334155;
+}
+
 .splitter:hover span,
 .splitter:focus span,
 .content.resizing .splitter span {
@@ -83,4 +92,8 @@
   align-items: center;
   justify-content: center;
   color: #607078;
+}
+
+:host-context(.workbench-dark) .loading-state {
+  color: #9fb0bf;
 }
