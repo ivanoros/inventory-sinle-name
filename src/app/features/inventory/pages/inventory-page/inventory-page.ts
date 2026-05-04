@@ -6,6 +6,7 @@ import {
   ColDef,
   GridOptions,
   GridReadyEvent,
+  ICellRendererParams,
   ValueFormatterParams,
 } from 'ag-grid-community';
 import { ServerSideRowModelModule } from 'ag-grid-enterprise';
@@ -44,10 +45,11 @@ export class InventoryPage {
     },
     {
       field: 'ticker',
-      headerName: 'BBG',
+      headerName: 'Ticker',
       pinned: 'left',
-      width: 90,
-      cellClass: 'bbg-link-cell',
+      width: 280,
+      cellClass: 'ticker-link-cell',
+      cellRenderer: (params: ICellRendererParams<InventoryRow, string>) => this.renderTickerCell(params),
     },
     {
       field: 'cusip',
@@ -56,7 +58,6 @@ export class InventoryPage {
       width: 120,
       cellClass: 'cusip-link-cell',
     },
-    { field: 'description', headerName: 'Description', pinned: 'left', width: 220 },
     { field: 'type', headerName: 'Type', pinned: 'left', width: 80 },
     this.numberColumn('price', 'Price', 90, true),
     this.numberColumn('openingCA', 'Opening CA', 120, true),
@@ -153,5 +154,26 @@ export class InventoryPage {
 
     const formattedValue = Math.abs(params.value).toLocaleString('en-US');
     return params.value < 0 ? `(${formattedValue})` : formattedValue;
+  }
+
+  private renderTickerCell(params: ICellRendererParams<InventoryRow, string>): string {
+    const ticker = this.escapeHtml(params.value ?? '');
+    const description = this.escapeHtml(params.data?.description ?? '');
+
+    return `
+      <span class="ticker-cell">
+        <span class="ticker-symbol">${ticker}</span>
+        <span class="ticker-description">${description}</span>
+      </span>
+    `;
+  }
+
+  private escapeHtml(value: string): string {
+    return value
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
   }
 }

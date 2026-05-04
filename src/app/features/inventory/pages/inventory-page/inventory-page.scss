@@ -227,12 +227,36 @@
     color: #2b7d61;
   }
 
-  .bbg-link-cell,
+  .ticker-link-cell,
   .cusip-link-cell {
     color: #006978;
     cursor: pointer;
-    font-weight: 700;
     text-decoration: underline;
     text-underline-offset: 2px;
+  }
+
+  .ticker-cell {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 8px;
+    max-width: 100%;
+  }
+
+  .ticker-symbol {
+    flex: 0 0 auto;
+    font-weight: 700;
+  }
+
+  .ticker-description {
+    min-width: 0;
+    overflow: hidden;
+    color: #263238;
+    font-weight: 400;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  :host-context(.workbench-dark) .ticker-description {
+    color: #d9e2ea;
   }
 }
