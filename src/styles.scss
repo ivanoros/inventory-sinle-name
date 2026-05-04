@@ -33,6 +33,10 @@ body {
   margin-left: 4px;
 }
 
+.inventory-trader-list {
+  transform: translateY(-6px);
+}
+
 input[type="checkbox"] {
   accent-color: var(--slabdashboard-checkbox-color);
 }
