@@ -13,91 +13,17 @@
   color: #d9e2ea;
 }
 
-.top-bar {
-  height: 42px;
-  background: #26323c;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 18px;
-}
-
-.logo {
-  font-weight: 700;
-  margin-right: 16px;
-}
-
-.tagline {
-  font-size: 12px;
-  opacity: 0.8;
-}
-
-.right-title {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.right-title strong {
-  font-size: 22px;
-  letter-spacing: 1px;
-}
-
-.tab-bar {
-  height: 34px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding-left: 12px;
-  background: #e7ecec;
-  border-bottom: 1px solid #c7d0d0;
-}
-
-.tab,
-.home {
-  border: 1px solid #b9c4c4;
-  background: #f8fafafa;
-  color: #263238;
-  padding: 5px 14px;
-  text-decoration: none;
-}
-
-.tab.active {
-  background: white;
-  border-bottom-color: white;
-}
-
-.security-tab {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.tab-close {
-  border: none;
-  background: transparent;
-  color: #263238;
-  cursor: pointer;
-  font: inherit;
-  line-height: 1;
-  padding: 0 2px;
-}
-
-.tab-close:hover {
-  color: #a54242;
-}
-
 .toolbar {
   display: flex;
   align-items: end;
   gap: 12px;
-  padding: 14px 18px 14px;
+  padding: 18px 18px 14px;
   font-size: 12px;
 }
 
 .toolbar select {
   display: block;
+  height: 22px;
   min-width: 130px;
 }
 
@@ -109,13 +35,13 @@
 .button-group button {
   border: none;
   border-right: 1px solid #b8c5c5;
-  padding: 7px 14px;
+  padding: 5px 12px;
   background: white;
   cursor: pointer;
 }
 
 .button-group button.active {
-  background: #008a9a;
+  background: #007d86;
   color: white;
 }
 
@@ -130,7 +56,7 @@
   background: #008a72;
   color: white;
   border: none;
-  padding: 7px 16px;
+  padding: 6px 15px;
 }
 
 .grid-shell {
@@ -180,6 +106,10 @@
   .inventory-grid .ag-header-cell,
   .inventory-grid .ag-cell {
     border-right: 1px solid var(--inventory-column-border-color);
+  }
+
+  .inventory-grid .ag-header-cell {
+    font-weight: 600;
   }
 
   .inventory-grid .ag-cell {

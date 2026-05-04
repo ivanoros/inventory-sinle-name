@@ -89,8 +89,8 @@ export class InventoryPage {
     paginationPageSizeSelector: [10, 20, 50],
     cacheBlockSize: 20,
     maxBlocksInCache: 3,
-    rowHeight: 31,
-    headerHeight: 34,
+    rowHeight: 28,
+    headerHeight: 31,
     animateRows: true,
     suppressCellFocus: true,
     defaultColDef: {

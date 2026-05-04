@@ -5,29 +5,35 @@
 .right-panel {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 0;
   min-width: 0;
 }
 
 .card {
-  background: white;
-  border-left: 1px solid #d3dada;
-  padding: 12px;
+  background: transparent;
+  border-top: 1px solid #d3dada;
+  padding: 12px 12px 16px;
+}
+
+.card:first-child {
+  border-top: none;
+  padding-top: 8px;
 }
 
 :host-context(.slabdashboard-dark) .card {
-  background: #111827;
-  border-left-color: #334155;
+  background: transparent;
+  border-top-color: #334155;
 }
 
 .card h3 {
-  margin: 0 0 8px;
+  margin: 0 0 10px;
+  font-size: 16px;
 }
 
 .fee-table,
 .stats-table {
   display: grid;
   grid-template-columns: 1fr auto;
-  gap: 7px 16px;
+  gap: 6px 16px;
   font-size: 12px;
 }

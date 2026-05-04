@@ -13,6 +13,11 @@ body {
 
 .ag-theme-quartz {
   --ag-font-family: var(--slabdashboard-font-family);
+  --ag-header-background-color: #c3cbcb;
+  --ag-header-foreground-color: #102631;
+  --ag-header-column-separator-color: #aab4b4;
+  --ag-row-border-color: #d4d9d9;
+  --ag-font-size: 12px;
 }
 
 input[type="checkbox"] {

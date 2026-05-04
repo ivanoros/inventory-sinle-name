@@ -62,8 +62,8 @@ export class SingleNamePage {
 
   readonly gridOptions: GridOptions = {
     theme: 'legacy',
-    rowHeight: 30,
-    headerHeight: 33,
+    rowHeight: 28,
+    headerHeight: 31,
     suppressCellFocus: true,
     defaultColDef: {
       sortable: true,

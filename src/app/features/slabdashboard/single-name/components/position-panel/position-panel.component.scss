@@ -6,7 +6,7 @@
   display: flex;
   align-items: center;
   gap: 16px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .button-group {
@@ -17,7 +17,7 @@
 .button-group button {
   border: none;
   border-right: 1px solid #b8c5c5;
-  padding: 7px 18px;
+  padding: 5px 16px;
   background: white;
 }
 
@@ -32,7 +32,7 @@
 }
 
 .button-group .active {
-  background: #008a9a;
+  background: #007d86;
   color: white;
 }
 
@@ -54,7 +54,7 @@
 }
 
 .position-grid th {
-  background: #bcc4c4;
+  background: #c3cbcb;
   font-weight: 600;
 }
 
@@ -65,7 +65,7 @@
 .position-grid th,
 .position-grid td {
   border: 1px solid #d3dada;
-  padding: 8px;
+  padding: 7px 8px;
   text-align: right;
 }
 

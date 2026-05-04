@@ -1,43 +1,43 @@
 .top-bar {
-  height: 42px;
+  height: 38px;
   background: #26323c;
   color: white;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 18px;
+  padding: 0 15px;
 }
 
 .logo {
   font-weight: 700;
-  margin-right: 16px;
+  margin-right: 14px;
 }
 
 .tagline {
-  font-size: 12px;
+  font-size: 11px;
   opacity: 0.8;
 }
 
 .right-title {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .right-title strong {
-  font-size: 22px;
+  font-size: 21px;
   letter-spacing: 1px;
 }
 
 .theme-toggle {
-  width: 26px;
-  height: 26px;
+  width: 24px;
+  height: 24px;
   border: 1px solid rgba(255, 255, 255, 0.45);
   border-radius: 50%;
   background: transparent;
   color: white;
   cursor: pointer;
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1;
 }
 
