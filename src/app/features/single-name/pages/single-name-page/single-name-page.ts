@@ -1,7 +1,8 @@
 // src/app/features/single-name/pages/single-name-page/single-name-page.ts
-import { Component, DestroyRef, inject } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { combineLatest } from 'rxjs';
 import { AllCommunityModule as AllGridCommunityModule, ColDef, GridOptions } from 'ag-grid-community';
 import { AllCommunityModule as AllChartCommunityModule, ModuleRegistry as ChartModuleRegistry } from 'ag-charts-community';
 import { SecuritySummaryComponent } from '../../components/security-summary/security-summary.component';
@@ -22,6 +23,7 @@ ChartModuleRegistry.registerModules(AllChartCommunityModule);
   imports: [
     WorkbenchHeaderComponent,
     WorkbenchTabsComponent,
+    RouterLink,
     SecuritySummaryComponent,
     PositionPanelComponent,
     LenderAvailabilityComponent,
@@ -37,6 +39,7 @@ export class SingleNamePage {
   private readonly route = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
   readonly store = inject(SingleNameStore);
+  readonly replacesInventory = signal(false);
 
   readonly agGridModules = [AllGridCommunityModule];
 
@@ -70,11 +73,13 @@ export class SingleNamePage {
   };
 
   constructor() {
-    this.store.setTicker(this.route.snapshot.paramMap.get('ticker'));
-
-    this.route.paramMap
+    combineLatest([this.route.paramMap, this.route.queryParamMap])
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(params => this.store.setTicker(params.get('ticker')));
+      .subscribe(([params, queryParams]) => {
+        const replacesInventory = queryParams.get('view') === 'inventory';
+        this.replacesInventory.set(replacesInventory);
+        this.store.setTicker(params.get('ticker'), { openTab: !replacesInventory });
+      });
   }
 
   toggleDrilldown(): void {

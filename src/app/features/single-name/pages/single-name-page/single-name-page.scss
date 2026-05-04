@@ -43,6 +43,36 @@
   font-size: 22px;
 }
 
+.inventory-return {
+  height: 34px;
+  display: flex;
+  align-items: center;
+  padding: 0 18px;
+  background: #e7ecec;
+  border-bottom: 1px solid #c7d0d0;
+}
+
+.inventory-return a {
+  color: #006978;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.inventory-return a:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+:host-context(.workbench-dark) .inventory-return {
+  background: #172233;
+  border-bottom-color: #2d3948;
+}
+
+:host-context(.workbench-dark) .inventory-return a {
+  color: #36b6c6;
+}
+
 .content {
   flex: 1;
   min-height: 0;

@@ -56,9 +56,13 @@ export class SingleNameStore {
     });
   });
 
-  setTicker(ticker: string | null): void {
-    const openedTicker = this.tabsService.openSecurity(ticker ?? 'FULT');
-    this.ticker.set(openedTicker);
+  setTicker(ticker: string | null, options: { openTab?: boolean } = {}): void {
+    const requestedTicker = (ticker ?? 'FULT').trim().toUpperCase() || 'FULT';
+    const openedTicker = options.openTab === false
+      ? requestedTicker
+      : this.tabsService.openSecurity(requestedTicker);
+
+    this.ticker.set(openedTicker || 'FULT');
   }
 
   toggleDrilldown(): void {

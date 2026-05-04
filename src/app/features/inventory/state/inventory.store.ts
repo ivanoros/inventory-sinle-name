@@ -48,13 +48,20 @@ export class InventoryStore {
   }
 
   openSecurityFromCell(event: CellClickedEvent<InventoryRow>): void {
-    if (event.colDef.field !== 'ticker') return;
-
     const ticker = event.data?.ticker;
     if (!ticker) return;
 
-    const openedTicker = this.tabsService.openSecurity(ticker);
-    this.router.navigate(['/single-name', openedTicker]);
+    if (event.colDef.field === 'ticker') {
+      const openedTicker = this.tabsService.openSecurity(ticker);
+      this.router.navigate(['/single-name', openedTicker]);
+      return;
+    }
+
+    if (event.colDef.field === 'cusip') {
+      this.router.navigate(['/single-name', ticker], {
+        queryParams: { view: 'inventory' },
+      });
+    }
   }
 
   closeSecurityTab(ticker: string): void {

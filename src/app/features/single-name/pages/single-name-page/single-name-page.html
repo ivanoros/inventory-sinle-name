@@ -2,13 +2,19 @@
 <div class="workbench-page">
   <app-workbench-header></app-workbench-header>
 
-  <app-workbench-tabs
-    [activeTab]="store.ticker()"
-    [inventoryTabOpen]="store.inventoryTabOpen()"
-    [securityTabs]="store.securityTabs()"
-    (inventoryTabClosed)="closeInventoryTab()"
-    (securityTabClosed)="closeSecurityTab($event)">
-  </app-workbench-tabs>
+  @if (replacesInventory()) {
+    <nav class="inventory-return">
+      <a routerLink="/">Back to Inventory list</a>
+    </nav>
+  } @else {
+    <app-workbench-tabs
+      [activeTab]="store.ticker()"
+      [inventoryTabOpen]="store.inventoryTabOpen()"
+      [securityTabs]="store.securityTabs()"
+      (inventoryTabClosed)="closeInventoryTab()"
+      (securityTabClosed)="closeSecurityTab($event)">
+    </app-workbench-tabs>
+  }
 
   @if (store.error(); as errorMessage) {
     <main class="content loading-state">
