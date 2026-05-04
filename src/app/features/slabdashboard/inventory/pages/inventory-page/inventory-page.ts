@@ -145,6 +145,9 @@ export class InventoryPage {
         if (Number(params.value) < 0) {
           classes.push('negative-cell');
         }
+        if (animateChange && Number(params.value) > 0) {
+          classes.push('positive-cell');
+        }
 
         return classes;
       },

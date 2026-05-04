@@ -149,9 +149,12 @@
     box-shadow: none !important;
   }
 
-  .negative-cell,
-  .ag-cell-value:has(span.negative) {
-    color: #a54242;
+  .positive-cell {
+    color: rgb(53, 182, 90);
+  }
+
+  .negative-cell {
+    color: rgb(255, 0, 92);
   }
 
   .status-borrow {
@@ -209,8 +212,12 @@
     color: #49c0d0;
   }
 
+  .inventory-grid .positive-cell {
+    color: rgb(53, 182, 90);
+  }
+
   .inventory-grid .negative-cell {
-    color: #ff5c75;
+    color: rgb(255, 0, 92);
   }
 
   .inventory-grid .status-borrow {
