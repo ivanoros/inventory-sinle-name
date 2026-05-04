@@ -127,3 +127,14 @@
 :host-context(.workbench-dark) .loading-state {
   color: #9fb0bf;
 }
+
+:host ::ng-deep {
+  .numeric-cell {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .numeric-header .ag-header-cell-label {
+    justify-content: flex-end;
+  }
+}

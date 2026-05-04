@@ -44,6 +44,7 @@
   border-collapse: collapse;
   background: white;
   font-size: 12px;
+  font-variant-numeric: tabular-nums;
 }
 
 :host-context(.workbench-dark) .position-grid table {

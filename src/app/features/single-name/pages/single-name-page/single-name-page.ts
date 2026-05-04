@@ -49,15 +49,15 @@ export class SingleNamePage {
     { field: 'market', headerName: 'Market', width: 95 },
     { field: 'account', headerName: 'Account', width: 105 },
     { field: 'description', headerName: 'Description', width: 230 },
-    { field: 'projectedTotal', headerName: 'Projected Total', width: 145 },
-    { field: 'settledTotal', headerName: 'Settled Total', width: 135 },
-    { field: 'pendingTotal', headerName: 'Pending Total', width: 135 },
-    { field: 'projected214', headerName: '214 Projected', width: 135 },
-    { field: 'settled214', headerName: '214 Settled', width: 125 },
-    { field: 'pending214', headerName: '214 Pending', width: 125 },
-    { field: 'projected2864', headerName: '2864 Projected', width: 140 },
-    { field: 'settled2864', headerName: '2864 Settled', width: 130 },
-    { field: 'pending2864', headerName: '2864 Pending', width: 130 },
+    this.numberColumn('projectedTotal', 'Projected Total', 145),
+    this.numberColumn('settledTotal', 'Settled Total', 135),
+    this.numberColumn('pendingTotal', 'Pending Total', 135),
+    this.numberColumn('projected214', '214 Projected', 135),
+    this.numberColumn('settled214', '214 Settled', 125),
+    this.numberColumn('pending214', '214 Pending', 125),
+    this.numberColumn('projected2864', '2864 Projected', 140),
+    this.numberColumn('settled2864', '2864 Settled', 130),
+    this.numberColumn('pending2864', '2864 Pending', 130),
   ];
 
   readonly gridOptions: GridOptions = {
@@ -110,5 +110,15 @@ export class SingleNamePage {
 
   closeInventoryTab(): void {
     this.store.closeInventoryTab();
+  }
+
+  private numberColumn(field: string, headerName: string, width: number): ColDef {
+    return {
+      field,
+      headerName,
+      width,
+      cellClass: 'numeric-cell',
+      headerClass: 'numeric-header',
+    };
   }
 }

@@ -24,6 +24,15 @@
 }
 
 :host ::ng-deep {
+  .numeric-cell {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .numeric-header .ag-header-cell-label {
+    justify-content: flex-end;
+  }
+
   .bar-cell {
     position: relative;
     height: 100%;

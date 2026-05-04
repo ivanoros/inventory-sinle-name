@@ -35,12 +35,22 @@ export class LenderAvailabilityComponent {
         `;
       },
     },
-    { field: 'quantity', headerName: 'QUANTITY', width: 130 },
-    { field: 'quantityHc', headerName: 'QUANTITY_HC', width: 130 },
-    { field: 'quantityPrevday', headerName: 'QUANTITY_PREVDAY', width: 160 },
-    { field: 'quantityHcPrevday', headerName: 'QUANTITY_HC_PREVDAY', width: 180 },
-    { field: 'quantityDiffToPrevday', headerName: 'QUANTITY_DIFF_TO_PREVDAY', width: 220 },
-    { field: 'quantityHcDiffToPrevday', headerName: 'QUANTITY_HC_DIFF_TO_PREVDAY', width: 230 },
-    { field: 'diffPercent', headerName: 'Diff %', width: 100 },
+    this.numberColumn('quantity', 'QUANTITY', 130),
+    this.numberColumn('quantityHc', 'QUANTITY_HC', 130),
+    this.numberColumn('quantityPrevday', 'QUANTITY_PREVDAY', 160),
+    this.numberColumn('quantityHcPrevday', 'QUANTITY_HC_PREVDAY', 180),
+    this.numberColumn('quantityDiffToPrevday', 'QUANTITY_DIFF_TO_PREVDAY', 220),
+    this.numberColumn('quantityHcDiffToPrevday', 'QUANTITY_HC_DIFF_TO_PREVDAY', 230),
+    this.numberColumn('diffPercent', 'Diff %', 100),
   ];
+
+  private numberColumn(field: keyof LenderAvailabilityRow, headerName: string, width: number): ColDef<LenderAvailabilityRow> {
+    return {
+      field,
+      headerName,
+      width,
+      cellClass: 'numeric-cell',
+      headerClass: 'numeric-header',
+    };
+  }
 }
