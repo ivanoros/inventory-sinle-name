@@ -142,10 +142,13 @@ export class InventoryPage {
       enableCellChangeFlash: animateChange,
       cellClass: params => {
         const classes = [this.numericColumnClass];
+        if (field === 'price') {
+          classes.push('price-cell');
+        }
         if (Number(params.value) < 0) {
           classes.push('negative-cell');
         }
-        if (animateChange && Number(params.value) > 0) {
+        if (animateChange && field !== 'price' && Number(params.value) > 0) {
           classes.push('positive-cell');
         }
 

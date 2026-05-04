@@ -27,6 +27,12 @@ body {
   --ag-value-change-delta-up-color: rgb(53, 182, 90);
 }
 
+.inventory-grid .price-cell .ag-value-change-value-highlight {
+  padding: 2px 6px;
+  border-radius: 12px;
+  margin-left: 4px;
+}
+
 input[type="checkbox"] {
   accent-color: var(--slabdashboard-checkbox-color);
 }
