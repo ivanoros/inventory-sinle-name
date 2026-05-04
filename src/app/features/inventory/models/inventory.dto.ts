@@ -12,7 +12,8 @@ export interface InventoryRowDto {
   description: string;
   security_type: string;
   price: number;
-  opening_ca?: number;
+  opening_ca?: number | string;
+  upcoming_ca?: string;
   record_date?: string;
   excess_deficit?: number;
   live_excess_deficit?: number;

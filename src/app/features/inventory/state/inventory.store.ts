@@ -133,7 +133,7 @@ export class InventoryStore {
       'description',
       'type',
       'price',
-      'openingCA',
+      'upcomingCA',
       'recordDate',
       'excessDeficit',
       'liveExcessDeficit',

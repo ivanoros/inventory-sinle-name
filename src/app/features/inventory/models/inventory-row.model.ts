@@ -6,7 +6,7 @@ export interface InventoryRow {
   description: string;
   type: string;
   price: number;
-  openingCA?: number;
+  upcomingCA?: string;
   recordDate?: string;
   excessDeficit?: number;
   liveExcessDeficit?: number;

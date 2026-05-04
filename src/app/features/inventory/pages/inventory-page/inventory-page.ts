@@ -60,7 +60,7 @@ export class InventoryPage {
     },
     { field: 'type', headerName: 'Type', pinned: 'left', width: 80 },
     this.numberColumn('price', 'Price', 90, true),
-    this.numberColumn('openingCA', 'Opening CA', 120, true),
+    { field: 'upcomingCA', headerName: 'Upcoming CA', pinned: 'left', width: 120 },
     { field: 'recordDate', headerName: 'Record Date', pinned: 'left', width: 120 },
     this.numberColumn('excessDeficit', 'Excess Deficit', 140),
     this.numberColumn('liveExcessDeficit', 'Live Excess Deficit', 160),
@@ -151,6 +151,7 @@ export class InventoryPage {
 
   private formatNumericValue(params: ValueFormatterParams<InventoryRow, number | undefined>): string {
     if (params.value === null || params.value === undefined) return '';
+    if (params.value === 0) return '-';
 
     const formattedValue = Math.abs(params.value).toLocaleString('en-US');
     return params.value < 0 ? `(${formattedValue})` : formattedValue;
