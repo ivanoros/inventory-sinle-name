@@ -13,6 +13,11 @@
   color: #d9e2ea;
 }
 
+:host-context(.slabdashboard-dark) .inventory-grid {
+  --inventory-column-border-color: #3f4b59;
+  --inventory-fixed-split-color: #8b96a3;
+}
+
 .toolbar {
   display: flex;
   align-items: end;
@@ -185,8 +190,34 @@
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+}
 
-  :host-context(.slabdashboard-dark) .ticker-description {
-    color: #d9e2ea;
+:host-context(.slabdashboard-dark) ::ng-deep {
+  .inventory-grid .ticker-link-cell {
+    color: #eef3f7;
+  }
+
+  .inventory-grid .ticker-symbol {
+    color: #eef3f7;
+  }
+
+  .inventory-grid .ticker-description {
+    color: #b8c3cf;
+  }
+
+  .inventory-grid .cusip-link-cell {
+    color: #49c0d0;
+  }
+
+  .inventory-grid .negative-cell {
+    color: #ff5c75;
+  }
+
+  .inventory-grid .status-borrow {
+    color: #ff5c75;
+  }
+
+  .inventory-grid .status-covered {
+    color: #35b65a;
   }
 }

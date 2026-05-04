@@ -18,6 +18,7 @@ body {
   --ag-header-column-separator-color: #aab4b4;
   --ag-row-border-color: #d4d9d9;
   --ag-font-size: 12px;
+  --ag-grid-size: 6px;
 }
 
 input[type="checkbox"] {
@@ -30,13 +31,14 @@ body.slabdashboard-dark {
 
 body.slabdashboard-dark .ag-theme-quartz {
   --ag-background-color: #111827;
-  --ag-foreground-color: #d9e2ea;
+  --ag-foreground-color: #eef3f7;
   --ag-header-background-color: #1e2936;
-  --ag-header-foreground-color: #eef3f7;
-  --ag-odd-row-background-color: #141e2a;
-  --ag-row-hover-color: #223246;
-  --ag-border-color: #334155;
-  --ag-secondary-border-color: #263241;
+  --ag-header-foreground-color: #f8fafc;
+  --ag-odd-row-background-color: #162130;
+  --ag-row-hover-color: #323a46;
+  --ag-border-color: #3f4b59;
+  --ag-row-border-color: #3f4b59;
+  --ag-secondary-border-color: #2d3948;
   --ag-control-panel-background-color: #111827;
   --ag-subheader-background-color: #172233;
   --ag-input-background-color: #0f1720;
