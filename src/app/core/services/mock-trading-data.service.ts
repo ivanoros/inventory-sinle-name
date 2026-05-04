@@ -350,7 +350,10 @@ export class MockTradingDataService {
   }
 
   getInventoryPage(request: InventoryPageRequest): InventoryPage {
-    const rows = this.getInventoryRows().filter(row => this.matchesInventoryView(row, request.view));
+    const rows = this.sortInventoryRows(
+      this.getInventoryRows().filter(row => this.matchesInventoryView(row, request.view)),
+      request.sorts ?? [],
+    );
     const pageIndex = Math.max(0, request.pageIndex);
     const pageSize = Math.max(1, request.pageSize);
     const startRow = pageIndex * pageSize;
@@ -368,6 +371,42 @@ export class MockTradingDataService {
     if (view === 'htb') return row.status === 'Hard to borrow';
 
     return row.status.toLowerCase() === view;
+  }
+
+  private sortInventoryRows(rows: InventoryRow[], sorts: InventoryPageRequest['sorts']): InventoryRow[] {
+    if (!sorts?.length) {
+      return rows;
+    }
+
+    return [...rows].sort((left, right) => {
+      for (const sort of sorts) {
+        const comparison = this.compareInventoryValues(left[sort.field], right[sort.field]);
+
+        if (comparison !== 0) {
+          return sort.direction === 'asc' ? comparison : -comparison;
+        }
+      }
+
+      return 0;
+    });
+  }
+
+  private compareInventoryValues(
+    left: InventoryRow[keyof InventoryRow],
+    right: InventoryRow[keyof InventoryRow],
+  ): number {
+    if (left == null && right == null) return 0;
+    if (left == null) return 1;
+    if (right == null) return -1;
+
+    if (typeof left === 'number' && typeof right === 'number') {
+      return left - right;
+    }
+
+    return String(left).localeCompare(String(right), undefined, {
+      numeric: true,
+      sensitivity: 'base',
+    });
   }
 
   private getGeneratedInventoryRows(): InventoryRow[] {

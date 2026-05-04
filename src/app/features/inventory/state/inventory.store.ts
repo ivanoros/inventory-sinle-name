@@ -10,7 +10,7 @@ import {
 } from 'ag-grid-community';
 import { WorkbenchTabsService } from '@core/services/workbench-tabs.service';
 import { InventoryDataService } from '../data-access/inventory-data.service';
-import { InventoryViewFilter } from '../models/inventory-page.model';
+import { InventorySort, InventoryViewFilter } from '../models/inventory-page.model';
 import { InventoryRow } from '../models/inventory-row.model';
 
 @Injectable()
@@ -89,6 +89,7 @@ export class InventoryStore {
           pageIndex,
           pageSize,
           view: this.selectedView(),
+          sorts: this.getSorts(params.request.sortModel),
         }).subscribe({
           next: page => {
             params.success({
@@ -100,5 +101,49 @@ export class InventoryStore {
         });
       },
     };
+  }
+
+  private getSorts(sortModel: IServerSideGetRowsParams<InventoryRow>['request']['sortModel']): InventorySort[] {
+    return sortModel.reduce<InventorySort[]>((sorts, sort) => {
+      if (!this.isInventoryField(sort.colId) || (sort.sort !== 'asc' && sort.sort !== 'desc')) {
+        return sorts;
+      }
+
+      sorts.push({
+        field: sort.colId,
+        direction: sort.sort,
+      });
+
+      return sorts;
+    }, []);
+  }
+
+  private isInventoryField(field: string): field is keyof InventoryRow {
+    return [
+      'status',
+      'ticker',
+      'cusip',
+      'description',
+      'type',
+      'price',
+      'openingCA',
+      'recordDate',
+      'excessDeficit',
+      'liveExcessDeficit',
+      'sodBorrowNeed',
+      'sodExcessReturn',
+      'sod214Proj',
+      'sodAfrProj',
+      'sodUsPmProj',
+      'sodOtherProj',
+      'settled214',
+      'settledAfr',
+      'settledUsPm',
+      'otherSettled',
+      'pending214',
+      'pendingAfr',
+      'pendingUsPm',
+      'pendingOther',
+    ].includes(field);
   }
 }
