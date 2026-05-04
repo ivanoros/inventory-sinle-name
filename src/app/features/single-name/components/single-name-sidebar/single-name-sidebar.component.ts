@@ -1,44 +1,15 @@
-import { Component, computed, input } from '@angular/core';
-import { AgCharts } from 'ag-charts-angular';
-import { AgCartesianChartOptions } from 'ag-charts-community';
+import { Component, input } from '@angular/core';
 import { FeePoint, SingleNameSidebarData } from '../../models/single-name.model';
+import { SingleNameFeesChartComponent } from '../single-name-fees-chart/single-name-fees-chart.component';
 
 @Component({
   selector: 'app-single-name-sidebar',
   standalone: true,
-  imports: [AgCharts],
+  imports: [SingleNameFeesChartComponent],
   templateUrl: './single-name-sidebar.component.html',
   styleUrl: './single-name-sidebar.component.scss',
 })
 export class SingleNameSidebarComponent {
   readonly fees = input.required<FeePoint[]>();
   readonly sidebar = input.required<SingleNameSidebarData>();
-
-  readonly chartOptions = computed<AgCartesianChartOptions>(() => ({
-    data: this.fees(),
-    height: 210,
-    title: {
-      text: 'Lending Pit',
-    },
-    series: [
-      {
-        type: 'line',
-        xKey: 'period',
-        yKey: 'value',
-        marker: {
-          enabled: true,
-        },
-      },
-    ],
-    axes: {
-      x: {
-        type: 'category',
-        position: 'bottom',
-      },
-      y: {
-        type: 'number',
-        position: 'left',
-      },
-    },
-  }));
 }

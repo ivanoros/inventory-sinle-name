@@ -1,7 +1,7 @@
 <aside class="right-panel">
   <section class="card">
     <h3>Fees</h3>
-    <ag-charts [options]="chartOptions()"></ag-charts>
+    <app-single-name-fees-chart [fees]="fees()"></app-single-name-fees-chart>
 
     <div class="fee-table">
       @for (item of sidebar().feeStats; track item.label) {
