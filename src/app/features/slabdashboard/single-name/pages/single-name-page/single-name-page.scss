@@ -134,6 +134,10 @@
     font-variant-numeric: tabular-nums;
   }
 
+  .negative-cell {
+    color: rgb(255, 0, 92);
+  }
+
   .numeric-header .ag-header-cell-label {
     justify-content: flex-end;
   }

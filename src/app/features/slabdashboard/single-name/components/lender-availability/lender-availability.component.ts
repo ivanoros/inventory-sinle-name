@@ -56,7 +56,14 @@ export class LenderAvailabilityComponent {
       headerName,
       width,
       filter: 'agNumberColumnFilter',
-      cellClass: 'numeric-cell',
+      cellClass: params => {
+        const classes = ['numeric-cell'];
+        if (Number(params.value) < 0) {
+          classes.push('negative-cell');
+        }
+
+        return classes;
+      },
       headerClass: 'numeric-header',
       valueFormatter: params => this.formatNumericValue(params),
     };
