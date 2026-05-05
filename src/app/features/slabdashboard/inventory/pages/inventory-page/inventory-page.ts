@@ -9,7 +9,12 @@ import {
   ICellRendererParams,
   ValueFormatterParams,
 } from 'ag-grid-community';
-import { ServerSideRowModelApiModule, ServerSideRowModelModule } from 'ag-grid-enterprise';
+import {
+  ColumnsToolPanelModule,
+  ServerSideRowModelApiModule,
+  ServerSideRowModelModule,
+  SideBarModule,
+} from 'ag-grid-enterprise';
 import { InventoryRow } from '../../models/inventory-row.model';
 import { InventoryViewFilter } from '../../models/inventory-page.model';
 import { InventoryStore } from '../../state/inventory.store';
@@ -32,7 +37,13 @@ type NumericInventoryField = {
 export class InventoryPage {
   readonly store = inject(InventoryStore);
 
-  readonly agGridModules = [AllCommunityModule, ServerSideRowModelModule, ServerSideRowModelApiModule];
+  readonly agGridModules = [
+    AllCommunityModule,
+    ServerSideRowModelModule,
+    ServerSideRowModelApiModule,
+    ColumnsToolPanelModule,
+    SideBarModule,
+  ];
   private readonly numericColumnClass = 'numeric-cell';
 
   readonly columnDefs: ColDef<InventoryRow>[] = [
@@ -94,6 +105,23 @@ export class InventoryPage {
     animateRows: true,
     suppressCellFocus: true,
     getRowId: params => params.data.ticker,
+    sideBar: {
+      toolPanels: [
+        {
+          id: 'columns',
+          labelDefault: 'Columns',
+          labelKey: 'columns',
+          iconKey: 'columns',
+          toolPanel: 'agColumnsToolPanel',
+          toolPanelParams: {
+            suppressRowGroups: true,
+            suppressValues: true,
+            suppressPivots: true,
+            suppressPivotMode: true,
+          },
+        },
+      ],
+    },
     defaultColDef: {
       sortable: true,
       filter: true,

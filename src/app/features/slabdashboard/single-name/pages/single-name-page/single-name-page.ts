@@ -10,6 +10,7 @@ import {
   ValueFormatterParams,
 } from 'ag-grid-community';
 import { AllCommunityModule as AllChartCommunityModule, ModuleRegistry as ChartModuleRegistry } from 'ag-charts-community';
+import { ColumnsToolPanelModule, SideBarModule } from 'ag-grid-enterprise';
 import { SecuritySummaryComponent } from '../../components/security-summary/security-summary.component';
 import { PositionPanelComponent } from '../../components/position-panel/position-panel.component';
 import { LenderAvailabilityComponent } from '../../components/lender-availability/lender-availability.component';
@@ -46,7 +47,7 @@ export class SingleNamePage {
   readonly store = inject(SingleNameStore);
   readonly replacesInventory = signal(false);
 
-  readonly agGridModules = [AllGridCommunityModule];
+  readonly agGridModules = [AllGridCommunityModule, ColumnsToolPanelModule, SideBarModule];
 
   readonly drilldownColumnDefs: ColDef[] = [
     { field: 'category', headerName: 'Category', pinned: 'left', width: 150 },
@@ -70,6 +71,23 @@ export class SingleNamePage {
     rowHeight: 28,
     headerHeight: 31,
     suppressCellFocus: true,
+    sideBar: {
+      toolPanels: [
+        {
+          id: 'columns',
+          labelDefault: 'Columns',
+          labelKey: 'columns',
+          iconKey: 'columns',
+          toolPanel: 'agColumnsToolPanel',
+          toolPanelParams: {
+            suppressRowGroups: true,
+            suppressValues: true,
+            suppressPivots: true,
+            suppressPivotMode: true,
+          },
+        },
+      ],
+    },
     defaultColDef: {
       sortable: true,
       filter: true,
