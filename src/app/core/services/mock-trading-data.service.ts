@@ -395,7 +395,10 @@ export class MockTradingDataService {
 
   getInventoryPage(request: InventoryPageRequest): InventoryPage {
     const rows = this.sortInventoryRows(
-      this.getInventoryRows().filter(row => this.matchesInventoryView(row, request.view)),
+      this.filterInventoryRows(
+        this.getInventoryRows().filter(row => this.matchesInventoryView(row, request.view)),
+        request.filters,
+      ),
       request.sorts ?? [],
     );
     const pageIndex = Math.max(0, request.pageIndex);
@@ -415,6 +418,95 @@ export class MockTradingDataService {
     if (view === 'htb') return row.status === 'Hard to borrow';
 
     return row.status.toLowerCase() === view;
+  }
+
+  private filterInventoryRows(rows: InventoryRow[], filters: InventoryPageRequest['filters']): InventoryRow[] {
+    if (!filters || Object.keys(filters).length === 0) {
+      return rows;
+    }
+
+    return rows.filter(row => Object.entries(filters).every(([field, filter]) => {
+      if (!this.isInventoryField(field)) {
+        return true;
+      }
+
+      return this.matchesFilter(row[field], filter);
+    }));
+  }
+
+  private matchesFilter(value: InventoryRow[keyof InventoryRow], filter: unknown): boolean {
+    if (!filter || typeof filter !== 'object') {
+      return true;
+    }
+
+    const filterRecord = filter as Record<string, unknown>;
+    const conditions = Array.isArray(filterRecord['conditions'])
+      ? filterRecord['conditions'] as unknown[]
+      : [filter];
+
+    const operator = String(filterRecord['operator'] ?? 'AND').toUpperCase();
+    return operator === 'OR'
+      ? conditions.some(condition => this.matchesSingleFilter(value, condition))
+      : conditions.every(condition => this.matchesSingleFilter(value, condition));
+  }
+
+  private matchesSingleFilter(value: InventoryRow[keyof InventoryRow], filter: unknown): boolean {
+    if (!filter || typeof filter !== 'object') {
+      return true;
+    }
+
+    const filterRecord = filter as Record<string, unknown>;
+    const filterType = String(filterRecord['filterType'] ?? 'text');
+    const type = String(filterRecord['type'] ?? 'contains');
+    const filterValue = filterRecord['filter'];
+    const filterTo = filterRecord['filterTo'];
+
+    if (type === 'blank') return value === null || value === undefined || value === '';
+    if (type === 'notBlank') return value !== null && value !== undefined && value !== '';
+
+    if (filterType === 'number') {
+      return this.matchesNumberFilter(value, type, filterValue, filterTo);
+    }
+
+    return this.matchesTextFilter(value, type, filterValue);
+  }
+
+  private matchesTextFilter(value: InventoryRow[keyof InventoryRow], type: string, filterValue: unknown): boolean {
+    const text = String(value ?? '').toLowerCase();
+    const query = String(filterValue ?? '').toLowerCase();
+
+    if (!query) return true;
+    if (type === 'equals') return text === query;
+    if (type === 'notEqual') return text !== query;
+    if (type === 'startsWith') return text.startsWith(query);
+    if (type === 'endsWith') return text.endsWith(query);
+    if (type === 'notContains') return !text.includes(query);
+
+    return text.includes(query);
+  }
+
+  private matchesNumberFilter(
+    value: InventoryRow[keyof InventoryRow],
+    type: string,
+    filterValue: unknown,
+    filterTo: unknown,
+  ): boolean {
+    const numericValue = Number(value);
+    const numericFilter = Number(filterValue);
+    const numericFilterTo = Number(filterTo);
+
+    if (Number.isNaN(numericValue) || Number.isNaN(numericFilter)) return false;
+    if (type === 'equals') return numericValue === numericFilter;
+    if (type === 'notEqual') return numericValue !== numericFilter;
+    if (type === 'lessThan') return numericValue < numericFilter;
+    if (type === 'lessThanOrEqual') return numericValue <= numericFilter;
+    if (type === 'greaterThan') return numericValue > numericFilter;
+    if (type === 'greaterThanOrEqual') return numericValue >= numericFilter;
+    if (type === 'inRange') {
+      return !Number.isNaN(numericFilterTo) && numericValue >= numericFilter && numericValue <= numericFilterTo;
+    }
+
+    return numericValue === numericFilter;
   }
 
   private sortInventoryRows(rows: InventoryRow[], sorts: InventoryPageRequest['sorts']): InventoryRow[] {
@@ -451,6 +543,35 @@ export class MockTradingDataService {
       numeric: true,
       sensitivity: 'base',
     });
+  }
+
+  private isInventoryField(field: string): field is keyof InventoryRow {
+    return [
+      'status',
+      'ticker',
+      'cusip',
+      'description',
+      'type',
+      'price',
+      'upcomingCA',
+      'recordDate',
+      'excessDeficit',
+      'liveExcessDeficit',
+      'sodBorrowNeed',
+      'sodExcessReturn',
+      'sod214Proj',
+      'sodAfrProj',
+      'sodUsPmProj',
+      'sodOtherProj',
+      'settled214',
+      'settledAfr',
+      'settledUsPm',
+      'otherSettled',
+      'pending214',
+      'pendingAfr',
+      'pendingUsPm',
+      'pendingOther',
+    ].includes(field);
   }
 
   private getGeneratedInventoryRows(): InventoryRow[] {

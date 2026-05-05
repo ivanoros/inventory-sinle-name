@@ -97,6 +97,7 @@ export class InventoryPage {
     defaultColDef: {
       sortable: true,
       filter: true,
+      floatingFilter: true,
       resizable: true,
     },
     getRowClass: params => {
@@ -138,6 +139,7 @@ export class InventoryPage {
       headerName,
       width,
       pinned: pinned ? 'left' : undefined,
+      filter: 'agNumberColumnFilter',
       cellRenderer: animateChange ? 'agAnimateShowChangeCellRenderer' : undefined,
       enableCellChangeFlash: animateChange,
       cellClass: params => {

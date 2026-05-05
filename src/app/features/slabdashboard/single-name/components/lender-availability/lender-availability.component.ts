@@ -49,6 +49,7 @@ export class LenderAvailabilityComponent {
       field,
       headerName,
       width,
+      filter: 'agNumberColumnFilter',
       cellClass: 'numeric-cell',
       headerClass: 'numeric-header',
     };

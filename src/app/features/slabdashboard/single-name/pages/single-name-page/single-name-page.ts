@@ -68,6 +68,7 @@ export class SingleNamePage {
     defaultColDef: {
       sortable: true,
       filter: true,
+      floatingFilter: true,
       resizable: true,
     },
   };
@@ -117,6 +118,7 @@ export class SingleNamePage {
       field,
       headerName,
       width,
+      filter: 'agNumberColumnFilter',
       cellClass: 'numeric-cell',
       headerClass: 'numeric-header',
     };

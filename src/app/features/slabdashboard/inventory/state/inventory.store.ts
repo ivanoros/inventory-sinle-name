@@ -7,6 +7,7 @@ import {
   GridApi,
   IServerSideDatasource,
   IServerSideGetRowsParams,
+  type FilterModel,
 } from 'ag-grid-community';
 import { SlabdashboardTabsService } from '@core/services/slabdashboard-tabs.service';
 import { InventoryDataService } from '../data-access/inventory-data.service';
@@ -96,6 +97,7 @@ export class InventoryStore {
           pageSize,
           view: this.selectedView(),
           sorts: this.getSorts(params.request.sortModel),
+          filters: this.getFilters(params.request.filterModel),
         }).subscribe({
           next: page => {
             params.success({
@@ -122,6 +124,16 @@ export class InventoryStore {
 
       return sorts;
     }, []);
+  }
+
+  private getFilters(
+    filterModel: IServerSideGetRowsParams<InventoryRow>['request']['filterModel'],
+  ): FilterModel | undefined {
+    if (!filterModel || 'filterType' in filterModel) {
+      return undefined;
+    }
+
+    return filterModel;
   }
 
   private isInventoryField(field: string): field is keyof InventoryRow {
