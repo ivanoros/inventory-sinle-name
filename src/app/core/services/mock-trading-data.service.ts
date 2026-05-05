@@ -622,16 +622,21 @@ export class MockTradingDataService {
   }
 
   getSingleName(ticker: string): SingleNameDetail {
+    const inventoryRow = this.getInventoryRowByTicker(ticker);
+    const headerTicker = inventoryRow?.ticker ?? ticker;
+    const cusip = inventoryRow?.cusip ?? '360271100';
+    const recordDate = inventoryRow?.recordDate ?? '27-Feb-2026';
+
     return {
-      ticker,
-      securityId: '2356585',
-      name: 'Fulton Financial Corp',
+      ticker: headerTicker,
+      securityId: cusip,
+      name: inventoryRow?.description ?? 'Fulton Financial Corp',
       country: 'US',
-      cusip: '360271100 | US3602711000',
+      cusip: `${cusip} | US${cusip}`,
       sector: 'Banks | Financial',
-      type: 'EQTY | Tier 3',
-      price: 19.67,
-      corporateAction: '27-Feb-2026 (Div - $0.19)',
+      type: `${inventoryRow?.type ?? 'EQTY'} | Tier 3`,
+      price: inventoryRow?.price ?? 19.67,
+      corporateAction: `${recordDate} (Div - $0.19)`,
       netPnl: 539.23,
       pnlOpp: 798.10,
       watchList: 'Biagio BONANNO',
@@ -849,6 +854,14 @@ export class MockTradingDataService {
         },
       ],
     };
+  }
+
+  private getInventoryRowByTicker(ticker: string): InventoryRow | undefined {
+    if (!this.inventoryRows) {
+      this.inventoryRows = this.createInventoryRows();
+    }
+
+    return this.inventoryRows.find(row => row.ticker.toLowerCase() === ticker.toLowerCase());
   }
 }
 
