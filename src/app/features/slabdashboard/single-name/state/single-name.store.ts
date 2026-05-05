@@ -91,7 +91,7 @@ export class SingleNameStore {
     if (!this.resizingSidebar()) return;
 
     const nextWidth = this.resizeStartWidth + this.resizeStartX - pointerX;
-    this.sidebarWidth.set(Math.min(560, Math.max(260, nextWidth)));
+    this.sidebarWidth.set(Math.min(760, Math.max(260, nextWidth)));
   }
 
   stopSidebarResize(): void {
