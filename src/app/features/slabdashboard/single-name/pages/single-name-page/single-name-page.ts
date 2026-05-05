@@ -3,7 +3,12 @@ import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { combineLatest } from 'rxjs';
-import { AllCommunityModule as AllGridCommunityModule, ColDef, GridOptions } from 'ag-grid-community';
+import {
+  AllCommunityModule as AllGridCommunityModule,
+  ColDef,
+  GridOptions,
+  ValueFormatterParams,
+} from 'ag-grid-community';
 import { AllCommunityModule as AllChartCommunityModule, ModuleRegistry as ChartModuleRegistry } from 'ag-charts-community';
 import { SecuritySummaryComponent } from '../../components/security-summary/security-summary.component';
 import { PositionPanelComponent } from '../../components/position-panel/position-panel.component';
@@ -121,6 +126,20 @@ export class SingleNamePage {
       filter: 'agNumberColumnFilter',
       cellClass: 'numeric-cell',
       headerClass: 'numeric-header',
+      valueFormatter: params => this.formatNumericValue(params),
     };
+  }
+
+  private formatNumericValue(params: ValueFormatterParams): string {
+    if (params.value === null || params.value === undefined) return '';
+    if (params.value === 0) return '-';
+
+    const numericValue = Number(params.value);
+    if (Number.isNaN(numericValue)) return String(params.value);
+
+    const formattedValue = Math.abs(numericValue).toLocaleString('en-US', {
+      maximumFractionDigits: 2,
+    });
+    return numericValue < 0 ? `-${formattedValue}` : formattedValue;
   }
 }

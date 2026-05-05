@@ -1,6 +1,12 @@
 import { Component, input } from '@angular/core';
 import { AgGridAngular } from 'ag-grid-angular';
-import { ColDef, GridOptions, ICellRendererParams, Module as AgGridModule } from 'ag-grid-community';
+import {
+  ColDef,
+  GridOptions,
+  ICellRendererParams,
+  Module as AgGridModule,
+  ValueFormatterParams,
+} from 'ag-grid-community';
 import { LenderAvailabilityRow } from '../../models/single-name.model';
 import { EmptyStateComponent } from '@shared/ui/empty-state/empty-state.component';
 
@@ -52,6 +58,17 @@ export class LenderAvailabilityComponent {
       filter: 'agNumberColumnFilter',
       cellClass: 'numeric-cell',
       headerClass: 'numeric-header',
+      valueFormatter: params => this.formatNumericValue(params),
     };
+  }
+
+  private formatNumericValue(params: ValueFormatterParams<LenderAvailabilityRow, number>): string {
+    if (params.value === null || params.value === undefined) return '';
+    if (params.value === 0) return '-';
+
+    const formattedValue = Math.abs(params.value).toLocaleString('en-US', {
+      maximumFractionDigits: 2,
+    });
+    return params.value < 0 ? `-${formattedValue}` : formattedValue;
   }
 }

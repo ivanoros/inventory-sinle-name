@@ -165,8 +165,10 @@ export class InventoryPage {
     if (params.value === null || params.value === undefined) return '';
     if (params.value === 0) return '-';
 
-    const formattedValue = Math.abs(params.value).toLocaleString('en-US');
-    return params.value < 0 ? `(${formattedValue})` : formattedValue;
+    const formattedValue = Math.abs(params.value).toLocaleString('en-US', {
+      maximumFractionDigits: 2,
+    });
+    return params.value < 0 ? `-${formattedValue}` : formattedValue;
   }
 
   private renderTickerCell(params: ICellRendererParams<InventoryRow, string>): string {

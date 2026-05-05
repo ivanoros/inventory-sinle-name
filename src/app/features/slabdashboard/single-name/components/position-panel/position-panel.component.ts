@@ -30,8 +30,10 @@ export class PositionPanelComponent {
   formatValue(value: number | null): string {
     if (value === null) return '';
 
-    const formattedValue = Math.abs(value).toLocaleString('en-US');
-    return value < 0 ? `(${formattedValue})` : formattedValue;
+    const formattedValue = Math.abs(value).toLocaleString('en-US', {
+      maximumFractionDigits: 2,
+    });
+    return value < 0 ? `-${formattedValue}` : formattedValue;
   }
 
   updateShowEmptyRows(event: Event): void {
