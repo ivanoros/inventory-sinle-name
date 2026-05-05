@@ -4,6 +4,8 @@ import {
   AllCommunityModule,
   CellClickedEvent,
   ColDef,
+  ColumnAutoSizeModule,
+  FirstDataRenderedEvent,
   GridOptions,
   GridReadyEvent,
   ICellRendererParams,
@@ -43,6 +45,7 @@ export class InventoryPage {
     ServerSideRowModelApiModule,
     ColumnsToolPanelModule,
     SideBarModule,
+    ColumnAutoSizeModule,
   ];
   private readonly numericColumnClass = 'numeric-cell';
 
@@ -105,6 +108,7 @@ export class InventoryPage {
     animateRows: true,
     suppressCellFocus: true,
     getRowId: params => params.data.ticker,
+    onFirstDataRendered: event => this.autoSizeColumns(event),
     sideBar: {
       toolPanels: [
         {
@@ -141,6 +145,10 @@ export class InventoryPage {
 
   onCellClicked(event: CellClickedEvent<InventoryRow>): void {
     this.store.openSecurityFromCell(event);
+  }
+
+  private autoSizeColumns(event: FirstDataRenderedEvent<InventoryRow>): void {
+    requestAnimationFrame(() => event.api.autoSizeAllColumns(false));
   }
 
   closeSecurityTab(ticker: string): void {

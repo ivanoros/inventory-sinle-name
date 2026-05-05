@@ -6,6 +6,8 @@ import { combineLatest } from 'rxjs';
 import {
   AllCommunityModule as AllGridCommunityModule,
   ColDef,
+  ColumnAutoSizeModule,
+  FirstDataRenderedEvent,
   GridOptions,
   ValueFormatterParams,
 } from 'ag-grid-community';
@@ -47,7 +49,7 @@ export class SingleNamePage {
   readonly store = inject(SingleNameStore);
   readonly replacesInventory = signal(false);
 
-  readonly agGridModules = [AllGridCommunityModule, ColumnsToolPanelModule, SideBarModule];
+  readonly agGridModules = [AllGridCommunityModule, ColumnAutoSizeModule, ColumnsToolPanelModule, SideBarModule];
 
   readonly drilldownColumnDefs: ColDef[] = [
     { field: 'category', headerName: 'Category', pinned: 'left', width: 150 },
@@ -71,6 +73,7 @@ export class SingleNamePage {
     rowHeight: 28,
     headerHeight: 31,
     suppressCellFocus: true,
+    onFirstDataRendered: event => this.autoSizeColumns(event),
     sideBar: {
       toolPanels: [
         {
@@ -134,6 +137,10 @@ export class SingleNamePage {
 
   closeInventoryTab(): void {
     this.store.closeInventoryTab();
+  }
+
+  private autoSizeColumns(event: FirstDataRenderedEvent): void {
+    requestAnimationFrame(() => event.api.autoSizeAllColumns(false));
   }
 
   private numberColumn(field: string, headerName: string, width: number): ColDef {
