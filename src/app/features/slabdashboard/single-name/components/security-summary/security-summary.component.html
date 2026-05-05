@@ -9,9 +9,12 @@
       <span>{{ detail().sector }}</span>
       <span>{{ detail().type }}</span>
       <span>Price: {{ detail().price }}</span>
-      <span>Corporate action: {{ detail().corporateAction }}</span>
-      <span>Net PNL: {{ detail().netPnl }}</span>
-      <span>PNL Opp: {{ detail().pnlOpp }}</span>
+      <span>
+        Corporate action: {{ corporateActionDate(detail().corporateAction) }}
+        <b [class]="corporateActionClass(corporateActionDividend(detail().corporateAction))">{{ corporateActionDividend(detail().corporateAction) }}</b>
+      </span>
+      <span>Net PNL: <b [class]="valueClass(detail().netPnl)">{{ formatNumber(detail().netPnl) }}</b></span>
+      <span>PNL Opp: <b [class]="valueClass(detail().pnlOpp)">{{ formatNumber(detail().pnlOpp) }}</b></span>
       <span>Watch list: {{ detail().watchList }}</span>
     </div>
   </div>
