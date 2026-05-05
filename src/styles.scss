@@ -37,6 +37,12 @@ body {
   transform: translateY(-6px);
 }
 
+body.slabdashboard-dark app-inventory .toolbar .button-group button.active {
+  background: #008a72 !important;
+  border-color: #008a72 !important;
+  color: white !important;
+}
+
 input[type="checkbox"] {
   accent-color: var(--slabdashboard-checkbox-color);
 }
