@@ -28,12 +28,30 @@
       <section class="left-panel">
         <app-security-summary [detail]="singleName"></app-security-summary>
 
+        <div class="layout-controls single-name-layout-controls" aria-label="Position layouts">
+          <span>Position layout</span>
+          <select [value]="selectedDrilldownLayoutName()" (change)="selectDrilldownLayout($event)">
+            <option value="">Default</option>
+            @for (layoutName of drilldownLayoutNames(); track layoutName) {
+              <option [value]="layoutName">{{ layoutName }}</option>
+            }
+          </select>
+          <input
+            type="text"
+            placeholder="Layout name"
+            [value]="drilldownLayoutDraftName()"
+            (input)="setDrilldownLayoutDraftName($event)" />
+          <button type="button" (click)="saveDrilldownLayout()" [disabled]="!drilldownLayoutDraftName().trim()">Save</button>
+          <button type="button" (click)="applyDrilldownLayout()" [disabled]="!selectedDrilldownLayoutName()">Apply</button>
+          <button type="button" (click)="deleteDrilldownLayout()" [disabled]="!selectedDrilldownLayoutName()">Delete</button>
+        </div>
+
         <app-position-panel
           [position]="singleName.position"
           [agGridModules]="agGridModules"
           [drilldownRows]="store.drilldownRows()"
           [drilldownColumnDefs]="drilldownColumnDefs"
-          [gridOptions]="gridOptions"
+          [gridOptions]="drilldownGridOptions"
           [drilldownVisible]="store.drilldownVisible()"
           [showOptions]="store.showOptions()"
           [showEmptyRows]="store.showEmptyDrilldownRows()"
@@ -44,12 +62,30 @@
           (includeNonEntitlementChanged)="store.setIncludeNonEntitlement($event)">
         </app-position-panel>
 
+        <div class="layout-controls single-name-layout-controls" aria-label="Lender availability layouts">
+          <span>Lender layout</span>
+          <select [value]="selectedLenderLayoutName()" (change)="selectLenderLayout($event)">
+            <option value="">Default</option>
+            @for (layoutName of lenderLayoutNames(); track layoutName) {
+              <option [value]="layoutName">{{ layoutName }}</option>
+            }
+          </select>
+          <input
+            type="text"
+            placeholder="Layout name"
+            [value]="lenderLayoutDraftName()"
+            (input)="setLenderLayoutDraftName($event)" />
+          <button type="button" (click)="saveLenderLayout()" [disabled]="!lenderLayoutDraftName().trim()">Save</button>
+          <button type="button" (click)="applyLenderLayout()" [disabled]="!selectedLenderLayoutName()">Apply</button>
+          <button type="button" (click)="deleteLenderLayout()" [disabled]="!selectedLenderLayoutName()">Delete</button>
+        </div>
+
         <app-lender-availability
           [agGridModules]="agGridModules"
           [rows]="store.lenderRows()"
           [lenderTotal]="singleName.lenderTotal"
           [dailyChange]="singleName.dailyChange"
-          [gridOptions]="gridOptions">
+          [gridOptions]="lenderGridOptions">
         </app-lender-availability>
       </section>
 

@@ -1,14 +1,18 @@
 // src/app/features/slabdashboard/inventory/pages/inventory-page/inventory-page.ts
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import {
   AllCommunityModule,
   CellClickedEvent,
   ColDef,
   ColumnAutoSizeModule,
   FirstDataRenderedEvent,
+  GridApi,
   GridOptions,
+  GridPreDestroyedEvent,
   GridReadyEvent,
+  GridStateModule,
   ICellRendererParams,
+  StateUpdatedEvent,
   ValueFormatterParams,
 } from 'ag-grid-community';
 import {
@@ -23,6 +27,7 @@ import { InventoryStore } from '../../state/inventory.store';
 import { AgGridAngular } from 'ag-grid-angular';
 import { SlabdashboardHeaderComponent } from '@shared/ui/slabdashboard-header/slabdashboard-header.component';
 import { SlabdashboardTabsComponent } from '@shared/ui/slabdashboard-tabs/slabdashboard-tabs.component';
+import { GridLayoutService } from '@core/services/grid-layout.service';
 
 type NumericInventoryField = {
   [Field in keyof InventoryRow]: InventoryRow[Field] extends number | undefined ? Field : never;
@@ -38,6 +43,9 @@ type NumericInventoryField = {
 })
 export class InventoryPage {
   readonly store = inject(InventoryStore);
+  private readonly gridLayout = inject(GridLayoutService);
+  private readonly layoutKey = 'inventory';
+  private gridApi?: GridApi<InventoryRow>;
 
   readonly agGridModules = [
     AllCommunityModule,
@@ -46,8 +54,12 @@ export class InventoryPage {
     ColumnsToolPanelModule,
     SideBarModule,
     ColumnAutoSizeModule,
+    GridStateModule,
   ];
   private readonly numericColumnClass = 'numeric-cell';
+  readonly layoutNames = signal(this.gridLayout.names(this.layoutKey));
+  readonly selectedLayoutName = signal(this.gridLayout.activeName(this.layoutKey));
+  readonly layoutDraftName = signal(this.selectedLayoutName());
 
   readonly columnDefs: ColDef<InventoryRow>[] = [
     {
@@ -108,7 +120,10 @@ export class InventoryPage {
     animateRows: true,
     suppressCellFocus: true,
     getRowId: params => params.data.ticker,
+    initialState: this.gridLayout.load(this.layoutKey),
     onFirstDataRendered: event => this.autoSizeColumns(event),
+    onStateUpdated: event => this.saveGridLayout(event),
+    onGridPreDestroyed: event => this.saveGridLayout(event),
     sideBar: {
       toolPanels: [
         {
@@ -140,6 +155,7 @@ export class InventoryPage {
   };
 
   onGridReady(event: GridReadyEvent<InventoryRow>): void {
+    this.gridApi = event.api;
     this.store.connectGrid(event.api);
   }
 
@@ -148,7 +164,13 @@ export class InventoryPage {
   }
 
   private autoSizeColumns(event: FirstDataRenderedEvent<InventoryRow>): void {
+    if (this.gridLayout.hasLayout(this.layoutKey)) return;
+
     requestAnimationFrame(() => event.api.autoSizeAllColumns(false));
+  }
+
+  private saveGridLayout(event: StateUpdatedEvent<InventoryRow> | GridPreDestroyedEvent<InventoryRow>): void {
+    this.gridLayout.save(this.layoutKey, event.state);
   }
 
   closeSecurityTab(ticker: string): void {
@@ -161,6 +183,51 @@ export class InventoryPage {
 
   setView(view: InventoryViewFilter): void {
     this.store.setView(view);
+  }
+
+  setLayoutDraftName(event: Event): void {
+    this.layoutDraftName.set((event.target as HTMLInputElement).value);
+  }
+
+  selectLayout(event: Event): void {
+    const layoutName = (event.target as HTMLSelectElement).value;
+    this.selectedLayoutName.set(layoutName);
+    this.layoutDraftName.set(layoutName);
+  }
+
+  saveNamedLayout(): void {
+    if (!this.gridApi) return;
+
+    const layoutName = this.layoutDraftName().trim();
+    if (!layoutName) return;
+
+    this.gridLayout.saveNamed(this.layoutKey, layoutName, this.gridApi.getState());
+    this.refreshLayoutNames(layoutName);
+  }
+
+  applyNamedLayout(): void {
+    if (!this.gridApi) return;
+
+    const layoutName = this.selectedLayoutName();
+    const layoutState = this.gridLayout.loadNamed(this.layoutKey, layoutName);
+    if (!layoutName || !layoutState) return;
+
+    this.gridLayout.setActiveName(this.layoutKey, layoutName);
+    this.gridApi.setState(layoutState);
+  }
+
+  deleteNamedLayout(): void {
+    const layoutName = this.selectedLayoutName();
+    if (!layoutName) return;
+
+    this.gridLayout.deleteNamed(this.layoutKey, layoutName);
+    this.refreshLayoutNames('');
+  }
+
+  private refreshLayoutNames(activeName: string): void {
+    this.layoutNames.set(this.gridLayout.names(this.layoutKey));
+    this.selectedLayoutName.set(activeName);
+    this.layoutDraftName.set(activeName);
   }
 
   private numberColumn(

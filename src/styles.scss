@@ -37,6 +37,56 @@ body {
   transform: translateY(-6px);
 }
 
+.layout-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: inherit;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.layout-controls span {
+  font-weight: 600;
+}
+
+.layout-controls select,
+.layout-controls input {
+  height: 24px;
+  border: 1px solid #b8c5c5;
+  background: #fff;
+  color: #102631;
+  font: inherit;
+}
+
+.layout-controls select {
+  min-width: 104px;
+}
+
+.layout-controls input {
+  width: 118px;
+  padding: 0 6px;
+}
+
+.layout-controls button {
+  height: 24px;
+  border: 1px solid #b8c5c5;
+  background: #fff;
+  color: #102631;
+  cursor: pointer;
+  font: inherit;
+  padding: 0 8px;
+}
+
+.layout-controls button:disabled {
+  cursor: default;
+  opacity: .45;
+}
+
+.single-name-layout-controls {
+  margin: 8px 0 6px;
+}
+
 body.slabdashboard-dark app-inventory .toolbar .button-group button.active {
   background: #008a72 !important;
   border-color: #008a72 !important;
@@ -65,4 +115,12 @@ body.slabdashboard-dark .ag-theme-quartz {
   --ag-subheader-background-color: #172233;
   --ag-input-background-color: #0f1720;
   --ag-input-border-color: #3d4b5c;
+}
+
+body.slabdashboard-dark .layout-controls select,
+body.slabdashboard-dark .layout-controls input,
+body.slabdashboard-dark .layout-controls button {
+  background: #111827;
+  border-color: #3d4b5c;
+  color: #d9e2ea;
 }

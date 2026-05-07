@@ -37,6 +37,24 @@
       <button class="active">Pessimistic</button>
     </div>
 
+    <div class="layout-controls" aria-label="Inventory layouts">
+      <span>Layout</span>
+      <select [value]="selectedLayoutName()" (change)="selectLayout($event)">
+        <option value="">Default</option>
+        @for (layoutName of layoutNames(); track layoutName) {
+          <option [value]="layoutName">{{ layoutName }}</option>
+        }
+      </select>
+      <input
+        type="text"
+        placeholder="Layout name"
+        [value]="layoutDraftName()"
+        (input)="setLayoutDraftName($event)" />
+      <button type="button" (click)="saveNamedLayout()" [disabled]="!layoutDraftName().trim()">Save</button>
+      <button type="button" (click)="applyNamedLayout()" [disabled]="!selectedLayoutName()">Apply</button>
+      <button type="button" (click)="deleteNamedLayout()" [disabled]="!selectedLayoutName()">Delete</button>
+    </div>
+
     <label class="checkbox">
       <input type="checkbox" [checked]="store.includeRecalls()" />
       Include recalls
