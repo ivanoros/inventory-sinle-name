@@ -191,7 +191,7 @@ export class InventoryPage {
     if (!this.gridApi) return;
 
     const layoutName = this.layoutDraftName().trim();
-    if (!layoutName) return;
+    if (!layoutName || this.isReservedLayoutName(layoutName)) return;
 
     this.gridLayout.saveNamed(this.layoutKey, layoutName, this.gridApi.getState());
     this.refreshLayoutNames(layoutName);
@@ -235,6 +235,10 @@ export class InventoryPage {
     this.gridApi.setFilterModel(null);
     requestAnimationFrame(() => this.gridApi?.autoSizeAllColumns(false));
     this.refreshLayoutNames('');
+  }
+
+  isReservedLayoutName(layoutName: string): boolean {
+    return this.gridLayout.isReservedName(layoutName);
   }
 
   private numberColumn(

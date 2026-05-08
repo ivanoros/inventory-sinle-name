@@ -13,6 +13,7 @@ export interface NamedGridLayout {
 export class GridLayoutService {
   private readonly storagePrefix = 'slabdashboard.grid-layout.';
   private readonly activePrefix = 'slabdashboard.grid-layout.active.';
+  private readonly reservedLayoutNames = new Set(['default']);
 
   load(key: string): GridState | undefined {
     const activeLayoutName = this.activeName(key);
@@ -63,7 +64,7 @@ export class GridLayoutService {
 
   saveNamed(key: string, name: string, state: GridState): void {
     const trimmedName = name.trim();
-    if (!trimmedName) return;
+    if (!trimmedName || this.isReservedName(trimmedName)) return;
 
     const layouts = this.layouts(key);
     const nextLayout: NamedGridLayout = {
@@ -90,6 +91,10 @@ export class GridLayoutService {
     if (this.activeName(key) === name) {
       this.setActiveName(key, '');
     }
+  }
+
+  isReservedName(name: string): boolean {
+    return this.reservedLayoutNames.has(name.trim().toLowerCase());
   }
 
   private layouts(key: string): NamedGridLayout[] {

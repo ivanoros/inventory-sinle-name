@@ -270,7 +270,7 @@ export class SingleNamePage {
   ): void {
     const gridApi = this.gridApis.get(layoutKey);
     const layoutName = draftName().trim();
-    if (!gridApi || !layoutName) return;
+    if (!gridApi || !layoutName || this.isReservedLayoutName(layoutName)) return;
 
     this.gridLayout.saveNamed(layoutKey, layoutName, gridApi.getState());
     this.refreshLayoutNames(layoutKey, layoutName, selectedName, draftName, layoutNames);
@@ -323,6 +323,10 @@ export class SingleNamePage {
     gridApi.resetColumnState();
     gridApi.setFilterModel(null);
     requestAnimationFrame(() => gridApi.autoSizeAllColumns(false));
+  }
+
+  isReservedLayoutName(layoutName: string): boolean {
+    return this.gridLayout.isReservedName(layoutName);
   }
 
   private numberColumn(field: string, headerName: string, width: number): ColDef {

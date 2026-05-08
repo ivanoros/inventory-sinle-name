@@ -50,7 +50,12 @@
         placeholder="Layout name"
         [value]="layoutDraftName()"
         (input)="setLayoutDraftName($event)" />
-      <button type="button" (click)="saveNamedLayout()" [disabled]="!layoutDraftName().trim()">Save</button>
+      <button
+        type="button"
+        (click)="saveNamedLayout()"
+        [disabled]="!layoutDraftName().trim() || isReservedLayoutName(layoutDraftName())">
+        Save
+      </button>
       <button type="button" (click)="applyNamedLayout()">Apply</button>
       <button type="button" (click)="deleteNamedLayout()" [disabled]="!selectedLayoutName()">Delete</button>
     </div>
