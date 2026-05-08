@@ -57,7 +57,10 @@ export class InventoryPage {
   private readonly numericColumnClass = 'numeric-cell';
   readonly layoutNames = signal(this.gridLayout.names(this.layoutKey));
   readonly selectedLayoutName = signal(this.gridLayout.activeName(this.layoutKey));
-  readonly layoutDraftName = signal(this.selectedLayoutName());
+  readonly layoutDraftName = signal(this.selectedLayoutName() || 'Default');
+  readonly layoutMenuOpen = signal(false);
+  readonly layoutSaveMessage = signal('');
+  private layoutSaveMessageTimer?: ReturnType<typeof setTimeout>;
 
   readonly columnDefs: ColDef<InventoryRow>[] = [
     {
@@ -178,13 +181,25 @@ export class InventoryPage {
   }
 
   setLayoutDraftName(event: Event): void {
-    this.layoutDraftName.set((event.target as HTMLInputElement).value);
+    const layoutName = (event.target as HTMLInputElement).value;
+    this.layoutDraftName.set(layoutName);
+    this.selectedLayoutName.set(this.layoutNameExists(layoutName) ? layoutName : '');
+    this.layoutMenuOpen.set(true);
   }
 
-  selectLayout(event: Event): void {
-    const layoutName = (event.target as HTMLSelectElement).value;
-    this.selectedLayoutName.set(layoutName);
+  openLayoutMenu(): void {
+    this.layoutMenuOpen.set(true);
+  }
+
+  closeLayoutMenuSoon(): void {
+    setTimeout(() => this.layoutMenuOpen.set(false));
+  }
+
+  chooseLayoutName(layoutName: string): void {
     this.layoutDraftName.set(layoutName);
+    this.selectedLayoutName.set(this.layoutNameExists(layoutName) ? layoutName : '');
+    this.layoutMenuOpen.set(false);
+    this.applyNamedLayout();
   }
 
   saveNamedLayout(): void {
@@ -195,13 +210,14 @@ export class InventoryPage {
 
     this.gridLayout.saveNamed(this.layoutKey, layoutName, this.gridApi.getState());
     this.refreshLayoutNames(layoutName);
+    this.showLayoutSaveMessage(layoutName);
   }
 
   applyNamedLayout(): void {
     if (!this.gridApi) return;
 
-    const layoutName = this.selectedLayoutName();
-    if (!layoutName) {
+    const layoutName = this.normalizedLayoutName();
+    if (!layoutName || this.isReservedLayoutName(layoutName)) {
       this.applyDefaultLayout();
       return;
     }
@@ -214,7 +230,7 @@ export class InventoryPage {
   }
 
   deleteNamedLayout(): void {
-    const layoutName = this.selectedLayoutName();
+    const layoutName = this.normalizedLayoutName();
     if (!layoutName) return;
 
     this.gridLayout.deleteNamed(this.layoutKey, layoutName);
@@ -224,7 +240,7 @@ export class InventoryPage {
   private refreshLayoutNames(activeName: string): void {
     this.layoutNames.set(this.gridLayout.names(this.layoutKey));
     this.selectedLayoutName.set(activeName);
-    this.layoutDraftName.set(activeName);
+    this.layoutDraftName.set(activeName || 'Default');
   }
 
   private applyDefaultLayout(): void {
@@ -239,6 +255,28 @@ export class InventoryPage {
 
   isReservedLayoutName(layoutName: string): boolean {
     return this.gridLayout.isReservedName(layoutName);
+  }
+
+  canDeleteLayoutName(layoutName: string): boolean {
+    return this.layoutNameExists(layoutName);
+  }
+
+  private normalizedLayoutName(): string {
+    return this.layoutDraftName().trim();
+  }
+
+  private layoutNameExists(layoutName: string): boolean {
+    const normalizedName = layoutName.trim();
+    return this.layoutNames().some(name => name === normalizedName);
+  }
+
+  private showLayoutSaveMessage(layoutName: string): void {
+    if (this.layoutSaveMessageTimer) {
+      clearTimeout(this.layoutSaveMessageTimer);
+    }
+
+    this.layoutSaveMessage.set(`Saved "${layoutName}"`);
+    this.layoutSaveMessageTimer = setTimeout(() => this.layoutSaveMessage.set(''), 2500);
   }
 
   private numberColumn(

@@ -84,10 +84,16 @@ export class SingleNamePage {
 
   readonly drilldownLayoutNames = signal(this.gridLayout.names(this.drilldownLayoutKey));
   readonly selectedDrilldownLayoutName = signal(this.gridLayout.activeName(this.drilldownLayoutKey));
-  readonly drilldownLayoutDraftName = signal(this.selectedDrilldownLayoutName());
+  readonly drilldownLayoutDraftName = signal(this.selectedDrilldownLayoutName() || 'Default');
+  readonly drilldownLayoutMenuOpen = signal(false);
+  readonly drilldownLayoutSaveMessage = signal('');
   readonly lenderLayoutNames = signal(this.gridLayout.names(this.lenderLayoutKey));
   readonly selectedLenderLayoutName = signal(this.gridLayout.activeName(this.lenderLayoutKey));
-  readonly lenderLayoutDraftName = signal(this.selectedLenderLayoutName());
+  readonly lenderLayoutDraftName = signal(this.selectedLenderLayoutName() || 'Default');
+  readonly lenderLayoutMenuOpen = signal(false);
+  readonly lenderLayoutSaveMessage = signal('');
+  private drilldownLayoutSaveMessageTimer?: ReturnType<typeof setTimeout>;
+  private lenderLayoutSaveMessageTimer?: ReturnType<typeof setTimeout>;
 
   readonly drilldownGridOptions = this.createGridOptions(this.drilldownLayoutKey);
   readonly lenderGridOptions = this.createGridOptions(this.lenderLayoutKey);
@@ -168,7 +174,7 @@ export class SingleNamePage {
   }
 
   setDrilldownLayoutDraftName(event: Event): void {
-    this.setLayoutDraftName(event, this.drilldownLayoutDraftName);
+    this.setLayoutDraftName(event, this.drilldownLayoutDraftName, this.drilldownLayoutMenuOpen);
   }
 
   selectDrilldownLayout(event: Event): void {
@@ -186,24 +192,26 @@ export class SingleNamePage {
       this.drilldownLayoutDraftName,
       this.selectedDrilldownLayoutName,
       this.drilldownLayoutNames,
+      this.drilldownLayoutSaveMessage,
+      'drilldownLayoutSaveMessageTimer',
     );
   }
 
   applyDrilldownLayout(): void {
-    this.applyNamedLayout(this.drilldownLayoutKey, this.selectedDrilldownLayoutName);
+    this.applyNamedLayout(this.drilldownLayoutKey, this.drilldownLayoutDraftName);
   }
 
   deleteDrilldownLayout(): void {
     this.deleteNamedLayout(
       this.drilldownLayoutKey,
-      this.selectedDrilldownLayoutName,
+      this.drilldownLayoutDraftName,
       this.drilldownLayoutDraftName,
       this.drilldownLayoutNames,
     );
   }
 
   setLenderLayoutDraftName(event: Event): void {
-    this.setLayoutDraftName(event, this.lenderLayoutDraftName);
+    this.setLayoutDraftName(event, this.lenderLayoutDraftName, this.lenderLayoutMenuOpen);
   }
 
   selectLenderLayout(event: Event): void {
@@ -221,17 +229,19 @@ export class SingleNamePage {
       this.lenderLayoutDraftName,
       this.selectedLenderLayoutName,
       this.lenderLayoutNames,
+      this.lenderLayoutSaveMessage,
+      'lenderLayoutSaveMessageTimer',
     );
   }
 
   applyLenderLayout(): void {
-    this.applyNamedLayout(this.lenderLayoutKey, this.selectedLenderLayoutName);
+    this.applyNamedLayout(this.lenderLayoutKey, this.lenderLayoutDraftName);
   }
 
   deleteLenderLayout(): void {
     this.deleteNamedLayout(
       this.lenderLayoutKey,
-      this.selectedLenderLayoutName,
+      this.lenderLayoutDraftName,
       this.lenderLayoutDraftName,
       this.lenderLayoutNames,
     );
@@ -247,8 +257,32 @@ export class SingleNamePage {
     requestAnimationFrame(() => event.api.autoSizeAllColumns(false));
   }
 
-  private setLayoutDraftName(event: Event, draftName: WritableSignal<string>): void {
+  openLayoutMenu(menuOpen: WritableSignal<boolean>): void {
+    menuOpen.set(true);
+  }
+
+  closeLayoutMenuSoon(menuOpen: WritableSignal<boolean>): void {
+    setTimeout(() => menuOpen.set(false));
+  }
+
+  chooseLayoutName(
+    layoutName: string,
+    layoutKey: string,
+    draftName: WritableSignal<string>,
+    menuOpen: WritableSignal<boolean>,
+  ): void {
+    draftName.set(layoutName);
+    menuOpen.set(false);
+    this.applyNamedLayout(layoutKey, draftName);
+  }
+
+  private setLayoutDraftName(
+    event: Event,
+    draftName: WritableSignal<string>,
+    menuOpen: WritableSignal<boolean>,
+  ): void {
     draftName.set((event.target as HTMLInputElement).value);
+    menuOpen.set(true);
   }
 
   private selectLayout(
@@ -267,6 +301,8 @@ export class SingleNamePage {
     draftName: WritableSignal<string>,
     selectedName: WritableSignal<string>,
     layoutNames: WritableSignal<string[]>,
+    saveMessage: WritableSignal<string>,
+    timerProperty: 'drilldownLayoutSaveMessageTimer' | 'lenderLayoutSaveMessageTimer',
   ): void {
     const gridApi = this.gridApis.get(layoutKey);
     const layoutName = draftName().trim();
@@ -274,14 +310,15 @@ export class SingleNamePage {
 
     this.gridLayout.saveNamed(layoutKey, layoutName, gridApi.getState());
     this.refreshLayoutNames(layoutKey, layoutName, selectedName, draftName, layoutNames);
+    this.showLayoutSaveMessage(layoutName, saveMessage, timerProperty);
   }
 
   private applyNamedLayout(layoutKey: string, selectedName: WritableSignal<string>): void {
     const gridApi = this.gridApis.get(layoutKey);
-    const layoutName = selectedName();
+    const layoutName = selectedName().trim();
     if (!gridApi) return;
 
-    if (!layoutName) {
+    if (!layoutName || this.isReservedLayoutName(layoutName)) {
       this.applyDefaultLayout(layoutKey, gridApi);
       return;
     }
@@ -299,7 +336,7 @@ export class SingleNamePage {
     draftName: WritableSignal<string>,
     layoutNames: WritableSignal<string[]>,
   ): void {
-    const layoutName = selectedName();
+    const layoutName = selectedName().trim();
     if (!layoutName) return;
 
     this.gridLayout.deleteNamed(layoutKey, layoutName);
@@ -315,7 +352,7 @@ export class SingleNamePage {
   ): void {
     layoutNames.set(this.gridLayout.names(layoutKey));
     selectedName.set(activeName);
-    draftName.set(activeName);
+    draftName.set(activeName || 'Default');
   }
 
   private applyDefaultLayout(layoutKey: string, gridApi: GridApi): void {
@@ -327,6 +364,25 @@ export class SingleNamePage {
 
   isReservedLayoutName(layoutName: string): boolean {
     return this.gridLayout.isReservedName(layoutName);
+  }
+
+  canDeleteLayoutName(layoutName: string, layoutNames: string[]): boolean {
+    const normalizedName = layoutName.trim();
+    return layoutNames.some(name => name === normalizedName);
+  }
+
+  private showLayoutSaveMessage(
+    layoutName: string,
+    saveMessage: WritableSignal<string>,
+    timerProperty: 'drilldownLayoutSaveMessageTimer' | 'lenderLayoutSaveMessageTimer',
+  ): void {
+    const existingTimer = this[timerProperty];
+    if (existingTimer) {
+      clearTimeout(existingTimer);
+    }
+
+    saveMessage.set(`Saved "${layoutName}"`);
+    this[timerProperty] = setTimeout(() => saveMessage.set(''), 2500);
   }
 
   private numberColumn(field: string, headerName: string, width: number): ColDef {

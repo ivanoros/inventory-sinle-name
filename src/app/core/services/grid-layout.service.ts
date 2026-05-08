@@ -67,13 +67,14 @@ export class GridLayoutService {
     if (!trimmedName || this.isReservedName(trimmedName)) return;
 
     const layouts = this.layouts(key);
+    const normalizedName = trimmedName.toLowerCase();
     const nextLayout: NamedGridLayout = {
       name: trimmedName,
       state,
       updatedAt: new Date().toISOString(),
     };
     const nextLayouts = [
-      ...layouts.filter(layout => layout.name !== trimmedName),
+      ...layouts.filter(layout => layout.name.trim().toLowerCase() !== normalizedName),
       nextLayout,
     ].sort((left, right) => left.name.localeCompare(right.name));
 
@@ -82,13 +83,18 @@ export class GridLayoutService {
   }
 
   loadNamed(key: string, name: string): GridState | undefined {
-    return this.layouts(key).find(layout => layout.name === name)?.state;
+    const normalizedName = name.trim().toLowerCase();
+    return this.layouts(key).find(layout => layout.name.trim().toLowerCase() === normalizedName)?.state;
   }
 
   deleteNamed(key: string, name: string): void {
-    this.persistLayouts(key, this.layouts(key).filter(layout => layout.name !== name));
+    const normalizedName = name.trim().toLowerCase();
+    this.persistLayouts(
+      key,
+      this.layouts(key).filter(layout => layout.name.trim().toLowerCase() !== normalizedName),
+    );
 
-    if (this.activeName(key) === name) {
+    if (this.activeName(key).trim().toLowerCase() === normalizedName) {
       this.setActiveName(key, '');
     }
   }
@@ -100,7 +106,15 @@ export class GridLayoutService {
   private layouts(key: string): NamedGridLayout[] {
     try {
       const savedLayouts = localStorage.getItem(this.layoutsStorageKey(key));
-      return savedLayouts ? JSON.parse(savedLayouts) as NamedGridLayout[] : [];
+      if (!savedLayouts) return [];
+
+      const parsedLayouts = JSON.parse(savedLayouts) as unknown;
+      if (!Array.isArray(parsedLayouts)) return [];
+
+      return parsedLayouts.filter((layout): layout is NamedGridLayout => {
+        const candidate = layout as Partial<NamedGridLayout>;
+        return typeof candidate.name === 'string' && candidate.state !== undefined;
+      });
     } catch {
       return [];
     }

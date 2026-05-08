@@ -30,25 +30,39 @@
 
         <div class="layout-controls single-name-layout-controls" aria-label="Position layouts">
           <span>Position layout</span>
-          <select [value]="selectedDrilldownLayoutName()" (change)="selectDrilldownLayout($event)">
-            <option value="">Default</option>
-            @for (layoutName of drilldownLayoutNames(); track layoutName) {
-              <option [value]="layoutName">{{ layoutName }}</option>
+          <div class="editable-combo">
+            <input
+              type="text"
+              placeholder="Layout name"
+              [value]="drilldownLayoutDraftName()"
+              (focus)="openLayoutMenu(drilldownLayoutMenuOpen)"
+              (blur)="closeLayoutMenuSoon(drilldownLayoutMenuOpen)"
+              (input)="setDrilldownLayoutDraftName($event)" />
+            <button type="button" class="combo-toggle" aria-label="Show layouts" (mousedown)="$event.preventDefault()" (click)="openLayoutMenu(drilldownLayoutMenuOpen)">v</button>
+            @if (drilldownLayoutMenuOpen()) {
+              <div class="combo-menu">
+                <button type="button" (mousedown)="$event.preventDefault(); chooseLayoutName('Default', 'single-name-drilldown', drilldownLayoutDraftName, drilldownLayoutMenuOpen)">Default</button>
+                @for (layoutName of drilldownLayoutNames(); track layoutName) {
+                  <button type="button" (mousedown)="$event.preventDefault(); chooseLayoutName(layoutName, 'single-name-drilldown', drilldownLayoutDraftName, drilldownLayoutMenuOpen)">{{ layoutName }}</button>
+                }
+              </div>
             }
-          </select>
-          <input
-            type="text"
-            placeholder="Layout name"
-            [value]="drilldownLayoutDraftName()"
-            (input)="setDrilldownLayoutDraftName($event)" />
+          </div>
           <button
             type="button"
             (click)="saveDrilldownLayout()"
             [disabled]="!drilldownLayoutDraftName().trim() || isReservedLayoutName(drilldownLayoutDraftName())">
             Save
           </button>
-          <button type="button" (click)="applyDrilldownLayout()">Apply</button>
-          <button type="button" (click)="deleteDrilldownLayout()" [disabled]="!selectedDrilldownLayoutName()">Delete</button>
+          <button
+            type="button"
+            (click)="deleteDrilldownLayout()"
+            [disabled]="!canDeleteLayoutName(drilldownLayoutDraftName(), drilldownLayoutNames())">
+            Delete
+          </button>
+          @if (drilldownLayoutSaveMessage()) {
+            <span class="layout-save-message">{{ drilldownLayoutSaveMessage() }}</span>
+          }
         </div>
 
         <app-position-panel
@@ -69,25 +83,39 @@
 
         <div class="layout-controls single-name-layout-controls" aria-label="Lender availability layouts">
           <span>Lender layout</span>
-          <select [value]="selectedLenderLayoutName()" (change)="selectLenderLayout($event)">
-            <option value="">Default</option>
-            @for (layoutName of lenderLayoutNames(); track layoutName) {
-              <option [value]="layoutName">{{ layoutName }}</option>
+          <div class="editable-combo">
+            <input
+              type="text"
+              placeholder="Layout name"
+              [value]="lenderLayoutDraftName()"
+              (focus)="openLayoutMenu(lenderLayoutMenuOpen)"
+              (blur)="closeLayoutMenuSoon(lenderLayoutMenuOpen)"
+              (input)="setLenderLayoutDraftName($event)" />
+            <button type="button" class="combo-toggle" aria-label="Show layouts" (mousedown)="$event.preventDefault()" (click)="openLayoutMenu(lenderLayoutMenuOpen)">v</button>
+            @if (lenderLayoutMenuOpen()) {
+              <div class="combo-menu">
+                <button type="button" (mousedown)="$event.preventDefault(); chooseLayoutName('Default', 'single-name-lender', lenderLayoutDraftName, lenderLayoutMenuOpen)">Default</button>
+                @for (layoutName of lenderLayoutNames(); track layoutName) {
+                  <button type="button" (mousedown)="$event.preventDefault(); chooseLayoutName(layoutName, 'single-name-lender', lenderLayoutDraftName, lenderLayoutMenuOpen)">{{ layoutName }}</button>
+                }
+              </div>
             }
-          </select>
-          <input
-            type="text"
-            placeholder="Layout name"
-            [value]="lenderLayoutDraftName()"
-            (input)="setLenderLayoutDraftName($event)" />
+          </div>
           <button
             type="button"
             (click)="saveLenderLayout()"
             [disabled]="!lenderLayoutDraftName().trim() || isReservedLayoutName(lenderLayoutDraftName())">
             Save
           </button>
-          <button type="button" (click)="applyLenderLayout()">Apply</button>
-          <button type="button" (click)="deleteLenderLayout()" [disabled]="!selectedLenderLayoutName()">Delete</button>
+          <button
+            type="button"
+            (click)="deleteLenderLayout()"
+            [disabled]="!canDeleteLayoutName(lenderLayoutDraftName(), lenderLayoutNames())">
+            Delete
+          </button>
+          @if (lenderLayoutSaveMessage()) {
+            <span class="layout-save-message">{{ lenderLayoutSaveMessage() }}</span>
+          }
         </div>
 
         <app-lender-availability

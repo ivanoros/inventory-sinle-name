@@ -39,25 +39,34 @@
 
     <div class="layout-controls" aria-label="Inventory layouts">
       <span>Layout</span>
-      <select [value]="selectedLayoutName()" (change)="selectLayout($event)">
-        <option value="">Default</option>
-        @for (layoutName of layoutNames(); track layoutName) {
-          <option [value]="layoutName">{{ layoutName }}</option>
+      <div class="editable-combo">
+        <input
+          type="text"
+          placeholder="Layout name"
+          [value]="layoutDraftName()"
+          (focus)="openLayoutMenu()"
+          (blur)="closeLayoutMenuSoon()"
+          (input)="setLayoutDraftName($event)" />
+        <button type="button" class="combo-toggle" aria-label="Show layouts" (mousedown)="$event.preventDefault()" (click)="openLayoutMenu()">v</button>
+        @if (layoutMenuOpen()) {
+          <div class="combo-menu">
+            <button type="button" (mousedown)="$event.preventDefault(); chooseLayoutName('Default')">Default</button>
+            @for (layoutName of layoutNames(); track layoutName) {
+              <button type="button" (mousedown)="$event.preventDefault(); chooseLayoutName(layoutName)">{{ layoutName }}</button>
+            }
+          </div>
         }
-      </select>
-      <input
-        type="text"
-        placeholder="Layout name"
-        [value]="layoutDraftName()"
-        (input)="setLayoutDraftName($event)" />
+      </div>
       <button
         type="button"
         (click)="saveNamedLayout()"
         [disabled]="!layoutDraftName().trim() || isReservedLayoutName(layoutDraftName())">
         Save
       </button>
-      <button type="button" (click)="applyNamedLayout()">Apply</button>
-      <button type="button" (click)="deleteNamedLayout()" [disabled]="!selectedLayoutName()">Delete</button>
+      <button type="button" (click)="deleteNamedLayout()" [disabled]="!canDeleteLayoutName(layoutDraftName())">Delete</button>
+      @if (layoutSaveMessage()) {
+        <span class="layout-save-message">{{ layoutSaveMessage() }}</span>
+      }
     </div>
 
     <label class="checkbox">
