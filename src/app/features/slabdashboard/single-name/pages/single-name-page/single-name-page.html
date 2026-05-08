@@ -42,7 +42,7 @@
             [value]="drilldownLayoutDraftName()"
             (input)="setDrilldownLayoutDraftName($event)" />
           <button type="button" (click)="saveDrilldownLayout()" [disabled]="!drilldownLayoutDraftName().trim()">Save</button>
-          <button type="button" (click)="applyDrilldownLayout()" [disabled]="!selectedDrilldownLayoutName()">Apply</button>
+          <button type="button" (click)="applyDrilldownLayout()">Apply</button>
           <button type="button" (click)="deleteDrilldownLayout()" [disabled]="!selectedDrilldownLayoutName()">Delete</button>
         </div>
 
@@ -76,7 +76,7 @@
             [value]="lenderLayoutDraftName()"
             (input)="setLenderLayoutDraftName($event)" />
           <button type="button" (click)="saveLenderLayout()" [disabled]="!lenderLayoutDraftName().trim()">Save</button>
-          <button type="button" (click)="applyLenderLayout()" [disabled]="!selectedLenderLayoutName()">Apply</button>
+          <button type="button" (click)="applyLenderLayout()">Apply</button>
           <button type="button" (click)="deleteLenderLayout()" [disabled]="!selectedLenderLayoutName()">Delete</button>
         </div>
 

@@ -10,10 +10,8 @@ import {
   FirstDataRenderedEvent,
   GridApi,
   GridOptions,
-  GridPreDestroyedEvent,
   GridReadyEvent,
   GridStateModule,
-  StateUpdatedEvent,
   ValueFormatterParams,
 } from 'ag-grid-community';
 import { AllCommunityModule as AllChartCommunityModule, ModuleRegistry as ChartModuleRegistry } from 'ag-charts-community';
@@ -103,8 +101,6 @@ export class SingleNamePage {
     initialState: this.gridLayout.load(layoutKey),
     onGridReady: event => this.registerGridApi(layoutKey, event),
     onFirstDataRendered: event => this.autoSizeColumns(event, layoutKey),
-    onStateUpdated: event => this.saveGridLayout(layoutKey, event),
-    onGridPreDestroyed: event => this.saveGridLayout(layoutKey, event),
     sideBar: {
       toolPanels: [
         {
@@ -251,10 +247,6 @@ export class SingleNamePage {
     requestAnimationFrame(() => event.api.autoSizeAllColumns(false));
   }
 
-  private saveGridLayout(layoutKey: string, event: StateUpdatedEvent | GridPreDestroyedEvent): void {
-    this.gridLayout.save(layoutKey, event.state);
-  }
-
   private setLayoutDraftName(event: Event, draftName: WritableSignal<string>): void {
     draftName.set((event.target as HTMLInputElement).value);
   }
@@ -287,8 +279,15 @@ export class SingleNamePage {
   private applyNamedLayout(layoutKey: string, selectedName: WritableSignal<string>): void {
     const gridApi = this.gridApis.get(layoutKey);
     const layoutName = selectedName();
+    if (!gridApi) return;
+
+    if (!layoutName) {
+      this.applyDefaultLayout(layoutKey, gridApi);
+      return;
+    }
+
     const layoutState = this.gridLayout.loadNamed(layoutKey, layoutName);
-    if (!gridApi || !layoutName || !layoutState) return;
+    if (!layoutState) return;
 
     this.gridLayout.setActiveName(layoutKey, layoutName);
     gridApi.setState(layoutState);
@@ -317,6 +316,13 @@ export class SingleNamePage {
     layoutNames.set(this.gridLayout.names(layoutKey));
     selectedName.set(activeName);
     draftName.set(activeName);
+  }
+
+  private applyDefaultLayout(layoutKey: string, gridApi: GridApi): void {
+    this.gridLayout.setActiveName(layoutKey, '');
+    gridApi.resetColumnState();
+    gridApi.setFilterModel(null);
+    requestAnimationFrame(() => gridApi.autoSizeAllColumns(false));
   }
 
   private numberColumn(field: string, headerName: string, width: number): ColDef {

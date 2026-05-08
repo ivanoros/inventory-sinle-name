@@ -8,11 +8,9 @@ import {
   FirstDataRenderedEvent,
   GridApi,
   GridOptions,
-  GridPreDestroyedEvent,
   GridReadyEvent,
   GridStateModule,
   ICellRendererParams,
-  StateUpdatedEvent,
   ValueFormatterParams,
 } from 'ag-grid-community';
 import {
@@ -122,8 +120,6 @@ export class InventoryPage {
     getRowId: params => params.data.ticker,
     initialState: this.gridLayout.load(this.layoutKey),
     onFirstDataRendered: event => this.autoSizeColumns(event),
-    onStateUpdated: event => this.saveGridLayout(event),
-    onGridPreDestroyed: event => this.saveGridLayout(event),
     sideBar: {
       toolPanels: [
         {
@@ -169,10 +165,6 @@ export class InventoryPage {
     requestAnimationFrame(() => event.api.autoSizeAllColumns(false));
   }
 
-  private saveGridLayout(event: StateUpdatedEvent<InventoryRow> | GridPreDestroyedEvent<InventoryRow>): void {
-    this.gridLayout.save(this.layoutKey, event.state);
-  }
-
   closeSecurityTab(ticker: string): void {
     this.store.closeSecurityTab(ticker);
   }
@@ -209,8 +201,13 @@ export class InventoryPage {
     if (!this.gridApi) return;
 
     const layoutName = this.selectedLayoutName();
+    if (!layoutName) {
+      this.applyDefaultLayout();
+      return;
+    }
+
     const layoutState = this.gridLayout.loadNamed(this.layoutKey, layoutName);
-    if (!layoutName || !layoutState) return;
+    if (!layoutState) return;
 
     this.gridLayout.setActiveName(this.layoutKey, layoutName);
     this.gridApi.setState(layoutState);
@@ -228,6 +225,16 @@ export class InventoryPage {
     this.layoutNames.set(this.gridLayout.names(this.layoutKey));
     this.selectedLayoutName.set(activeName);
     this.layoutDraftName.set(activeName);
+  }
+
+  private applyDefaultLayout(): void {
+    if (!this.gridApi) return;
+
+    this.gridLayout.setActiveName(this.layoutKey, '');
+    this.gridApi.resetColumnState();
+    this.gridApi.setFilterModel(null);
+    requestAnimationFrame(() => this.gridApi?.autoSizeAllColumns(false));
+    this.refreshLayoutNames('');
   }
 
   private numberColumn(

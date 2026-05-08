@@ -16,16 +16,7 @@ export class GridLayoutService {
 
   load(key: string): GridState | undefined {
     const activeLayoutName = this.activeName(key);
-    if (activeLayoutName) {
-      return this.loadNamed(key, activeLayoutName);
-    }
-
-    try {
-      const savedLayout = localStorage.getItem(this.storageKey(key));
-      return savedLayout ? JSON.parse(savedLayout) as GridState : undefined;
-    } catch {
-      return undefined;
-    }
+    return activeLayoutName ? this.loadNamed(key, activeLayoutName) : undefined;
   }
 
   save(key: string, state: GridState): void {
