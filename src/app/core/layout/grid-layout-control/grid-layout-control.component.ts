@@ -10,7 +10,7 @@ import { GridLayoutService } from '@core/services/grid-layout.service';
 export class GridLayoutControlComponent implements OnChanges, OnDestroy, OnInit {
   @Input({ required: true }) layoutKey = '';
   @Input({ required: true }) gridApi?: GridApi;
-  @Input() label = 'Layout';
+  @Input() label = 'Layouts';
 
   private readonly gridLayout = inject(GridLayoutService);
   private saveMessageTimer?: ReturnType<typeof setTimeout>;
