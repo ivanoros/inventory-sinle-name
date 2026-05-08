@@ -1,5 +1,5 @@
 // src/app/features/slabdashboard/single-name/pages/single-name-page/single-name-page.ts
-import { Component, DestroyRef, WritableSignal, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { combineLatest } from 'rxjs';
@@ -26,6 +26,7 @@ import { LoadingSpinnerComponent } from '@shared/ui/loading-spinner/loading-spin
 import { SlabdashboardHeaderComponent } from '@shared/ui/slabdashboard-header/slabdashboard-header.component';
 import { SlabdashboardTabsComponent } from '@shared/ui/slabdashboard-tabs/slabdashboard-tabs.component';
 import { GridLayoutService } from '@core/services/grid-layout.service';
+import { GridLayoutControlComponent } from '@core/layout/grid-layout-control/grid-layout-control.component';
 
 ChartModuleRegistry.registerModules(AllChartCommunityModule);
 
@@ -40,6 +41,7 @@ ChartModuleRegistry.registerModules(AllChartCommunityModule);
     PositionPanelComponent,
     LenderAvailabilityComponent,
     SingleNameSidebarComponent,
+    GridLayoutControlComponent,
     ErrorAlertComponent,
     LoadingSpinnerComponent,
   ],
@@ -51,8 +53,8 @@ export class SingleNamePage {
   private readonly route = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
   private readonly gridLayout = inject(GridLayoutService);
-  private readonly drilldownLayoutKey = 'single-name-drilldown';
-  private readonly lenderLayoutKey = 'single-name-lender';
+  readonly drilldownLayoutKey = 'single-name-drilldown';
+  readonly lenderLayoutKey = 'single-name-lender';
   private readonly gridApis = new Map<string, GridApi>();
   readonly store = inject(SingleNameStore);
   readonly replacesInventory = signal(false);
@@ -81,19 +83,6 @@ export class SingleNamePage {
     this.numberColumn('settled2864', '2864 Settled', 130),
     this.numberColumn('pending2864', '2864 Pending', 130),
   ];
-
-  readonly drilldownLayoutNames = signal(this.gridLayout.names(this.drilldownLayoutKey));
-  readonly selectedDrilldownLayoutName = signal(this.gridLayout.activeName(this.drilldownLayoutKey));
-  readonly drilldownLayoutDraftName = signal(this.selectedDrilldownLayoutName() || 'Default');
-  readonly drilldownLayoutMenuOpen = signal(false);
-  readonly drilldownLayoutSaveMessage = signal('');
-  readonly lenderLayoutNames = signal(this.gridLayout.names(this.lenderLayoutKey));
-  readonly selectedLenderLayoutName = signal(this.gridLayout.activeName(this.lenderLayoutKey));
-  readonly lenderLayoutDraftName = signal(this.selectedLenderLayoutName() || 'Default');
-  readonly lenderLayoutMenuOpen = signal(false);
-  readonly lenderLayoutSaveMessage = signal('');
-  private drilldownLayoutSaveMessageTimer?: ReturnType<typeof setTimeout>;
-  private lenderLayoutSaveMessageTimer?: ReturnType<typeof setTimeout>;
 
   readonly drilldownGridOptions = this.createGridOptions(this.drilldownLayoutKey);
   readonly lenderGridOptions = this.createGridOptions(this.lenderLayoutKey);
@@ -173,216 +162,18 @@ export class SingleNamePage {
     this.store.closeInventoryTab();
   }
 
-  setDrilldownLayoutDraftName(event: Event): void {
-    this.setLayoutDraftName(event, this.drilldownLayoutDraftName, this.drilldownLayoutMenuOpen);
-  }
-
-  selectDrilldownLayout(event: Event): void {
-    this.selectLayout(
-      event,
-      this.drilldownLayoutKey,
-      this.selectedDrilldownLayoutName,
-      this.drilldownLayoutDraftName,
-    );
-  }
-
-  saveDrilldownLayout(): void {
-    this.saveNamedLayout(
-      this.drilldownLayoutKey,
-      this.drilldownLayoutDraftName,
-      this.selectedDrilldownLayoutName,
-      this.drilldownLayoutNames,
-      this.drilldownLayoutSaveMessage,
-      'drilldownLayoutSaveMessageTimer',
-    );
-  }
-
-  applyDrilldownLayout(): void {
-    this.applyNamedLayout(this.drilldownLayoutKey, this.drilldownLayoutDraftName);
-  }
-
-  deleteDrilldownLayout(): void {
-    this.deleteNamedLayout(
-      this.drilldownLayoutKey,
-      this.drilldownLayoutDraftName,
-      this.drilldownLayoutDraftName,
-      this.drilldownLayoutNames,
-    );
-  }
-
-  setLenderLayoutDraftName(event: Event): void {
-    this.setLayoutDraftName(event, this.lenderLayoutDraftName, this.lenderLayoutMenuOpen);
-  }
-
-  selectLenderLayout(event: Event): void {
-    this.selectLayout(
-      event,
-      this.lenderLayoutKey,
-      this.selectedLenderLayoutName,
-      this.lenderLayoutDraftName,
-    );
-  }
-
-  saveLenderLayout(): void {
-    this.saveNamedLayout(
-      this.lenderLayoutKey,
-      this.lenderLayoutDraftName,
-      this.selectedLenderLayoutName,
-      this.lenderLayoutNames,
-      this.lenderLayoutSaveMessage,
-      'lenderLayoutSaveMessageTimer',
-    );
-  }
-
-  applyLenderLayout(): void {
-    this.applyNamedLayout(this.lenderLayoutKey, this.lenderLayoutDraftName);
-  }
-
-  deleteLenderLayout(): void {
-    this.deleteNamedLayout(
-      this.lenderLayoutKey,
-      this.lenderLayoutDraftName,
-      this.lenderLayoutDraftName,
-      this.lenderLayoutNames,
-    );
-  }
-
   private registerGridApi(layoutKey: string, event: GridReadyEvent): void {
     this.gridApis.set(layoutKey, event.api);
+  }
+
+  gridApiFor(layoutKey: string): GridApi | undefined {
+    return this.gridApis.get(layoutKey);
   }
 
   private autoSizeColumns(event: FirstDataRenderedEvent, layoutKey: string): void {
     if (this.gridLayout.hasLayout(layoutKey)) return;
 
     requestAnimationFrame(() => event.api.autoSizeAllColumns(false));
-  }
-
-  openLayoutMenu(menuOpen: WritableSignal<boolean>): void {
-    menuOpen.set(true);
-  }
-
-  closeLayoutMenuSoon(menuOpen: WritableSignal<boolean>): void {
-    setTimeout(() => menuOpen.set(false));
-  }
-
-  chooseLayoutName(
-    layoutName: string,
-    layoutKey: string,
-    draftName: WritableSignal<string>,
-    menuOpen: WritableSignal<boolean>,
-  ): void {
-    draftName.set(layoutName);
-    menuOpen.set(false);
-    this.applyNamedLayout(layoutKey, draftName);
-  }
-
-  private setLayoutDraftName(
-    event: Event,
-    draftName: WritableSignal<string>,
-    menuOpen: WritableSignal<boolean>,
-  ): void {
-    draftName.set((event.target as HTMLInputElement).value);
-    menuOpen.set(true);
-  }
-
-  private selectLayout(
-    event: Event,
-    layoutKey: string,
-    selectedName: WritableSignal<string>,
-    draftName: WritableSignal<string>,
-  ): void {
-    const layoutName = (event.target as HTMLSelectElement).value;
-    selectedName.set(layoutName);
-    draftName.set(layoutName);
-  }
-
-  private saveNamedLayout(
-    layoutKey: string,
-    draftName: WritableSignal<string>,
-    selectedName: WritableSignal<string>,
-    layoutNames: WritableSignal<string[]>,
-    saveMessage: WritableSignal<string>,
-    timerProperty: 'drilldownLayoutSaveMessageTimer' | 'lenderLayoutSaveMessageTimer',
-  ): void {
-    const gridApi = this.gridApis.get(layoutKey);
-    const layoutName = draftName().trim();
-    if (!gridApi || !layoutName || this.isReservedLayoutName(layoutName)) return;
-
-    this.gridLayout.saveNamed(layoutKey, layoutName, gridApi.getState());
-    this.refreshLayoutNames(layoutKey, layoutName, selectedName, draftName, layoutNames);
-    this.showLayoutSaveMessage(layoutName, saveMessage, timerProperty);
-  }
-
-  private applyNamedLayout(layoutKey: string, selectedName: WritableSignal<string>): void {
-    const gridApi = this.gridApis.get(layoutKey);
-    const layoutName = selectedName().trim();
-    if (!gridApi) return;
-
-    if (!layoutName || this.isReservedLayoutName(layoutName)) {
-      this.applyDefaultLayout(layoutKey, gridApi);
-      return;
-    }
-
-    const layoutState = this.gridLayout.loadNamed(layoutKey, layoutName);
-    if (!layoutState) return;
-
-    this.gridLayout.setActiveName(layoutKey, layoutName);
-    gridApi.setState(layoutState);
-  }
-
-  private deleteNamedLayout(
-    layoutKey: string,
-    selectedName: WritableSignal<string>,
-    draftName: WritableSignal<string>,
-    layoutNames: WritableSignal<string[]>,
-  ): void {
-    const layoutName = selectedName().trim();
-    if (!layoutName) return;
-
-    this.gridLayout.deleteNamed(layoutKey, layoutName);
-    this.refreshLayoutNames(layoutKey, '', selectedName, draftName, layoutNames);
-  }
-
-  private refreshLayoutNames(
-    layoutKey: string,
-    activeName: string,
-    selectedName: WritableSignal<string>,
-    draftName: WritableSignal<string>,
-    layoutNames: WritableSignal<string[]>,
-  ): void {
-    layoutNames.set(this.gridLayout.names(layoutKey));
-    selectedName.set(activeName);
-    draftName.set(activeName || 'Default');
-  }
-
-  private applyDefaultLayout(layoutKey: string, gridApi: GridApi): void {
-    this.gridLayout.setActiveName(layoutKey, '');
-    gridApi.resetColumnState();
-    gridApi.setFilterModel(null);
-    requestAnimationFrame(() => gridApi.autoSizeAllColumns(false));
-  }
-
-  isReservedLayoutName(layoutName: string): boolean {
-    return this.gridLayout.isReservedName(layoutName);
-  }
-
-  canDeleteLayoutName(layoutName: string, layoutNames: string[]): boolean {
-    const normalizedName = layoutName.trim();
-    return layoutNames.some(name => name === normalizedName);
-  }
-
-  private showLayoutSaveMessage(
-    layoutName: string,
-    saveMessage: WritableSignal<string>,
-    timerProperty: 'drilldownLayoutSaveMessageTimer' | 'lenderLayoutSaveMessageTimer',
-  ): void {
-    const existingTimer = this[timerProperty];
-    if (existingTimer) {
-      clearTimeout(existingTimer);
-    }
-
-    saveMessage.set(`Saved "${layoutName}"`);
-    this[timerProperty] = setTimeout(() => saveMessage.set(''), 2500);
   }
 
   private numberColumn(field: string, headerName: string, width: number): ColDef {

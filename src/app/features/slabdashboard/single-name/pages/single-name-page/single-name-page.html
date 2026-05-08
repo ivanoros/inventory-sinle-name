@@ -28,42 +28,12 @@
       <section class="left-panel">
         <app-security-summary [detail]="singleName"></app-security-summary>
 
-        <div class="layout-controls single-name-layout-controls" aria-label="Position layouts">
-          <span>Position layout</span>
-          <div class="editable-combo">
-            <input
-              type="text"
-              placeholder="Layout name"
-              [value]="drilldownLayoutDraftName()"
-              (focus)="openLayoutMenu(drilldownLayoutMenuOpen)"
-              (blur)="closeLayoutMenuSoon(drilldownLayoutMenuOpen)"
-              (input)="setDrilldownLayoutDraftName($event)" />
-            <button type="button" class="combo-toggle" aria-label="Show layouts" (mousedown)="$event.preventDefault()" (click)="openLayoutMenu(drilldownLayoutMenuOpen)">v</button>
-            @if (drilldownLayoutMenuOpen()) {
-              <div class="combo-menu">
-                <button type="button" (mousedown)="$event.preventDefault(); chooseLayoutName('Default', 'single-name-drilldown', drilldownLayoutDraftName, drilldownLayoutMenuOpen)">Default</button>
-                @for (layoutName of drilldownLayoutNames(); track layoutName) {
-                  <button type="button" (mousedown)="$event.preventDefault(); chooseLayoutName(layoutName, 'single-name-drilldown', drilldownLayoutDraftName, drilldownLayoutMenuOpen)">{{ layoutName }}</button>
-                }
-              </div>
-            }
-          </div>
-          <button
-            type="button"
-            (click)="saveDrilldownLayout()"
-            [disabled]="!drilldownLayoutDraftName().trim() || isReservedLayoutName(drilldownLayoutDraftName())">
-            Save
-          </button>
-          <button
-            type="button"
-            (click)="deleteDrilldownLayout()"
-            [disabled]="!canDeleteLayoutName(drilldownLayoutDraftName(), drilldownLayoutNames())">
-            Delete
-          </button>
-          @if (drilldownLayoutSaveMessage()) {
-            <span class="layout-save-message">{{ drilldownLayoutSaveMessage() }}</span>
-          }
-        </div>
+        <app-grid-layout-control
+          class="single-name-layout-controls"
+          label="Position layout"
+          [layoutKey]="drilldownLayoutKey"
+          [gridApi]="gridApiFor(drilldownLayoutKey)">
+        </app-grid-layout-control>
 
         <app-position-panel
           [position]="singleName.position"
@@ -81,42 +51,12 @@
           (includeNonEntitlementChanged)="store.setIncludeNonEntitlement($event)">
         </app-position-panel>
 
-        <div class="layout-controls single-name-layout-controls" aria-label="Lender availability layouts">
-          <span>Lender layout</span>
-          <div class="editable-combo">
-            <input
-              type="text"
-              placeholder="Layout name"
-              [value]="lenderLayoutDraftName()"
-              (focus)="openLayoutMenu(lenderLayoutMenuOpen)"
-              (blur)="closeLayoutMenuSoon(lenderLayoutMenuOpen)"
-              (input)="setLenderLayoutDraftName($event)" />
-            <button type="button" class="combo-toggle" aria-label="Show layouts" (mousedown)="$event.preventDefault()" (click)="openLayoutMenu(lenderLayoutMenuOpen)">v</button>
-            @if (lenderLayoutMenuOpen()) {
-              <div class="combo-menu">
-                <button type="button" (mousedown)="$event.preventDefault(); chooseLayoutName('Default', 'single-name-lender', lenderLayoutDraftName, lenderLayoutMenuOpen)">Default</button>
-                @for (layoutName of lenderLayoutNames(); track layoutName) {
-                  <button type="button" (mousedown)="$event.preventDefault(); chooseLayoutName(layoutName, 'single-name-lender', lenderLayoutDraftName, lenderLayoutMenuOpen)">{{ layoutName }}</button>
-                }
-              </div>
-            }
-          </div>
-          <button
-            type="button"
-            (click)="saveLenderLayout()"
-            [disabled]="!lenderLayoutDraftName().trim() || isReservedLayoutName(lenderLayoutDraftName())">
-            Save
-          </button>
-          <button
-            type="button"
-            (click)="deleteLenderLayout()"
-            [disabled]="!canDeleteLayoutName(lenderLayoutDraftName(), lenderLayoutNames())">
-            Delete
-          </button>
-          @if (lenderLayoutSaveMessage()) {
-            <span class="layout-save-message">{{ lenderLayoutSaveMessage() }}</span>
-          }
-        </div>
+        <app-grid-layout-control
+          class="single-name-layout-controls"
+          label="Lender layout"
+          [layoutKey]="lenderLayoutKey"
+          [gridApi]="gridApiFor(lenderLayoutKey)">
+        </app-grid-layout-control>
 
         <app-lender-availability
           [agGridModules]="agGridModules"

@@ -1,5 +1,5 @@
 // src/app/features/slabdashboard/inventory/pages/inventory-page/inventory-page.ts
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {
   AllCommunityModule,
   CellClickedEvent,
@@ -26,6 +26,7 @@ import { AgGridAngular } from 'ag-grid-angular';
 import { SlabdashboardHeaderComponent } from '@shared/ui/slabdashboard-header/slabdashboard-header.component';
 import { SlabdashboardTabsComponent } from '@shared/ui/slabdashboard-tabs/slabdashboard-tabs.component';
 import { GridLayoutService } from '@core/services/grid-layout.service';
+import { GridLayoutControlComponent } from '@core/layout/grid-layout-control/grid-layout-control.component';
 
 type NumericInventoryField = {
   [Field in keyof InventoryRow]: InventoryRow[Field] extends number | undefined ? Field : never;
@@ -34,7 +35,7 @@ type NumericInventoryField = {
 @Component({
   selector: 'app-inventory',
   standalone: true,
-  imports: [AgGridAngular, SlabdashboardHeaderComponent, SlabdashboardTabsComponent],
+  imports: [AgGridAngular, GridLayoutControlComponent, SlabdashboardHeaderComponent, SlabdashboardTabsComponent],
   templateUrl: './inventory-page.html',
   styleUrl: './inventory-page.scss',
   providers: [InventoryStore],
@@ -42,8 +43,8 @@ type NumericInventoryField = {
 export class InventoryPage {
   readonly store = inject(InventoryStore);
   private readonly gridLayout = inject(GridLayoutService);
-  private readonly layoutKey = 'inventory';
-  private gridApi?: GridApi<InventoryRow>;
+  readonly layoutKey = 'inventory';
+  gridApi?: GridApi<InventoryRow>;
 
   readonly agGridModules = [
     AllCommunityModule,
@@ -55,12 +56,6 @@ export class InventoryPage {
     GridStateModule,
   ];
   private readonly numericColumnClass = 'numeric-cell';
-  readonly layoutNames = signal(this.gridLayout.names(this.layoutKey));
-  readonly selectedLayoutName = signal(this.gridLayout.activeName(this.layoutKey));
-  readonly layoutDraftName = signal(this.selectedLayoutName() || 'Default');
-  readonly layoutMenuOpen = signal(false);
-  readonly layoutSaveMessage = signal('');
-  private layoutSaveMessageTimer?: ReturnType<typeof setTimeout>;
 
   readonly columnDefs: ColDef<InventoryRow>[] = [
     {
@@ -178,105 +173,6 @@ export class InventoryPage {
 
   setView(view: InventoryViewFilter): void {
     this.store.setView(view);
-  }
-
-  setLayoutDraftName(event: Event): void {
-    const layoutName = (event.target as HTMLInputElement).value;
-    this.layoutDraftName.set(layoutName);
-    this.selectedLayoutName.set(this.layoutNameExists(layoutName) ? layoutName : '');
-    this.layoutMenuOpen.set(true);
-  }
-
-  openLayoutMenu(): void {
-    this.layoutMenuOpen.set(true);
-  }
-
-  closeLayoutMenuSoon(): void {
-    setTimeout(() => this.layoutMenuOpen.set(false));
-  }
-
-  chooseLayoutName(layoutName: string): void {
-    this.layoutDraftName.set(layoutName);
-    this.selectedLayoutName.set(this.layoutNameExists(layoutName) ? layoutName : '');
-    this.layoutMenuOpen.set(false);
-    this.applyNamedLayout();
-  }
-
-  saveNamedLayout(): void {
-    if (!this.gridApi) return;
-
-    const layoutName = this.layoutDraftName().trim();
-    if (!layoutName || this.isReservedLayoutName(layoutName)) return;
-
-    this.gridLayout.saveNamed(this.layoutKey, layoutName, this.gridApi.getState());
-    this.refreshLayoutNames(layoutName);
-    this.showLayoutSaveMessage(layoutName);
-  }
-
-  applyNamedLayout(): void {
-    if (!this.gridApi) return;
-
-    const layoutName = this.normalizedLayoutName();
-    if (!layoutName || this.isReservedLayoutName(layoutName)) {
-      this.applyDefaultLayout();
-      return;
-    }
-
-    const layoutState = this.gridLayout.loadNamed(this.layoutKey, layoutName);
-    if (!layoutState) return;
-
-    this.gridLayout.setActiveName(this.layoutKey, layoutName);
-    this.gridApi.setState(layoutState);
-  }
-
-  deleteNamedLayout(): void {
-    const layoutName = this.normalizedLayoutName();
-    if (!layoutName) return;
-
-    this.gridLayout.deleteNamed(this.layoutKey, layoutName);
-    this.refreshLayoutNames('');
-  }
-
-  private refreshLayoutNames(activeName: string): void {
-    this.layoutNames.set(this.gridLayout.names(this.layoutKey));
-    this.selectedLayoutName.set(activeName);
-    this.layoutDraftName.set(activeName || 'Default');
-  }
-
-  private applyDefaultLayout(): void {
-    if (!this.gridApi) return;
-
-    this.gridLayout.setActiveName(this.layoutKey, '');
-    this.gridApi.resetColumnState();
-    this.gridApi.setFilterModel(null);
-    requestAnimationFrame(() => this.gridApi?.autoSizeAllColumns(false));
-    this.refreshLayoutNames('');
-  }
-
-  isReservedLayoutName(layoutName: string): boolean {
-    return this.gridLayout.isReservedName(layoutName);
-  }
-
-  canDeleteLayoutName(layoutName: string): boolean {
-    return this.layoutNameExists(layoutName);
-  }
-
-  private normalizedLayoutName(): string {
-    return this.layoutDraftName().trim();
-  }
-
-  private layoutNameExists(layoutName: string): boolean {
-    const normalizedName = layoutName.trim();
-    return this.layoutNames().some(name => name === normalizedName);
-  }
-
-  private showLayoutSaveMessage(layoutName: string): void {
-    if (this.layoutSaveMessageTimer) {
-      clearTimeout(this.layoutSaveMessageTimer);
-    }
-
-    this.layoutSaveMessage.set(`Saved "${layoutName}"`);
-    this.layoutSaveMessageTimer = setTimeout(() => this.layoutSaveMessage.set(''), 2500);
   }
 
   private numberColumn(
