@@ -90,6 +90,11 @@
   padding-right: 14px;
 }
 
+.single-name-layout-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .splitter {
   display: flex;
   align-items: stretch;

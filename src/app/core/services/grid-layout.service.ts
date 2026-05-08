@@ -1,9 +1,15 @@
 import { Injectable } from '@angular/core';
 import type { GridState } from 'ag-grid-community';
 
+export interface MultiGridLayoutState {
+  grids: Record<string, GridState>;
+}
+
+export type GridLayoutState = GridState | MultiGridLayoutState;
+
 export interface NamedGridLayout {
   name: string;
-  state: GridState;
+  state: GridLayoutState;
   updatedAt: string;
 }
 
@@ -17,7 +23,8 @@ export class GridLayoutService {
 
   load(key: string): GridState | undefined {
     const activeLayoutName = this.activeName(key);
-    return activeLayoutName ? this.loadNamed(key, activeLayoutName) : undefined;
+    const state = activeLayoutName ? this.loadNamed(key, activeLayoutName) : undefined;
+    return state && !this.isMultiGridLayoutState(state) ? state : undefined;
   }
 
   save(key: string, state: GridState): void {
@@ -62,7 +69,7 @@ export class GridLayoutService {
     }
   }
 
-  saveNamed(key: string, name: string, state: GridState): void {
+  saveNamed(key: string, name: string, state: GridLayoutState): void {
     const trimmedName = name.trim();
     if (!trimmedName || this.isReservedName(trimmedName)) return;
 
@@ -82,7 +89,7 @@ export class GridLayoutService {
     this.setActiveName(key, trimmedName);
   }
 
-  loadNamed(key: string, name: string): GridState | undefined {
+  loadNamed(key: string, name: string): GridLayoutState | undefined {
     const normalizedName = name.trim().toLowerCase();
     return this.layouts(key).find(layout => layout.name.trim().toLowerCase() === normalizedName)?.state;
   }
@@ -101,6 +108,10 @@ export class GridLayoutService {
 
   isReservedName(name: string): boolean {
     return this.reservedLayoutNames.has(name.trim().toLowerCase());
+  }
+
+  isMultiGridLayoutState(state: GridLayoutState): state is MultiGridLayoutState {
+    return 'grids' in state && typeof state.grids === 'object' && state.grids !== null;
   }
 
   private layouts(key: string): NamedGridLayout[] {

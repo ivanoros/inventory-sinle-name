@@ -25,8 +25,10 @@ import { ErrorAlertComponent } from '@shared/ui/error-alert/error-alert.componen
 import { LoadingSpinnerComponent } from '@shared/ui/loading-spinner/loading-spinner.component';
 import { SlabdashboardHeaderComponent } from '@shared/ui/slabdashboard-header/slabdashboard-header.component';
 import { SlabdashboardTabsComponent } from '@shared/ui/slabdashboard-tabs/slabdashboard-tabs.component';
-import { GridLayoutService } from '@core/services/grid-layout.service';
-import { GridLayoutControlComponent } from '@core/layout/grid-layout-control/grid-layout-control.component';
+import {
+  GridLayoutControlComponent,
+  GridLayoutTarget,
+} from '@core/layout/grid-layout-control/grid-layout-control.component';
 
 ChartModuleRegistry.registerModules(AllChartCommunityModule);
 
@@ -52,7 +54,7 @@ ChartModuleRegistry.registerModules(AllChartCommunityModule);
 export class SingleNamePage {
   private readonly route = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly gridLayout = inject(GridLayoutService);
+  readonly singleNameLayoutKey = 'single-name';
   readonly drilldownLayoutKey = 'single-name-drilldown';
   readonly lenderLayoutKey = 'single-name-lender';
   private readonly gridApis = new Map<string, GridApi>();
@@ -93,7 +95,6 @@ export class SingleNamePage {
     rowHeight: 28,
     headerHeight: 31,
     suppressCellFocus: true,
-    initialState: this.gridLayout.load(layoutKey),
     onGridReady: event => this.registerGridApi(layoutKey, event),
     onFirstDataRendered: event => this.autoSizeColumns(event, layoutKey),
     sideBar: {
@@ -170,9 +171,14 @@ export class SingleNamePage {
     return this.gridApis.get(layoutKey);
   }
 
-  private autoSizeColumns(event: FirstDataRenderedEvent, layoutKey: string): void {
-    if (this.gridLayout.hasLayout(layoutKey)) return;
+  singleNameLayoutTargets(): GridLayoutTarget[] {
+    return [
+      { key: this.drilldownLayoutKey, gridApi: this.gridApiFor(this.drilldownLayoutKey) },
+      { key: this.lenderLayoutKey, gridApi: this.gridApiFor(this.lenderLayoutKey) },
+    ];
+  }
 
+  private autoSizeColumns(event: FirstDataRenderedEvent, layoutKey: string): void {
     requestAnimationFrame(() => event.api.autoSizeAllColumns(false));
   }
 

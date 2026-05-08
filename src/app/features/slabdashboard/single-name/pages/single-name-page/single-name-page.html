@@ -28,13 +28,6 @@
       <section class="left-panel">
         <app-security-summary [detail]="singleName"></app-security-summary>
 
-        <app-grid-layout-control
-          class="single-name-layout-controls"
-          label="Position layout"
-          [layoutKey]="drilldownLayoutKey"
-          [gridApi]="gridApiFor(drilldownLayoutKey)">
-        </app-grid-layout-control>
-
         <app-position-panel
           [position]="singleName.position"
           [agGridModules]="agGridModules"
@@ -49,14 +42,13 @@
           (optionsToggled)="toggleOptions()"
           (showEmptyRowsChanged)="store.setShowEmptyDrilldownRows($event)"
           (includeNonEntitlementChanged)="store.setIncludeNonEntitlement($event)">
+          <app-grid-layout-control
+            position-actions
+            label="Layouts:"
+            [layoutKey]="singleNameLayoutKey"
+            [gridTargets]="singleNameLayoutTargets()">
+          </app-grid-layout-control>
         </app-position-panel>
-
-        <app-grid-layout-control
-          class="single-name-layout-controls"
-          label="Lender layout"
-          [layoutKey]="lenderLayoutKey"
-          [gridApi]="gridApiFor(lenderLayoutKey)">
-        </app-grid-layout-control>
 
         <app-lender-availability
           [agGridModules]="agGridModules"
