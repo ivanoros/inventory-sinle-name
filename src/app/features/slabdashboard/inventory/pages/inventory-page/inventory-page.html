@@ -37,8 +37,6 @@
       <button class="active">Pessimistic</button>
     </div>
 
-    <app-grid-layout-control label="Layouts" [layoutKey]="layoutKey" [gridApi]="gridApi"></app-grid-layout-control>
-
     <label class="checkbox">
       <input type="checkbox" [checked]="store.includeRecalls()" />
       Include recalls
@@ -49,7 +47,10 @@
       Rounding
     </label>
 
-    <button class="export">Export</button>
+    <div class="toolbar-actions">
+      <app-grid-layout-control label="Layouts" [layoutKey]="layoutKey" [gridApi]="gridApi"></app-grid-layout-control>
+      <button class="export">Export</button>
+    </div>
   </section>
 
   <section class="grid-shell">

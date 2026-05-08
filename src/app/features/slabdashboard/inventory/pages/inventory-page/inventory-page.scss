@@ -55,8 +55,14 @@
   gap: 4px;
 }
 
-.export {
+.toolbar-actions {
   margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.export {
   background: #008a72;
   color: white;
   border: none;
