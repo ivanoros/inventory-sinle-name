@@ -116,7 +116,6 @@ export class InventoryPage {
     animateRows: true,
     suppressCellFocus: true,
     getRowId: params => params.data.ticker,
-    initialState: this.gridLayout.load(this.layoutKey),
     onFirstDataRendered: event => this.autoSizeColumns(event),
     sideBar: {
       toolPanels: [

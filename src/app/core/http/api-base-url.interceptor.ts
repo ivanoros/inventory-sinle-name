@@ -10,7 +10,8 @@ export const apiBaseUrlInterceptor: HttpInterceptorFn = (req, next) => {
 
   const shouldPrefixApi =
     req.url.startsWith('/inventory') ||
-    req.url.startsWith('/single-name');
+    req.url.startsWith('/single-name') ||
+    req.url.startsWith('/grid-layouts');
 
   if (!shouldPrefixApi) {
     return next(req);

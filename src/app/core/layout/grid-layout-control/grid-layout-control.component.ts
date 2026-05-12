@@ -1,4 +1,5 @@
-import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, inject, signal } from '@angular/core';
+import { Component, DestroyRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { GridApi } from 'ag-grid-community';
 import { GridLayoutService, GridLayoutState, MultiGridLayoutState } from '@core/services/grid-layout.service';
 
@@ -19,21 +20,24 @@ export class GridLayoutControlComponent implements OnChanges, OnDestroy, OnInit 
   @Input() label = 'Layouts:';
 
   private readonly gridLayout = inject(GridLayoutService);
+  private readonly destroyRef = inject(DestroyRef);
   private saveMessageTimer?: ReturnType<typeof setTimeout>;
 
   readonly layoutNames = signal<string[]>([]);
   readonly layoutDraftName = signal('Default');
   readonly layoutMenuOpen = signal(false);
   readonly layoutSaveMessage = signal('');
+  readonly layoutsLoaded = signal(false);
   private lastAutoAppliedLayoutName = '';
+  private layoutLoadKey = '';
 
   ngOnInit(): void {
-    this.refreshLayoutNames(this.gridLayout.activeName(this.layoutKey));
+    this.loadLayouts();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['layoutKey'] && !changes['layoutKey'].firstChange) {
-      this.refreshLayoutNames(this.gridLayout.activeName(this.layoutKey));
+      this.loadLayouts();
       this.lastAutoAppliedLayoutName = '';
     }
 
@@ -72,17 +76,21 @@ export class GridLayoutControlComponent implements OnChanges, OnDestroy, OnInit 
     const layoutName = this.normalizedLayoutName();
     if (!layoutName || this.isReservedLayoutName(layoutName)) return;
 
-    this.gridLayout.saveNamed(this.layoutKey, layoutName, state);
-    this.refreshLayoutNames(layoutName);
-    this.showLayoutSaveMessage(layoutName);
+    this.gridLayout.saveNamed(this.layoutKey, layoutName, state)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(collection => {
+        this.refreshLayoutNames(collection.activeName || layoutName);
+        this.showLayoutSaveMessage(layoutName);
+      });
   }
 
   deleteNamedLayout(): void {
     const layoutName = this.normalizedLayoutName();
     if (!layoutName) return;
 
-    this.gridLayout.deleteNamed(this.layoutKey, layoutName);
-    this.refreshLayoutNames('');
+    this.gridLayout.deleteNamed(this.layoutKey, layoutName)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(collection => this.refreshLayoutNames(collection.activeName));
   }
 
   isReservedLayoutName(layoutName: string): boolean {
@@ -106,27 +114,36 @@ export class GridLayoutControlComponent implements OnChanges, OnDestroy, OnInit 
     const layoutState = this.gridLayout.loadNamed(this.layoutKey, normalizedName);
     if (!layoutState) return;
 
-    this.gridLayout.setActiveName(this.layoutKey, normalizedName);
     this.applyState(layoutState);
-    this.refreshLayoutNames(normalizedName);
+    this.gridLayout.setActiveName(this.layoutKey, normalizedName)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(collection => this.refreshLayoutNames(collection.activeName || normalizedName));
   }
 
   private applyDefaultLayout(): void {
     const targets = this.activeTargets();
     if (targets.length === 0) return;
 
-    this.gridLayout.setActiveName(this.layoutKey, '');
     targets.forEach(target => {
       target.gridApi?.resetColumnState();
       target.gridApi?.setFilterModel(null);
       requestAnimationFrame(() => target.gridApi?.autoSizeAllColumns(false));
     });
-    this.refreshLayoutNames('');
+    this.gridLayout.setActiveName(this.layoutKey, '')
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(collection => this.refreshLayoutNames(collection.activeName));
   }
 
   private applyActiveLayoutWhenReady(): void {
     const activeLayoutName = this.gridLayout.activeName(this.layoutKey);
-    if (!activeLayoutName || activeLayoutName === this.lastAutoAppliedLayoutName || !this.hasReadyGrids()) return;
+    if (
+      !this.layoutsLoaded() ||
+      !activeLayoutName ||
+      activeLayoutName === this.lastAutoAppliedLayoutName ||
+      !this.hasReadyGrids()
+    ) {
+      return;
+    }
 
     const layoutState = this.gridLayout.loadNamed(this.layoutKey, activeLayoutName);
     if (!layoutState) return;
@@ -157,6 +174,22 @@ export class GridLayoutControlComponent implements OnChanges, OnDestroy, OnInit 
   private refreshLayoutNames(activeName: string): void {
     this.layoutNames.set(this.gridLayout.names(this.layoutKey));
     this.layoutDraftName.set(activeName || 'Default');
+  }
+
+  private loadLayouts(): void {
+    const requestedKey = this.layoutKey;
+    this.layoutLoadKey = requestedKey;
+    this.layoutsLoaded.set(false);
+
+    this.gridLayout.loadCollection(requestedKey)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(collection => {
+        if (this.layoutLoadKey !== requestedKey) return;
+
+        this.layoutsLoaded.set(true);
+        this.refreshLayoutNames(collection.activeName);
+        this.applyActiveLayoutWhenReady();
+      });
   }
 
   private normalizedLayoutName(): string {

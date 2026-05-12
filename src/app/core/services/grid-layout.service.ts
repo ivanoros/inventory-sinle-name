@@ -1,5 +1,7 @@
-import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
 import type { GridState } from 'ag-grid-community';
+import { Observable, catchError, map, of, tap } from 'rxjs';
 
 export interface MultiGridLayoutState {
   grids: Record<string, GridState>;
@@ -13,67 +15,68 @@ export interface NamedGridLayout {
   updatedAt: string;
 }
 
+export interface GridLayoutCollection {
+  key: string;
+  activeName: string;
+  layouts: NamedGridLayout[];
+}
+
+interface GridLayoutCollectionResponse {
+  key?: string;
+  activeName?: string | null;
+  layouts?: unknown;
+}
+
 @Injectable({
   providedIn: 'root',
 })
 export class GridLayoutService {
-  private readonly storagePrefix = 'slabdashboard.grid-layout.';
-  private readonly activePrefix = 'slabdashboard.grid-layout.active.';
+  private readonly http = inject(HttpClient);
   private readonly reservedLayoutNames = new Set(['default']);
+  private readonly layoutCollections = new Map<string, GridLayoutCollection>();
 
-  load(key: string): GridState | undefined {
-    const activeLayoutName = this.activeName(key);
-    const state = activeLayoutName ? this.loadNamed(key, activeLayoutName) : undefined;
-    return state && !this.isMultiGridLayoutState(state) ? state : undefined;
-  }
-
-  save(key: string, state: GridState): void {
-    const activeLayoutName = this.activeName(key);
-    if (activeLayoutName) {
-      this.saveNamed(key, activeLayoutName, state);
-      return;
-    }
-
-    try {
-      localStorage.setItem(this.storageKey(key), JSON.stringify(state));
-    } catch {
-      // Ignore storage failures so grid interaction is never blocked.
-    }
+  loadCollection(key: string): Observable<GridLayoutCollection> {
+    return this.http.get<GridLayoutCollectionResponse>(this.collectionUrl(key)).pipe(
+      map(response => this.normalizeCollection(key, response)),
+      tap(collection => this.layoutCollections.set(key, collection)),
+      catchError(() => of(this.layoutCollections.get(key) ?? this.emptyCollection(key))),
+    );
   }
 
   hasLayout(key: string): boolean {
-    return this.load(key) !== undefined;
+    const activeLayoutName = this.activeName(key);
+    const state = activeLayoutName ? this.loadNamed(key, activeLayoutName) : undefined;
+    return state !== undefined;
   }
 
   names(key: string): string[] {
-    return this.layouts(key).map(layout => layout.name);
+    return this.layoutsSnapshot(key).map(layout => layout.name);
   }
 
   activeName(key: string): string {
-    try {
-      return localStorage.getItem(this.activeStorageKey(key)) ?? '';
-    } catch {
-      return '';
-    }
+    return this.layoutCollections.get(key)?.activeName ?? '';
   }
 
-  setActiveName(key: string, name: string): void {
-    try {
-      if (name) {
-        localStorage.setItem(this.activeStorageKey(key), name);
-      } else {
-        localStorage.removeItem(this.activeStorageKey(key));
-      }
-    } catch {
-      // Ignore storage failures so grid interaction is never blocked.
-    }
+  setActiveName(key: string, name: string): Observable<GridLayoutCollection> {
+    const activeName = name.trim();
+    const currentCollection = this.layoutCollections.get(key) ?? this.emptyCollection(key);
+    const optimisticCollection = { ...currentCollection, activeName };
+    this.layoutCollections.set(key, optimisticCollection);
+
+    return this.http.put<GridLayoutCollectionResponse>(`${this.collectionUrl(key)}/active`, { activeName }).pipe(
+      map(response => this.normalizeCollection(key, response, optimisticCollection)),
+      tap(collection => this.layoutCollections.set(key, collection)),
+      catchError(() => of(optimisticCollection)),
+    );
   }
 
-  saveNamed(key: string, name: string, state: GridLayoutState): void {
+  saveNamed(key: string, name: string, state: GridLayoutState): Observable<GridLayoutCollection> {
     const trimmedName = name.trim();
-    if (!trimmedName || this.isReservedName(trimmedName)) return;
+    if (!trimmedName || this.isReservedName(trimmedName)) {
+      return of(this.layoutCollections.get(key) ?? this.emptyCollection(key));
+    }
 
-    const layouts = this.layouts(key);
+    const layouts = this.layoutsSnapshot(key);
     const normalizedName = trimmedName.toLowerCase();
     const nextLayout: NamedGridLayout = {
       name: trimmedName,
@@ -85,25 +88,46 @@ export class GridLayoutService {
       nextLayout,
     ].sort((left, right) => left.name.localeCompare(right.name));
 
-    this.persistLayouts(key, nextLayouts);
-    this.setActiveName(key, trimmedName);
+    const optimisticCollection: GridLayoutCollection = {
+      key,
+      activeName: trimmedName,
+      layouts: nextLayouts,
+    };
+    this.layoutCollections.set(key, optimisticCollection);
+
+    return this.http.put<GridLayoutCollectionResponse>(
+      `${this.collectionUrl(key)}/layouts/${this.encodePathSegment(trimmedName)}`,
+      { name: trimmedName, state },
+    ).pipe(
+      map(response => this.normalizeCollection(key, response, optimisticCollection)),
+      tap(collection => this.layoutCollections.set(key, collection)),
+      catchError(() => of(optimisticCollection)),
+    );
   }
 
   loadNamed(key: string, name: string): GridLayoutState | undefined {
     const normalizedName = name.trim().toLowerCase();
-    return this.layouts(key).find(layout => layout.name.trim().toLowerCase() === normalizedName)?.state;
+    return this.layoutsSnapshot(key).find(layout => layout.name.trim().toLowerCase() === normalizedName)?.state;
   }
 
-  deleteNamed(key: string, name: string): void {
+  deleteNamed(key: string, name: string): Observable<GridLayoutCollection> {
     const normalizedName = name.trim().toLowerCase();
-    this.persistLayouts(
+    const currentCollection = this.layoutCollections.get(key) ?? this.emptyCollection(key);
+    const activeName = currentCollection.activeName.trim().toLowerCase() === normalizedName ? '' : currentCollection.activeName;
+    const optimisticCollection: GridLayoutCollection = {
       key,
-      this.layouts(key).filter(layout => layout.name.trim().toLowerCase() !== normalizedName),
-    );
+      activeName,
+      layouts: currentCollection.layouts.filter(layout => layout.name.trim().toLowerCase() !== normalizedName),
+    };
+    this.layoutCollections.set(key, optimisticCollection);
 
-    if (this.activeName(key).trim().toLowerCase() === normalizedName) {
-      this.setActiveName(key, '');
-    }
+    return this.http.delete<GridLayoutCollectionResponse>(
+      `${this.collectionUrl(key)}/layouts/${this.encodePathSegment(name.trim())}`,
+    ).pipe(
+      map(response => this.normalizeCollection(key, response, optimisticCollection)),
+      tap(collection => this.layoutCollections.set(key, collection)),
+      catchError(() => of(optimisticCollection)),
+    );
   }
 
   isReservedName(name: string): boolean {
@@ -114,40 +138,42 @@ export class GridLayoutService {
     return 'grids' in state && typeof state.grids === 'object' && state.grids !== null;
   }
 
-  private layouts(key: string): NamedGridLayout[] {
-    try {
-      const savedLayouts = localStorage.getItem(this.layoutsStorageKey(key));
-      if (!savedLayouts) return [];
+  private layoutsSnapshot(key: string): NamedGridLayout[] {
+    return this.layoutCollections.get(key)?.layouts ?? [];
+  }
 
-      const parsedLayouts = JSON.parse(savedLayouts) as unknown;
-      if (!Array.isArray(parsedLayouts)) return [];
-
-      return parsedLayouts.filter((layout): layout is NamedGridLayout => {
+  private normalizeCollection(
+    key: string,
+    response: GridLayoutCollectionResponse,
+    fallback = this.emptyCollection(key),
+  ): GridLayoutCollection {
+    const layouts = Array.isArray(response.layouts)
+      ? response.layouts.filter((layout): layout is NamedGridLayout => {
         const candidate = layout as Partial<NamedGridLayout>;
         return typeof candidate.name === 'string' && candidate.state !== undefined;
-      });
-    } catch {
-      return [];
-    }
+      })
+      : fallback.layouts;
+
+    return {
+      key: response.key ?? fallback.key,
+      activeName: response.activeName?.trim() ?? fallback.activeName,
+      layouts: [...layouts].sort((left, right) => left.name.localeCompare(right.name)),
+    };
   }
 
-  private persistLayouts(key: string, layouts: NamedGridLayout[]): void {
-    try {
-      localStorage.setItem(this.layoutsStorageKey(key), JSON.stringify(layouts));
-    } catch {
-      // Ignore storage failures so grid interaction is never blocked.
-    }
+  private emptyCollection(key: string): GridLayoutCollection {
+    return {
+      key,
+      activeName: '',
+      layouts: [],
+    };
   }
 
-  private storageKey(key: string): string {
-    return `${this.storagePrefix}${key}`;
+  private collectionUrl(key: string): string {
+    return `/grid-layouts/${this.encodePathSegment(key)}`;
   }
 
-  private layoutsStorageKey(key: string): string {
-    return `${this.storageKey(key)}.named`;
-  }
-
-  private activeStorageKey(key: string): string {
-    return `${this.activePrefix}${key}`;
+  private encodePathSegment(value: string): string {
+    return encodeURIComponent(value);
   }
 }
