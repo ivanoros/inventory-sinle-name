@@ -1,0 +1,194 @@
+{
+  "inventoryExample": {
+    "endpoint": "GET /api/grid-layouts/inventory",
+    "response": {
+      "key": "inventory",
+      "activeName": "Desk Default",
+      "layouts": [
+        {
+          "name": "Desk Default",
+          "updatedAt": "2026-05-12T12:15:30.000Z",
+          "state": {
+            "version": "35.2.1",
+            "columnOrder": {
+              "orderedColIds": [
+                "status",
+                "ticker",
+                "cusip",
+                "type",
+                "price",
+                "excessDeficit",
+                "liveExcessDeficit"
+              ]
+            },
+            "columnSizing": {
+              "columnSizingModel": [
+                { "colId": "status", "width": 160 },
+                { "colId": "ticker", "width": 280 },
+                { "colId": "cusip", "width": 120 },
+                { "colId": "price", "width": 90 }
+              ]
+            },
+            "columnPinning": {
+              "leftColIds": [
+                "status",
+                "ticker",
+                "cusip",
+                "type",
+                "price"
+              ],
+              "rightColIds": []
+            },
+            "filter": {
+              "filterModel": {
+                "status": {
+                  "filterType": "text",
+                  "type": "contains",
+                  "filter": "Borrow"
+                }
+              }
+            },
+            "sort": {
+              "sortModel": [
+                {
+                  "colId": "liveExcessDeficit",
+                  "sort": "desc"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Compact",
+          "updatedAt": "2026-05-12T13:02:45.000Z",
+          "state": {
+            "version": "35.2.1",
+            "columnOrder": {
+              "orderedColIds": [
+                "ticker",
+                "price",
+                "liveExcessDeficit",
+                "sodBorrowNeed"
+              ]
+            },
+            "columnVisibility": {
+              "hiddenColIds": [
+                "upcomingCA",
+                "recordDate",
+                "otherSettled",
+                "pendingOther"
+              ]
+            },
+            "columnPinning": {
+              "leftColIds": [
+                "ticker"
+              ],
+              "rightColIds": []
+            }
+          }
+        }
+      ]
+    }
+  },
+  "singleNameExample": {
+    "endpoint": "GET /api/grid-layouts/single-name",
+    "response": {
+      "key": "single-name",
+      "activeName": "Research View",
+      "layouts": [
+        {
+          "name": "Research View",
+          "updatedAt": "2026-05-12T12:45:00.000Z",
+          "state": {
+            "grids": {
+              "single-name-drilldown": {
+                "version": "35.2.1",
+                "columnOrder": {
+                  "orderedColIds": [
+                    "category",
+                    "activityType",
+                    "market",
+                    "account",
+                    "projectedTotal",
+                    "settledTotal"
+                  ]
+                },
+                "columnSizing": {
+                  "columnSizingModel": [
+                    { "colId": "category", "width": 150 },
+                    { "colId": "activityType", "width": 170 },
+                    { "colId": "market", "width": 95 },
+                    { "colId": "projectedTotal", "width": 145 }
+                  ]
+                },
+                "sort": {
+                  "sortModel": [
+                    {
+                      "colId": "projectedTotal",
+                      "sort": "desc"
+                    }
+                  ]
+                }
+              },
+              "single-name-lender": {
+                "version": "35.2.1",
+                "columnOrder": {
+                  "orderedColIds": [
+                    "lender",
+                    "quantity",
+                    "rate",
+                    "updatedAt"
+                  ]
+                },
+                "columnSizing": {
+                  "columnSizingModel": [
+                    { "colId": "lender", "width": 180 },
+                    { "colId": "quantity", "width": 130 },
+                    { "colId": "rate", "width": 100 }
+                  ]
+                },
+                "columnPinning": {
+                  "leftColIds": [
+                    "lender"
+                  ],
+                  "rightColIds": []
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "emptyResponseExample": {
+    "endpoint": "GET /api/grid-layouts/inventory",
+    "response": {
+      "key": "inventory",
+      "activeName": "",
+      "layouts": []
+    }
+  },
+  "saveLayoutRequestExample": {
+    "endpoint": "PUT /api/grid-layouts/inventory/layouts/Desk%20Default",
+    "request": {
+      "name": "Desk Default",
+      "state": {
+        "version": "35.2.1",
+        "columnOrder": {
+          "orderedColIds": [
+            "status",
+            "ticker",
+            "cusip",
+            "price"
+          ]
+        }
+      }
+    }
+  },
+  "setActiveLayoutRequestExample": {
+    "endpoint": "PUT /api/grid-layouts/inventory/active",
+    "request": {
+      "activeName": "Desk Default"
+    }
+  }
+}
