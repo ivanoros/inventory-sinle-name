@@ -1,4 +1,5 @@
 @import "tailwindcss/theme";
+@import "tailwindcss-primeui";
 @import "tailwindcss/utilities";
 
 @theme {
