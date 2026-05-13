@@ -1,7 +1,7 @@
 import { DestroyRef, Injectable, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
-import { timer } from 'rxjs';
+import { Subscription, timer } from 'rxjs';
 import {
   CellClickedEvent,
   GridApi,
@@ -21,10 +21,12 @@ export class InventoryStore {
   private readonly inventoryData = inject(InventoryDataService);
   private readonly tabsService = inject(SlabdashboardTabsService);
   private gridApi?: GridApi<InventoryRow>;
+  private refreshTimerSubscription?: Subscription;
 
   readonly selectedView = signal<InventoryViewFilter>('live');
   readonly includeRecalls = signal(true);
   readonly rounding = signal(true);
+  readonly autoRefreshEnabled = signal(false);
 
   readonly filters = computed(() => ({
     view: this.selectedView(),
@@ -42,22 +44,21 @@ export class InventoryStore {
 
   connectGrid(api: GridApi<InventoryRow>): void {
     this.gridApi = api;
-    timer(2000, this.inventoryData.refreshIntervalMs)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => this.refreshRows());
   }
 
   openSecurityFromCell(event: CellClickedEvent<InventoryRow>): void {
     const ticker = event.data?.ticker;
     if (!ticker) return;
 
-    if (event.colDef.field === 'ticker') {
+    const field = event.colDef.field ?? event.column.getColId();
+
+    if (field === 'ticker') {
       const openedTicker = this.tabsService.openSecurity(ticker);
       this.router.navigate(['/single-name', openedTicker]);
       return;
     }
 
-    if (event.colDef.field === 'cusip') {
+    if (field === 'cusip') {
       this.router.navigate(['/single-name', ticker], {
         queryParams: { view: 'inventory' },
       });
@@ -78,6 +79,34 @@ export class InventoryStore {
   setView(view: InventoryViewFilter): void {
     this.selectedView.set(view);
     this.refreshRows(true);
+  }
+
+  refreshFromBackend(): void {
+    this.refreshRows();
+  }
+
+  startRefreshTimer(): void {
+    if (this.refreshTimerSubscription) return;
+
+    this.autoRefreshEnabled.set(true);
+    this.refreshTimerSubscription = timer(this.inventoryData.refreshIntervalMs, this.inventoryData.refreshIntervalMs)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.refreshRows());
+  }
+
+  stopRefreshTimer(): void {
+    this.refreshTimerSubscription?.unsubscribe();
+    this.refreshTimerSubscription = undefined;
+    this.autoRefreshEnabled.set(false);
+  }
+
+  toggleRefreshTimer(): void {
+    if (this.autoRefreshEnabled()) {
+      this.stopRefreshTimer();
+      return;
+    }
+
+    this.startRefreshTimer();
   }
 
   private refreshRows(purge = false): void {

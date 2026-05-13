@@ -16,6 +16,16 @@
     </app-slabdashboard-tabs>
   }
 
+  <section class="refresh-toolbar">
+    <button type="button" (click)="refreshFromBackend()">Refresh</button>
+    <button
+      type="button"
+      [class.active]="store.autoRefreshEnabled()"
+      (click)="toggleRefreshTimer()">
+      {{ store.autoRefreshEnabled() ? 'Stop auto refresh' : 'Start auto refresh' }}
+    </button>
+  </section>
+
   @if (store.error(); as errorMessage) {
     <main class="content loading-state">
       <app-error-alert [message]="errorMessage"></app-error-alert>

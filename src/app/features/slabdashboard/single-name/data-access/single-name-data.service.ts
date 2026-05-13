@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable, interval, map, startWith, switchMap } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { SingleNameDetail } from '../models/single-name.model';
 import { TradingDataService } from '@core/services/trading-data.service';
 import { SingleNameDetailDto } from '../models/single-name.dto';
@@ -10,17 +10,11 @@ import { mapSingleNameDetailDto, mapSingleNameDetailToDto } from './single-name.
 })
 export class SingleNameDataService {
   private readonly tradingData = inject(TradingDataService);
+  readonly refreshIntervalMs = this.tradingData.refreshIntervalMs;
 
   getSingleName(ticker: string): Observable<SingleNameDetail> {
     return this.loadSingleNameDto(ticker).pipe(
       map(mapSingleNameDetailDto),
-    );
-  }
-
-  getRefreshedSingleName(ticker: string): Observable<SingleNameDetail> {
-    return interval(this.tradingData.refreshIntervalMs).pipe(
-      startWith(0),
-      switchMap(() => this.getSingleName(ticker)),
     );
   }
 

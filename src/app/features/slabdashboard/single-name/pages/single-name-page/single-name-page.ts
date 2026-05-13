@@ -163,6 +163,14 @@ export class SingleNamePage {
     this.store.closeInventoryTab();
   }
 
+  refreshFromBackend(): void {
+    this.store.refreshFromBackend();
+  }
+
+  toggleRefreshTimer(): void {
+    this.store.toggleRefreshTimer();
+  }
+
   private registerGridApi(layoutKey: string, event: GridReadyEvent): void {
     this.gridApis.set(layoutKey, event.api);
   }

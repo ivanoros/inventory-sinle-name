@@ -48,6 +48,12 @@
     </label>
 
     <div class="toolbar-actions">
+      <div class="button-group">
+        <button type="button" (click)="refreshFromBackend()">Refresh</button>
+        <button type="button" [class.active]="store.autoRefreshEnabled()" (click)="toggleRefreshTimer()">
+          {{ store.autoRefreshEnabled() ? 'Stop auto refresh' : 'Start auto refresh' }}
+        </button>
+      </div>
       <app-grid-layout-control label="Layouts:" [layoutKey]="layoutKey" [gridApi]="gridApi"></app-grid-layout-control>
       <button class="export">Export</button>
     </div>

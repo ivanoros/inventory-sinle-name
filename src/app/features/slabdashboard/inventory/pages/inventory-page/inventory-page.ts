@@ -174,6 +174,14 @@ export class InventoryPage {
     this.store.setView(view);
   }
 
+  refreshFromBackend(): void {
+    this.store.refreshFromBackend();
+  }
+
+  toggleRefreshTimer(): void {
+    this.store.toggleRefreshTimer();
+  }
+
   private numberColumn(
     field: NumericInventoryField,
     headerName: string,
