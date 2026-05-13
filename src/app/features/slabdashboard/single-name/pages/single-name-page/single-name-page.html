@@ -26,10 +26,13 @@
       ↻
     </button>
     <button
+      class="icon-button"
       type="button"
       [class.active]="store.autoRefreshEnabled()"
+      [attr.aria-label]="store.autoRefreshEnabled() ? 'Stop auto refresh' : 'Start auto refresh'"
+      [title]="store.autoRefreshEnabled() ? 'Stop auto refresh' : 'Start auto refresh'"
       (click)="toggleRefreshTimer()">
-      {{ store.autoRefreshEnabled() ? 'Stop auto refresh' : 'Start auto refresh' }}
+      {{ store.autoRefreshEnabled() ? '■' : '▶' }}
     </button>
   </section>
 
