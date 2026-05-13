@@ -49,7 +49,14 @@
 
     <div class="toolbar-actions">
       <div class="button-group">
-        <button type="button" (click)="refreshFromBackend()">Refresh</button>
+        <button
+          class="icon-button"
+          type="button"
+          aria-label="Refresh from backend"
+          title="Refresh from backend"
+          (click)="refreshFromBackend()">
+          ↻
+        </button>
         <button type="button" [class.active]="store.autoRefreshEnabled()" (click)="toggleRefreshTimer()">
           {{ store.autoRefreshEnabled() ? 'Stop auto refresh' : 'Start auto refresh' }}
         </button>

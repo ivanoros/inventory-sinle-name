@@ -17,7 +17,14 @@
   }
 
   <section class="refresh-toolbar">
-    <button type="button" (click)="refreshFromBackend()">Refresh</button>
+    <button
+      class="icon-button"
+      type="button"
+      aria-label="Refresh from backend"
+      title="Refresh from backend"
+      (click)="refreshFromBackend()">
+      ↻
+    </button>
     <button
       type="button"
       [class.active]="store.autoRefreshEnabled()"
