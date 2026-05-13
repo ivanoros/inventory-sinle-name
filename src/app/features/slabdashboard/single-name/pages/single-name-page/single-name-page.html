@@ -17,23 +17,34 @@
   }
 
   <section class="refresh-toolbar">
-    <button
-      class="icon-button"
-      type="button"
-      aria-label="Refresh from backend"
+    <p-button
+      ariaLabel="Refresh from backend"
       title="Refresh from backend"
-      (click)="refreshFromBackend()">
-      ↻
-    </button>
-    <button
-      class="icon-button"
-      type="button"
-      [class.active]="store.autoRefreshEnabled()"
-      [attr.aria-label]="store.autoRefreshEnabled() ? 'Stop auto refresh' : 'Start auto refresh'"
+      severity="secondary"
+      size="small"
+      [rounded]="true"
+      [text]="true"
+      (onClick)="refreshFromBackend()">
+      <ng-template #icon let-class="class">
+        <svg data-p-icon="refresh" [class]="class"></svg>
+      </ng-template>
+    </p-button>
+    <p-button
+      [ariaLabel]="store.autoRefreshEnabled() ? 'Stop auto refresh' : 'Start auto refresh'"
       [title]="store.autoRefreshEnabled() ? 'Stop auto refresh' : 'Start auto refresh'"
-      (click)="toggleRefreshTimer()">
-      {{ store.autoRefreshEnabled() ? '■' : '▶' }}
-    </button>
+      [severity]="store.autoRefreshEnabled() ? 'primary' : 'secondary'"
+      size="small"
+      [rounded]="true"
+      [text]="!store.autoRefreshEnabled()"
+      (onClick)="toggleRefreshTimer()">
+      <ng-template #icon let-class="class">
+        @if (store.autoRefreshEnabled()) {
+          <svg data-p-icon="times" [class]="class"></svg>
+        } @else {
+          <svg data-p-icon="caret-right" [class]="class"></svg>
+        }
+      </ng-template>
+    </p-button>
   </section>
 
   @if (store.error(); as errorMessage) {

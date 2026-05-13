@@ -23,6 +23,10 @@ import { InventoryRow } from '../../models/inventory-row.model';
 import { InventoryViewFilter } from '../../models/inventory-page.model';
 import { InventoryStore } from '../../state/inventory.store';
 import { AgGridAngular } from 'ag-grid-angular';
+import { ButtonModule } from 'primeng/button';
+import { CaretRightIcon } from 'primeng/icons/caretright';
+import { RefreshIcon } from 'primeng/icons/refresh';
+import { TimesIcon } from 'primeng/icons/times';
 import { SlabdashboardHeaderComponent } from '@shared/ui/slabdashboard-header/slabdashboard-header.component';
 import { SlabdashboardTabsComponent } from '@shared/ui/slabdashboard-tabs/slabdashboard-tabs.component';
 import { GridLayoutService } from '@core/services/grid-layout.service';
@@ -35,7 +39,16 @@ type NumericInventoryField = {
 @Component({
   selector: 'app-inventory',
   standalone: true,
-  imports: [AgGridAngular, GridLayoutControlComponent, SlabdashboardHeaderComponent, SlabdashboardTabsComponent],
+  imports: [
+    AgGridAngular,
+    ButtonModule,
+    CaretRightIcon,
+    GridLayoutControlComponent,
+    RefreshIcon,
+    SlabdashboardHeaderComponent,
+    SlabdashboardTabsComponent,
+    TimesIcon,
+  ],
   templateUrl: './inventory-page.html',
   styleUrl: './inventory-page.scss',
   providers: [InventoryStore],

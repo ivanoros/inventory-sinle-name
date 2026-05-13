@@ -50,39 +50,6 @@
   padding: 10px 16px 0;
 }
 
-.refresh-toolbar button {
-  background: white;
-  border: 1px solid #b8c5c5;
-  color: #263238;
-  cursor: pointer;
-  padding: 6px 12px;
-}
-
-.refresh-toolbar button.active {
-  background: #007d86;
-  border-color: #007d86;
-  color: white;
-}
-
-.refresh-toolbar .icon-button {
-  width: 28px;
-  padding: 0;
-  font-size: 16px;
-  line-height: 1;
-}
-
-:host-context(.slabdashboard-dark) .refresh-toolbar button {
-  background: #111827;
-  border-color: #3d4b5c;
-  color: #d9e2ea;
-}
-
-:host-context(.slabdashboard-dark) .refresh-toolbar button.active {
-  background: #007d86;
-  border-color: #00a3af;
-  color: white;
-}
-
 .content {
   flex: 1;
   min-height: 0;

@@ -16,6 +16,10 @@ import {
 } from 'ag-grid-community';
 import { AllCommunityModule as AllChartCommunityModule, ModuleRegistry as ChartModuleRegistry } from 'ag-charts-community';
 import { ColumnsToolPanelModule, SideBarModule } from 'ag-grid-enterprise';
+import { ButtonModule } from 'primeng/button';
+import { CaretRightIcon } from 'primeng/icons/caretright';
+import { RefreshIcon } from 'primeng/icons/refresh';
+import { TimesIcon } from 'primeng/icons/times';
 import { SecuritySummaryComponent } from '../../components/security-summary/security-summary.component';
 import { PositionPanelComponent } from '../../components/position-panel/position-panel.component';
 import { LenderAvailabilityComponent } from '../../components/lender-availability/lender-availability.component';
@@ -38,7 +42,10 @@ ChartModuleRegistry.registerModules(AllChartCommunityModule);
   imports: [
     SlabdashboardHeaderComponent,
     SlabdashboardTabsComponent,
+    ButtonModule,
+    CaretRightIcon,
     RouterLink,
+    RefreshIcon,
     SecuritySummaryComponent,
     PositionPanelComponent,
     LenderAvailabilityComponent,
@@ -46,6 +53,7 @@ ChartModuleRegistry.registerModules(AllChartCommunityModule);
     GridLayoutControlComponent,
     ErrorAlertComponent,
     LoadingSpinnerComponent,
+    TimesIcon,
   ],
   templateUrl: './single-name-page.html',
   styleUrl: './single-name-page.scss',
