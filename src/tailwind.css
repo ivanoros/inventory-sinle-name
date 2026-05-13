@@ -1,0 +1,10 @@
+@import "tailwindcss/theme";
+@import "tailwindcss/utilities";
+
+@theme {
+  --font-sans: var(--slabdashboard-font-family);
+  --color-slab-teal: #007d86;
+  --color-slab-green: #008a72;
+  --color-slab-dark: #0f1720;
+  --color-slab-ink: #263238;
+}
