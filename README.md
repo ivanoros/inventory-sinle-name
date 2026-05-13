@@ -57,3 +57,10 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+npm install -D tailwindcss @tailwindcss/postcss postcss
+npm install primeng @primeuix/themes tailwindcss-primeui
+npm install @angular/animations@^21.2.0
+npm run build
+PrimeNG install docs: https://v20.primeng.org/installation
+PrimeNG + Tailwind docs: https://v20.primeng.org/tailwind
